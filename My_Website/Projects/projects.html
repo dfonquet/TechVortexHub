@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<!--[if IE]>
+<html lang="es" class="ie">
+<![endif]-->
+<!--[if !IE]><!-->
+<html lang="es">
+<!--<![endif]-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Tu Nombre">
+    <title>En Desarrollo - Tus Proyectos</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Reset de Estilos */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Estilos Generales */
+        body {
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            background: url('My_Website/img/DATA_2.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #f1f1f1;
+            text-align: center;
+            animation: gradientBackground 20s linear infinite alternate;
+        }
+
+        @keyframes gradientBackground {
+            0% { background-image: linear-gradient(to bottom, #141e30, #243b55); }
+            100% { background-image: linear-gradient(to bottom, #243b55, #141e30); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* Encabezado */
+        header {
+            background-color: #1d3557;
+            color: #f1f1f1;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        /* Menú de Navegación */
+        nav {
+            background-color: #457b9d;
+            padding: 10px 0;
+        }
+
+        nav a {
+            color: #f1f1f1;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #a8dadc;
+        }
+
+        /* Contenido Principal */
+        main {
+            padding: 40px;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Pie de Página */
+        footer {
+            background-color: #1d3557;
+            color: #f1f1f1;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        /* Texto en Negritas */
+        strong {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        /* Estilos para Internet Explorer */
+        .ie header,
+        .ie nav,
+        .ie main,
+        .ie footer {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><strong>En Desarrollo</strong></h1>
+        </header>
+        <nav>
+            <!-- Menú de navegación (opcional) -->
+        </nav>
+        <main>
+            <p>¡<strong>Esta página está en desarrollo</strong>! Pronto estará disponible con contenido emocionante.</p>
+            <a class="btn btn-primary" href="#">Ver Más</a>
+        </main>
+        <footer>
+            <p><strong>Derechos de autor</strong> &copy; 2023 daftiel</p>
+        </footer>
+    </div>
+</body>
+</html>
