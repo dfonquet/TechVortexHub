@@ -1,69 +1,245 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mi Blog</title>
-  <!-- Agrega tus enlaces a hojas de estilo, fuentes y otros recursos aquí -->
-  <style>
-    /* Estilos generales */
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Título de tu Blog</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Aca deberas colocar tu css en mi caso styles.css -->
+    <style>
+        /* Aca agregamos nuestros estilos */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1rem 0;
+        }
+        .contenedor {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+            position: relative;
+        }
+        .columna-izquierda,
+        .columna-central,
+        .columna-derecha {
+            flex: 1;
+            padding: 0 1rem;
+        }
+        .banner {
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            padding: 2rem;
+        }
+        footer {
+            text-align: center;
+            padding: 1rem 0;
+            background-color: #333;
+            color: #fff;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+        /* Partículas */
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            opacity: 0.5;
+        }
+        /* Estilos adicionales para resaltar contenido (Me parece genial !)*/
+        h1, h2 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
 
-    /* ... Tus estilos generales aquí ... */
 
-    /* Estilos específicos para el blog */
-    .blog-container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
+/* Agrega estilos personalizados aquí */
+    /* ... (mantiene los estilos CSS anteriores) ... */
+    
+    /* Estilos para el pie de página con  esto va ligado con las particulas*/
+    .footer {
+        text-align: center;
+        padding: 0;
+        margin: 0;
+        background-color: #333;
+        color: #fff;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        opacity: 0; /* Inicialmente oculto */
+        transform: translateY(20px); /* Desplazado hacia arriba */
+        animation: fadeInUp 1s 0.5s forwards; /* Animación de entrada */
     }
 
-    .blog-post {
-      margin-bottom: 40px;
-      padding: 20px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      background-color: #fff;
+    .footer-text {
+        margin-bottom: 0; /* Elimina el margen inferior */
     }
 
-    .blog-post h2 {
-      font-size: 24px;
-      margin-bottom: 10px;
+    /* Animación de entrada */
+    @keyframes fadeInUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
-    .blog-post p {
-      line-height: 1.6;
-    }
 
-    /* ... Otros estilos específicos para el blog ... */
-
-  </style>
+    </style>
 </head>
-
 <body>
-  <div class="blog-container">
-
-    <!-- Entrada del blog 1 -->
-    <div class="blog-post">
-      <h2>Título de la Entrada 1</h2>
-      <p>Contenido de la entrada 1...</p>
-      <!-- Agrega más contenido de la entrada aquí, como imágenes, enlaces, etc. -->
-    </div>
-
-    <!-- Entrada del blog 2 -->
-    <div class="blog-post">
-      <h2>Título de la Entrada 2</h2>
-      <p>Contenido de la entrada 2...</p>
-    </div>
-
-    <!-- ... Agrega más entradas del blog aquí ... -->
-
-  </div>
-
-  <script>
-    // Código JavaScript si es necesario
-  </script>
+    <header>
+        <h1>Título de tu Blog</h1>
+        <nav>
+            <!-- Agrega enlaces a otras secciones de tu sitio aquí -->
+        </nav>
+    </header>
+    <section class="contenedor">
+        <div class="columna-izquierda">
+            <!-- Aquí van tus artículos (En modo creacion aun)-->
+        </div>
+        <div class="columna-central">
+            <div class="banner">
+                <h2>Bienvenido a Mi Blog</h2>
+                <p>Compartiendo Labs, Informes y Opiniones</p>
+            </div>
+        </div>
+        <div class="columna-derecha">
+            <h2>Sobre Mí</h2>
+            <p>Tu descripción personal</p>
+            <h2>Noticias</h2>
+            <!-- Aquí podrían ir tus noticias o actualizaciones (aun no defino como hacerlos mas versatiles) -->
+        </div>
+    </section>
+    <footer class="footer">
+        <p class="footer-text">Derechos de Autor © 2023 - Tu Nombre</p>
+    </footer>
+    <div id="particles-js"></div>
+    <script src="particles.min.js"></script>
+    <script>
+        particlesJS("particles-js", {
+            particles: {
+                number: {
+                    value: 80,
+                    density: {
+                        enable: true,
+                        value_area: 800
+                    }
+                },
+                color: {
+                    value: "#1b1e34"
+                },
+                shape: {
+                    type: "polygon",
+                    stroke: {
+                        width: 0,
+                        color: "#000"
+                    },
+                    polygon: {
+                        nb_sides: 6
+                    },
+                    image: {
+                        src: "img/github.svg",
+                        width: 100,
+                        height: 100
+                    }
+                },
+                opacity: {
+                    value: 0.3,
+                    random: true,
+                    anim: {
+                        enable: false,
+                        speed: 1,
+                        opacity_min: 0.1,
+                        sync: false
+                    }
+                },
+                size: {
+                    value: 160,
+                    random: false,
+                    anim: {
+                        enable: true,
+                        speed: 10,
+                        size_min: 40,
+                        sync: false
+                    }
+                },
+                line_linked: {
+                    enable: false,
+                    distance: 200,
+                    color: "#ffffff",
+                    opacity: 1,
+                    width: 2
+                },
+                move: {
+                    enable: true,
+                    speed: 8,
+                    direction: "none",
+                    random: false,
+                    straight: false,
+                    out_mode: "out",
+                    bounce: false,
+                    attract: {
+                        enable: false,
+                        rotateX: 600,
+                        rotateY: 1200
+                    }
+                }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: {
+                        enable: true,
+                        mode: "grab"
+                    },
+                    onclick: {
+                        enable: false,
+                        mode: "push"
+                    },
+                    resize: true
+                },
+                modes: {
+                    grab: {
+                        distance: 400,
+                        line_linked: {
+                            opacity: 1
+                        }
+                    },
+                    bubble: {
+                        distance: 400,
+                        size: 40,
+                        duration: 2,
+                        opacity: 8,
+                        speed: 3
+                    },
+                    repulse: {
+                        distance: 200,
+                        duration: 0.4
+                    },
+                    push: {
+                        particles_nb: 4
+                    },
+                    remove: {
+                        particles_nb: 2
+                    }
+                }
+            },
+            retina_detect: true
+        });
+    </script>
 </body>
-
 </html>
