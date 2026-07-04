@@ -13,6 +13,8 @@
 
 
 
+
+
     /* Estilos generales */
     * {
       margin: 0;
@@ -42,13 +44,29 @@
 
 /* Estilos del encabezado principal */
 #principal {
-  color: transparent; /* Hacemos el texto transparente */
   text-align: center;
-  font-size: 2em;
   margin-top: 7%;
   font-weight: bold;
   position: relative;
 }
+
+
+.hero-title {
+  color: #8162d6;
+  font-family: Arial, sans-serif;
+  font-size: clamp(2rem, 5vw, 4.3rem);
+  line-height: 1.1;
+  text-align: center;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 0 20px;
+}
+
+.hero-title span {
+  color: #10d4ee;
+}
+
 
 #principal::before {
   content: attr(data-text);
@@ -85,24 +103,29 @@
 }
 
 
-    .section-title .button {
-      display: inline-block;
-      margin: 10px;
-      padding: 15px 30px;
-      background-color: #8b5db6;
-      color: white;
-      text-decoration: none;
-      border: none;
-      border-radius: 50px;
-      font-size: 16px;
-      font-weight: bold;
-      letter-spacing: 1px;
-      font-family: 'Roboto', sans-serif;
-      transform: translateY(0) scale(0.95);
-      cursor: pointer;
-      opacity: 0;
-      animation: fadeInOut 4s ease-in-out infinite; /* Animación de desvanecimiento constante */
-    }
+  .section-title .button {
+  display: inline-block;
+  margin: 10px;
+  padding: 15px 30px;
+  background-color: #8b5db6;
+  color: white;
+  text-decoration: none;
+  border: none;
+  border-radius: 50px;
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  font-family: 'Roboto', sans-serif;
+  cursor: pointer;
+  opacity: 1;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.section-title .button:hover {
+  transform: translateY(-3px);
+  background-color: #10d4ee;
+  color: #081018;
+}
 
     @keyframes fadeInOut {
       0%, 100% {
@@ -123,7 +146,8 @@
   /* Estilos para los logotipos de redes sociales */
 .social-icons {
   text-align: center;
-  margin-top: 60px; /* Aca yo Ajusto el valor según lo desee */
+  margin-top: 35px;
+  padding-bottom: 30px;
 }
 
     .social-icons a {
@@ -162,7 +186,7 @@
       color: #00ffcc;
       opacity: 0.9;
       line-height: 1.5;
-      background-color: #000;
+      background-color: rgba(0, 0, 0, 0.78);
       padding: 30px; /* Aumenta el espacio interno para más detalles */
       border-radius: 10px;
       border: 2px solid #00ffcc;
@@ -257,9 +281,9 @@
 
   <div class="container">
     <main id="principal">
-      <h2 style="color: #8162d6; font-family: 'Arial', sans-serif; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); font-size: 2.5em; transform: perspective(1000px) rotateX(10deg) translateX(-10px) scale(1.05); transition: transform 0.3s;">
-        ¡Step into my World! <span style="font-family: 'Minecraft', sans-serif; color: #10d4ee;">I am  </span> Daniel Fonque!
-      </h2>
+      <h1 class="hero-title">
+       &iexcl;Step into my World! <span>I am</span> Daniel Fonque
+    </h1>
       <div class="additional-message">
         As a dedicated security and network engineer, I possess a profound enthusiasm for diverse technological domains.
         With an extensive background spanning over 11 years, I have excelled in senior roles within the realms of security and networks.
