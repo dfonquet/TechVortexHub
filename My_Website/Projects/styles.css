@@ -16,7 +16,7 @@ body {
 .page {
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
-  padding: 42px 0;
+  padding: 72px 0 42px;
 }
 
 .top-nav {
@@ -252,4 +252,15 @@ footer {
     margin-top: 30px;
     font-size: 0.85rem;
   }
+}
+
+
+.project-card {
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+}
+
+.project-card:hover {
+  transform: translateY(-6px);
+  border-color: #10d4ee;
+  box-shadow: 0 14px 34px rgba(16, 212, 238, 0.16);
 }
