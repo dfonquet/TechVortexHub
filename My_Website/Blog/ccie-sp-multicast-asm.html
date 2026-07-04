@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="author" content="Daniel Fonque" />
+  <title>Understanding Multicast ASM in a Service Provider Lab</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div class="article-page">
+    <nav class="top-nav">
+      <a href="../dafitel.html">Home</a>
+      <a href="../Projects/projects.html">Projects</a>
+      <a href="blog.html">Blog</a>
+    </nav>
+
+    <article class="article-shell">
+      <header class="article-hero">
+        <p class="eyebrow">CCIE SP Study Notes</p>
+        <h1>Understanding Multicast ASM in a Service Provider Lab</h1>
+        <p class="article-subtitle">
+          PIM-SM, ASM, dynamic RP with BSR, RPF logic, MRIB verification, and multicast tree building.
+        </p>
+        <div class="article-meta">
+          <span>Daniel Fonque Torres</span>
+          <span>May 5, 2026</span>
+          <span>CCIE-SP In Progress</span>
+        </div>
+      </header>
+
+      <figure class="article-cover">
+        <img src="img/multicast-asm/multicast-asm-cover.png" alt="Multicast ASM over SR and BSR lab cover" />
+      </figure>
+
+      <section class="article-card">
+        <h2>Lab Objective</h2>
+        <p>
+          The goal of this lab was to truly understand how multicast ASM behaves in a
+          Service Provider backbone using PIM Sparse Mode. No MVPN yet. The focus was
+          to visualize the multicast control plane and the multicast tree end-to-end.
+        </p>
+        <p>
+          The study topology is a dual-stack Service Provider lab running IS-IS,
+          Segment Routing SR-MPLS, L3VPN, Internet VRFs, and multicast ASM with PIM
+          and dynamic RP discovery using BSR. The design also includes PCE, TI-LFA,
+          and BFD for rapid failure detection.
+        </p>
+      </section>
+
+      <figure class="article-image">
+        <img src="img/multicast-asm/ccie-sp-study-topology.png" alt="CCIE SP multicast study topology" />
+        <figcaption>CCIE SP study topology</figcaption>
+      </figure>
+
+      <section class="article-card">
+        <h2>1. Core Foundation</h2>
+        <ul>
+          <li>IS-IS provides full reachability, including reachability to the RP.</li>
+          <li>PIM Sparse Mode is enabled across the backbone.</li>
+          <li>PIM neighbor relationships are verified before building multicast state.</li>
+        </ul>
+      </section>
+
+      <figure class="article-image">
+        <img src="img/multicast-asm/pim-neighbor-p6.png" alt="PIM neighbor verification on P6" />
+        <figcaption>P6 PIM neighbor verification</figcaption>
+      </figure>
+
+      <figure class="article-image">
+        <img src="img/multicast-asm/pim-neighbor-pe2.png" alt="PIM neighbor and interface verification on PE-2" />
+        <figcaption>PE-2 PIM neighbor and interface verification</figcaption>
+      </figure>
+
+      <section class="article-card">
+        <h2>2. Dynamic RP Using BSR</h2>
+        <p>
+          A router was configured as Candidate BSR and Candidate RP. The multicast
+          group scope was limited to <strong>239.0.0.0/8</strong>. The important result
+          was that the RP was learned dynamically through BSR, without static RP
+          configuration.
+        </p>
+        <div class="command-list">
+          <code>show pim bsr election</code>
+          <code>show pim rp mapping</code>
+          <code>show pim group-map</code>
+          <code>show pim range-list</code>
+        </div>
+      </section>
+
+      <figure class="article-image">
+        <img src="img/multicast-asm/bsr-rp-verification.png" alt="BSR and RP verification output" />
+        <figcaption>Dynamic RP learned through BSR</figcaption>
+      </figure>
+
+      <figure class="article-image">
+        <img src="img/multicast-asm/bsr-rang-list.png" alt="BSR range list verification" />
+        <figcaption>BSR range-list verification</figcaption>
+      </figure>
+
+      <section class="article-card">
+        <h2>3. Receiver Simulation</h2>
+        <p>
+          A multicast receiver was simulated from the edge using IGMP join-group for
+          <strong>239.1.1.1</strong>. This allowed the multicast tree to be triggered
+          from the receiver side.
+        </p>
+      </section>
+
+      <figure class="article-image">
+        <img src="img/multicast-asm/receiver-igmp.png" alt="Receiver IGMP join configuration" />
+        <figcaption>Receiver IGMP join configuration</figcaption>
+      </figure>
+
+      <section class="article-card">
+        <h2>4. Critical Detail: DR Election</h2>
+        <p>
+          Initially, the CE became the Designated Router, so no PIM Join was sent
+          upstream by the expected Last Hop Router. The fix was to adjust the PIM DR
+          priority so the PE acts as the Last Hop Router.
+        </p>
+        <p>
+          This was the turning point of the lab.
+        </p>
+      </section>
+
+      <section class="article-card">
+        <h2>5. Building the Multicast Tree (*,G)</h2>
+        <p>
+          The multicast tree was validated hop by hop. Each router receives a Join
+          from downstream, calculates the RPF path toward the RP, and sends the Join
+          upstream. This is where the multicast path becomes visible.
+        </p>
+      </section>
+
+      <figure class="article-image">
+        <img src="img/multicast-asm/pe2-pim-topology.png" alt="PE-2 PIM topology detail for multicast group" />
+        <figcaption>PE-2 PIM topology for 239.1.1.1</figcaption>
+      </figure>
+
+      <figure class="article-image">
+        <img src="img/multicast-asm/pe2-mrib.png" alt="PE-2 MRIB route for multicast group" />
+        <figcaption>PE-2 MRIB route for 239.1.1.1</figcaption>
+      </figure>
+
+      <figure class="article-image">
+        <img src="img/multicast-asm/p6-pim-topology.png" alt="P6 PIM topology output" />
+        <figcaption>P6 PIM topology</figcaption>
+      </figure>
+
+      <figure class="article-image">
+        <img src="img/multicast-asm/p6-mrib.png" alt="P6 MRIB verification" />
+        <figcaption>P6 MRIB verification</figcaption>
+      </figure>
+
+      <section class="article-card">
+        <h2>6. Real Path Observed</h2>
+        <p>The path observed was:</p>
+        <div class="path-flow">
+          <span>Receiver</span>
+          <span>PE</span>
+          <span>P routers</span>
+          <span>RP</span>
+        </div>
+        <p>
+          Multicast state exists only on routers that participate in the tree. Routers
+          outside the RPF path do not maintain multicast state for this group.
+        </p>
+      </section>
+
+      <section class="article-card">
+        <h2>Key Takeaways</h2>
+        <ul>
+          <li>Multicast is not flooding. It follows the unicast RPF path.</li>
+          <li>Trees are built from receiver to RP.</li>
+          <li>DR election matters more than most people think.</li>
+          <li>MRIB is critical for understanding forwarding decisions.</li>
+          <li>Only routers in the multicast path maintain multicast state.</li>
+        </ul>
+      </section>
+
+      <section class="article-card">
+        <h2>Next Step</h2>
+        <p>
+          The next step is to introduce a multicast source, observe PIM Register,
+          validate <strong>(S,G)</strong> state, analyze SPT switchover, and then move
+          into MVPN multicast over MPLS/VPN.
+        </p>
+      </section>
+
+      <blockquote class="article-quote">
+        The moment everything clicked was realizing that multicast is not about interfaces.
+        It is about deterministic paths dictated by the IGP and RPF.
+      </blockquote>
+    </article>
+  </div>
+</body>
+</html>
