@@ -46,7 +46,7 @@
 #principal {
   text-align: center;
   margin-top: 7%;
-  font-weight: bold;
+  /*font-weight: bold;*/
   position: relative;
 }
 
@@ -55,6 +55,7 @@
   color: #8162d6;
   font-family: Arial, sans-serif;
   font-size: clamp(2rem, 5vw, 4.3rem);
+  
   line-height: 1.1;
   text-align: center;
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
@@ -178,21 +179,28 @@
     
 /* Estilos para el mensaje adicional */
 .additional-message {
-      text-align: center;
-      margin: 40px auto; /* Aumenta el margen para un mejor espacio */
-      max-width: 800px; /* Ancho máximo del párrafo */
-      font-size: 18px;
-      font-family: 'Mancarf', sans-serif;
-      color: #00ffcc;
-      opacity: 0.9;
-      line-height: 1.5;
-      background-color: rgba(0, 0, 0, 0.78);
-      padding: 30px; /* Aumenta el espacio interno para más detalles */
-      border-radius: 10px;
-      border: 2px solid #00ffcc;
-      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); /* Sombra un poco más pronunciada */
-      position: relative; /* Agrega posición relativa para el contenido */
-    }
+  text-align: left;
+  margin: 35px auto;
+  max-width: 900px;
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  font-family: Arial, sans-serif;
+  color: #00ffcc;
+  line-height: 1.65;
+  background-color: rgba(0, 0, 0, 0.78);
+  padding: 32px 38px;
+  border-radius: 10px;
+  border: 2px solid #00ffcc;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  position: relative;
+}
+
+.additional-message p {
+  margin-bottom: 16px;
+}
+
+.additional-message p:last-child {
+  margin-bottom: 0;
+}
 
     .additional-message p {
       position: relative;
@@ -242,7 +250,91 @@
 
 
 
+/* Homepage layout polish */
+.section-title {
+  text-align: center;
+  margin: 56px 0 58px;
+  position: relative;
+  overflow: visible;
+}
 
+#principal {
+  text-align: center;
+  margin-top: 0;
+  position: relative;
+  padding: 0 18px;
+}
+
+.hero-title {
+  color: #8162d6;
+  font-family: Arial, sans-serif;
+  font-size: clamp(2.1rem, 5vw, 4.3rem);
+  font-weight: 800;
+  line-height: 1.08;
+  text-align: center;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 0 20px;
+}
+
+.hero-title span {
+  color: #10d4ee;
+}
+
+.additional-message {
+  text-align: left;
+  margin: 32px auto 0;
+  max-width: 900px;
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  font-family: Arial, sans-serif;
+  font-weight: 500;
+  color: #00ffcc;
+  line-height: 1.65;
+  background-color: rgba(0, 0, 0, 0.78);
+  padding: 32px 38px;
+  border-radius: 10px;
+  border: 2px solid #00ffcc;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
+.additional-message p {
+  display: block;
+  position: static;
+  margin: 0 0 18px;
+  animation: none;
+}
+
+.additional-message p:last-child {
+  margin-bottom: 0;
+}
+
+.additional-message p::after {
+  content: none;
+}
+
+@media (max-width: 768px) {
+  .section-title {
+    margin: 32px 0 34px;
+  }
+
+  .section-title .button {
+    padding: 12px 22px;
+    font-size: 14px;
+  }
+
+  .hero-title {
+    font-size: clamp(2rem, 12vw, 3.4rem);
+    padding: 0 12px;
+  }
+
+  .additional-message {
+    margin-top: 24px;
+    padding: 24px 22px;
+    font-size: 0.98rem;
+    line-height: 1.6;
+  }
+}
     
 
   </style>
@@ -284,12 +376,29 @@
       <h1 class="hero-title">
        &iexcl;Step into my World! <span>I am</span> Daniel Fonque
     </h1>
-      <div class="additional-message">
-        As a dedicated security and network engineer, I possess a profound enthusiasm for diverse technological domains.
-        With an extensive background spanning over 11 years, I have excelled in senior roles within the realms of security and networks.
-        Continuously committed to self-improvement, I diligently pursue ongoing education to broaden my understanding across essential components of our systems.
-        This approach empowers me to execute implementations infused with the most cutting-edge market practices. I proudly consider myself an unwavering enthusiast of technology.
-      </div>
+    <div class="additional-message">
+  <p>
+    As a Senior Network and Security Engineer, I am passionate about building reliable,
+    scalable, and secure technology environments.
+  </p>
+
+  <p>
+    I have a strong background in networking, security, Service Provider technologies,
+    cloud connectivity, and infrastructure design. My work focuses on understanding how
+    systems operate end to end, from routing architecture and security policies to
+    automation and operational reliability.
+  </p>
+
+  <p>
+    I am continuously expanding my knowledge in IP/MPLS, Segment Routing, SD-WAN,
+    cloud networking, APIs, automation, and AI-assisted engineering.
+  </p>
+
+  <p>
+    I consider myself a lifelong learner and technology enthusiast, always focused on
+    improving, building, and understanding how things work under the hood.
+  </p>
+</div>
     </main>
   </div>
 
