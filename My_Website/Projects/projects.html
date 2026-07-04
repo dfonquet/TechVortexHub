@@ -1,125 +1,132 @@
 <!DOCTYPE html>
-<!--[if IE]>
-<html lang="es" class="ie">
-<![endif]-->
-<!--[if !IE]><!-->
 <html lang="es">
-<!--<![endif]-->
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="author" content="Tu Nombre">
-    <title>En Desarrollo - Tus Proyectos</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        /* Reset de Estilos */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        /* Estilos Generales */
-        body {
-            font-family: 'Roboto', sans-serif;
-            font-size: 16px;
-            line-height: 1.6;
-            background: url('My_Website/img/DATA_2.jpg') no-repeat center center fixed;
-            background-size: cover;
-            color: #f1f1f1;
-            text-align: center;
-            animation: gradientBackground 20s linear infinite alternate;
-        }
-
-        @keyframes gradientBackground {
-            0% { background-image: linear-gradient(to bottom, #141e30, #243b55); }
-            100% { background-image: linear-gradient(to bottom, #243b55, #141e30); }
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-        }
-
-        /* Encabezado */
-        header {
-            background-color: #1d3557;
-            color: #f1f1f1;
-            padding: 20px;
-            border-radius: 10px;
-        }
-
-        /* Menú de Navegación */
-        nav {
-            background-color: #457b9d;
-            padding: 10px 0;
-        }
-
-        nav a {
-            color: #f1f1f1;
-            text-decoration: none;
-            margin: 0 15px;
-            font-weight: bold;
-            transition: color 0.3s ease;
-        }
-
-        nav a:hover {
-            color: #a8dadc;
-        }
-
-        /* Contenido Principal */
-        main {
-            padding: 40px;
-            border-radius: 10px;
-            background-color: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-        }
-
-        /* Pie de Página */
-        footer {
-            background-color: #1d3557;
-            color: #f1f1f1;
-            padding: 20px;
-            border-radius: 10px;
-        }
-
-        /* Texto en Negritas */
-        strong {
-            font-weight: bold;
-            font-size: 1.2em;
-        }
-
-        /* Estilos para Internet Explorer */
-        .ie header,
-        .ie nav,
-        .ie main,
-        .ie footer {
-            display: block;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="author" content="Daniel Fonque" />
+  <title>Projects - Daniel Fonque</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body>
-    <div class="container">
-        <header>
-            <h1><strong>En Desarrollo</strong></h1>
-        </header>
-        <nav>
-            <!-- Menú de navegación (opcional) -->
-        </nav>
-        <main>
-            <p>¡<strong>Esta página está en desarrollo</strong>! Pronto estará disponible con contenido emocionante.</p>
-            <a class="btn btn-primary" href="#">Ver Más</a>
-        </main>
-        <footer>
-            <p><strong>Derechos de autor</strong> &copy; 2023 daftiel</p>
-        </footer>
-    </div>
+  <div class="page">
+    <nav class="top-nav">
+      <a href="../dafitel.html">Home</a>
+      <a href="projects.html">Projects</a>
+      <a href="../Blog/blog.html">Blog</a>
+    </nav>
+
+    <header class="hero">
+      <p class="eyebrow">Technical Portfolio</p>
+      <h1>Projects <span>& Labs</span></h1>
+      <p>
+        A collection of technical work, labs, notes, and experiments focused on networking,
+        security, service provider technologies, cloud connectivity, automation, and
+        practical engineering.
+      </p>
+    </header>
+
+    <main class="project-grid">
+      <section class="project-card">
+        <div class="card-top">
+          <span class="status">In Progress</span>
+        </div>
+        <h2>Network Security Lab</h2>
+        <p>
+          Firewall policies, segmentation, VPN scenarios, routing behavior, and secure
+          connectivity tests built to understand real operational environments.
+        </p>
+        <div class="tags">
+          <span>Security</span>
+          <span>VPN</span>
+          <span>Firewalls</span>
+        </div>
+      </section>
+
+      <section class="project-card">
+        <div class="card-top">
+          <span class="status">Learning</span>
+        </div>
+        <h2>IP/MPLS Notes</h2>
+        <p>
+          Study notes and lab ideas around MPLS, routing architecture, control plane
+          behavior, traffic engineering, and service provider design.
+        </p>
+        <div class="tags">
+          <span>MPLS</span>
+          <span>Routing</span>
+          <span>SP</span>
+        </div>
+      </section>
+
+      <section class="project-card">
+        <div class="card-top">
+          <span class="status">Research</span>
+        </div>
+        <h2>Segment Routing</h2>
+        <p>
+          Personal exploration of Segment Routing concepts, use cases, and how modern
+          transport networks can become more scalable and flexible.
+        </p>
+        <div class="tags">
+          <span>SR</span>
+          <span>Networking</span>
+          <span>Design</span>
+        </div>
+      </section>
+
+      <section class="project-card">
+        <div class="card-top">
+          <span class="status">Lab Idea</span>
+        </div>
+        <h2>SD-WAN Scenarios</h2>
+        <p>
+          Lab concepts for branch connectivity, application-aware routing, redundancy,
+          internet breakout, and secure cloud access.
+        </p>
+        <div class="tags">
+          <span>SD-WAN</span>
+          <span>Cloud</span>
+          <span>WAN</span>
+        </div>
+      </section>
+
+      <section class="project-card">
+        <div class="card-top">
+          <span class="status">Building</span>
+        </div>
+        <h2>Automation Scripts</h2>
+        <p>
+          Small scripts and experiments focused on reducing repetitive work, improving
+          visibility, and supporting network operations.
+        </p>
+        <div class="tags">
+          <span>Python</span>
+          <span>APIs</span>
+          <span>Ops</span>
+        </div>
+      </section>
+
+      <section class="project-card">
+        <div class="card-top">
+          <span class="status">Exploring</span>
+        </div>
+        <h2>AI-Assisted Engineering</h2>
+        <p>
+          Experiments using AI as a technical assistant for documentation, troubleshooting,
+          code review, learning, and infrastructure workflows.
+        </p>
+        <div class="tags">
+          <span>AI</span>
+          <span>Docs</span>
+          <span>Learning</span>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2026 Daniel Fonque</p>
+    </footer>
+  </div>
 </body>
 </html>
