@@ -169,3 +169,87 @@ footer {
     padding: 22px;
   }
 }
+
+@media (max-width: 640px) {
+  body {
+    background-attachment: scroll;
+  }
+
+  .page {
+    width: 100%;
+    padding: 24px 14px 32px;
+  }
+
+  .top-nav {
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 28px;
+  }
+
+  .top-nav a {
+    padding: 10px 14px;
+    font-size: 0.86rem;
+    min-width: 86px;
+    text-align: center;
+  }
+
+  .hero {
+    margin-bottom: 26px;
+  }
+
+  .eyebrow {
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    margin-bottom: 10px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.2rem, 14vw, 3.2rem);
+    line-height: 0.98;
+  }
+
+  .hero p {
+    margin-top: 16px;
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+
+  .project-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  .project-card {
+    min-height: auto;
+    padding: 20px;
+    border-radius: 8px;
+  }
+
+  .card-top {
+    margin-bottom: 14px;
+  }
+
+  .project-card h2 {
+    font-size: 1.2rem;
+  }
+
+  .project-card p {
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+
+  .tags {
+    gap: 7px;
+  }
+
+  .tags span {
+    font-size: 0.78rem;
+    padding: 6px 9px;
+  }
+
+  footer {
+    margin-top: 30px;
+    font-size: 0.85rem;
+  }
+}
