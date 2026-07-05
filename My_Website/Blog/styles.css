@@ -1,9 +1,11 @@
+/* Base reset: removes default browser spacing and keeps element sizing predictable. */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* Global page style: defines the main font, text color, and technical background image. */
 body {
   min-height: 100vh;
   font-family: Arial, sans-serif;
@@ -13,12 +15,14 @@ body {
     url("../img/DATA_8.jpg") center / cover fixed;
 }
 
+/* Page wrapper: controls the width and spacing for the Blog landing page. */
 .page {
   width: min(1120px, calc(100% - 32px));
   margin: 0 auto;
   padding: 72px 0 42px;
 }
 
+/* Top navigation: styles the Home, Projects, and Blog navigation buttons. */
 .top-nav {
   display: flex;
   justify-content: center;
@@ -42,6 +46,7 @@ body {
   color: #081018;
 }
 
+/* Hero section: introduces the Blog page and the study journey. */
 .hero {
   text-align: center;
   margin-bottom: 38px;
@@ -74,6 +79,7 @@ body {
   line-height: 1.7;
 }
 
+/* Blog post grid: organizes the study areas and article cards. */
 .post-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -81,6 +87,7 @@ body {
   margin-top: 34px;
 }
 
+/* Post cards: reusable blocks for blog categories and featured articles. */
 .post-card {
   padding: 28px;
   border: 1px solid rgba(16, 212, 238, 0.65);
@@ -96,6 +103,7 @@ body {
   box-shadow: 0 14px 34px rgba(16, 212, 238, 0.16);
 }
 
+/* Clickable cards: allows an entire blog card to behave like a link. */
 .clickable-card {
   display: block;
   text-decoration: none;
@@ -103,6 +111,7 @@ body {
   cursor: pointer;
 }
 
+/* Card labels: identifies the vendor or study track for each post card. */
 .status {
   display: inline-block;
   margin-bottom: 18px;
@@ -126,6 +135,7 @@ body {
   margin-bottom: 18px;
 }
 
+/* Tags: highlights the main technologies and study topics for each card. */
 .tags {
   display: flex;
   flex-wrap: wrap;
@@ -141,6 +151,7 @@ body {
   font-weight: 700;
 }
 
+/* Post link: styles the call-to-action inside clickable article cards. */
 .post-link {
   display: inline-block;
   margin-top: 18px;
@@ -160,12 +171,14 @@ body {
   color: #081018;
 }
 
+/* Footer: keeps ownership information simple and separated from the content. */
 footer {
   margin-top: 44px;
   text-align: center;
   color: #b9c9d1;
 }
 
+/* Article page wrapper: controls width and spacing for individual blog articles. */
 .article-page {
   width: min(1040px, calc(100% - 32px));
   margin: 0 auto;
@@ -177,6 +190,7 @@ footer {
   margin: 0 auto;
 }
 
+/* Article hero: styles the title, subtitle, and metadata for technical write-ups. */
 .article-hero {
   text-align: center;
   margin-bottom: 34px;
@@ -197,6 +211,7 @@ footer {
   line-height: 1.7;
 }
 
+/* Article metadata: displays author, date, and study status as compact labels. */
 .article-meta {
   display: flex;
   flex-wrap: wrap;
@@ -214,6 +229,7 @@ footer {
   font-weight: 700;
 }
 
+/* Article media: keeps cover images and screenshots consistent with the dark UI. */
 .article-cover,
 .article-image {
   margin: 28px 0;
@@ -238,6 +254,7 @@ footer {
   font-size: 0.92rem;
 }
 
+/* Article cards: reusable content blocks for objectives, steps, notes, and takeaways. */
 .article-card {
   margin: 24px 0;
   padding: 28px;
@@ -264,6 +281,7 @@ footer {
   padding-left: 22px;
 }
 
+/* Command list: highlights useful verification commands inside technical articles. */
 .command-list {
   display: flex;
   flex-wrap: wrap;
@@ -279,6 +297,7 @@ footer {
   font-weight: 700;
 }
 
+/* Path flow: visualizes traffic or control-plane paths as compact steps. */
 .path-flow {
   display: flex;
   flex-wrap: wrap;
@@ -294,6 +313,7 @@ footer {
   font-weight: 700;
 }
 
+/* Article quote: emphasizes the final insight or main lesson learned. */
 .article-quote {
   margin: 32px 0 0;
   padding: 28px;
@@ -306,6 +326,7 @@ footer {
   font-weight: 700;
 }
 
+/* Mobile layout: improves readability and spacing on phone screens. */
 @media (max-width: 640px) {
   body {
     background-attachment: scroll;
@@ -375,4 +396,24 @@ footer {
   }
 }
 
+/* Comments Section: styles the Giscus comments block. */
+.article-comments {
+  margin-top: 36px;
+  padding: 28px;
+  border: 1px solid rgba(16, 212, 238, 0.5);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.68);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.34);
+}
 
+.article-comments h2 {
+  color: #10d4ee;
+  font-size: 1.6rem;
+  margin-bottom: 12px;
+}
+
+.article-comments p {
+  color: #dceff3;
+  line-height: 1.7;
+  margin-bottom: 22px;
+}
