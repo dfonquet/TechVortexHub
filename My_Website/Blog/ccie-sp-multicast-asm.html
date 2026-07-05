@@ -34,20 +34,33 @@
         <img src="img/multicast-asm/multicast-asm-cover.png" alt="Multicast ASM over SR and BSR lab cover" />
       </figure>
 
-      <section class="article-card">
-        <h2>Lab Objective</h2>
-        <p>
-          The goal of this lab was to truly understand how multicast ASM behaves in a
-          Service Provider backbone using PIM Sparse Mode. No MVPN yet. The focus was
-          to visualize the multicast control plane and the multicast tree end-to-end.
-        </p>
-        <p>
-          The study topology is a dual-stack Service Provider lab running IS-IS,
-          Segment Routing SR-MPLS, L3VPN, Internet VRFs, and multicast ASM with PIM
-          and dynamic RP discovery using BSR. The design also includes PCE, TI-LFA,
-          and BFD for rapid failure detection.
-        </p>
-      </section>
+
+
+<section class="article-card">
+  <h2>Lab Objective</h2>
+
+  <p>
+    Today I focused on truly understanding how multicast
+    <strong>(PIM-SM / ASM)</strong> behaves in a Service Provider backbone.
+  </p>
+
+  <p>
+    No MVPN yet. The goal was to visualize the control plane and the multicast
+    tree end-to-end.
+  </p>
+
+  <p>
+    <strong>Current study topology:</strong> A dual-stack Service Provider lab
+    running IS-IS, Segment Routing <strong>(SR-MPLS)</strong>, L3VPN, Internet
+    VRFs, and Multicast ASM using PIM with dynamic RP via BSR.
+  </p>
+
+  <p>
+    The design also includes PCE, TI-LFA for fast reroute, and BFD for rapid
+    failure detection.
+  </p>
+</section>
+
 
       <figure class="article-image">
         <img src="img/multicast-asm/ccie-sp-study-topology.png" alt="CCIE SP multicast study topology" />
@@ -95,7 +108,7 @@
       </figure>
 
       <figure class="article-image">
-        <img src="img/multicast-asm/bsr-rang-list.png" alt="BSR range list verification" />
+        <img src="img/multicast-asm/bsr-range-list.png" alt="BSR range list verification" />
         <figcaption>BSR range-list verification</figcaption>
       </figure>
 
@@ -168,6 +181,14 @@
           outside the RPF path do not maintain multicast state for this group.
         </p>
       </section>
+
+        <figure class="article-image">
+            <img src="img/multicast-asm/real-multicast-path-observed.png" alt="Real multicast path observed from receiver toward the RP" />
+            <figcaption>Real multicast path observed from receiver toward the RP</figcaption>
+        </figure>
+
+
+
 
       <section class="article-card">
         <h2>Key Takeaways</h2>
