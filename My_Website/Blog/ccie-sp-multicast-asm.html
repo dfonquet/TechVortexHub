@@ -10,13 +10,18 @@
 
 <body>
   <div class="article-page">
+
+    <!-- Main navigation: connects the article back to the main website sections. -->
     <nav class="top-nav">
       <a href="../daftiel.html">Home</a>
       <a href="../Projects/projects.html">Projects</a>
       <a href="blog.html">Blog</a>
     </nav>
 
+    <!-- Article container: keeps the full multicast write-up grouped as one technical post. -->
     <article class="article-shell">
+
+      <!-- Article intro: presents the topic, scope, author, date, and study context. -->
       <header class="article-hero">
         <p class="eyebrow">CCIE SP Study Notes</p>
         <h1>Understanding Multicast ASM in a Service Provider Lab</h1>
@@ -30,43 +35,44 @@
         </div>
       </header>
 
+      <!-- Cover image: gives the article a visual summary of the multicast ASM lab. -->
       <figure class="article-cover">
         <img src="img/multicast-asm/multicast-asm-cover.png" alt="Multicast ASM over SR and BSR lab cover" />
       </figure>
 
+      <!-- Lab objective: explains what the lab is proving before showing the verification steps. -->
+      <section class="article-card">
+        <h2>Lab Objective</h2>
 
+        <p>
+          Today I focused on truly understanding how multicast
+          <strong>(PIM-SM / ASM)</strong> behaves in a Service Provider backbone.
+        </p>
 
-<section class="article-card">
-  <h2>Lab Objective</h2>
+        <p>
+          No MVPN yet. The goal was to visualize the control plane and the multicast
+          tree end-to-end.
+        </p>
 
-  <p>
-    Today I focused on truly understanding how multicast
-    <strong>(PIM-SM / ASM)</strong> behaves in a Service Provider backbone.
-  </p>
+        <p>
+          <strong>Current study topology:</strong> A dual-stack Service Provider lab
+          running IS-IS, Segment Routing <strong>(SR-MPLS)</strong>, L3VPN, Internet
+          VRFs, and Multicast ASM using PIM with dynamic RP via BSR.
+        </p>
 
-  <p>
-    No MVPN yet. The goal was to visualize the control plane and the multicast
-    tree end-to-end.
-  </p>
+        <p>
+          The design also includes PCE, TI-LFA for fast reroute, and BFD for rapid
+          failure detection.
+        </p>
+      </section>
 
-  <p>
-    <strong>Current study topology:</strong> A dual-stack Service Provider lab
-    running IS-IS, Segment Routing <strong>(SR-MPLS)</strong>, L3VPN, Internet
-    VRFs, and Multicast ASM using PIM with dynamic RP via BSR.
-  </p>
-
-  <p>
-    The design also includes PCE, TI-LFA for fast reroute, and BFD for rapid
-    failure detection.
-  </p>
-</section>
-
-
+      <!-- Study topology: shows the complete SP lab used for the multicast validation. -->
       <figure class="article-image">
         <img src="img/multicast-asm/ccie-sp-study-topology.png" alt="CCIE SP multicast study topology" />
         <figcaption>CCIE SP study topology</figcaption>
       </figure>
 
+      <!-- Core foundation: validates IGP reachability and PIM adjacency before multicast state is built. -->
       <section class="article-card">
         <h2>1. Core Foundation</h2>
         <ul>
@@ -76,6 +82,7 @@
         </ul>
       </section>
 
+      <!-- PIM neighbor evidence: confirms multicast control-plane adjacencies in the backbone. -->
       <figure class="article-image">
         <img src="img/multicast-asm/pim-neighbor-p6.png" alt="PIM neighbor verification on P6" />
         <figcaption>P6 PIM neighbor verification</figcaption>
@@ -86,6 +93,7 @@
         <figcaption>PE-2 PIM neighbor and interface verification</figcaption>
       </figure>
 
+      <!-- Dynamic RP: documents how BSR advertises the RP without static RP configuration. -->
       <section class="article-card">
         <h2>2. Dynamic RP Using BSR</h2>
         <p>
@@ -112,6 +120,7 @@
         <figcaption>BSR range-list verification</figcaption>
       </figure>
 
+      <!-- Receiver simulation: triggers multicast state from the edge using an IGMP join. -->
       <section class="article-card">
         <h2>3. Receiver Simulation</h2>
         <p>
@@ -126,6 +135,7 @@
         <figcaption>Receiver IGMP join configuration</figcaption>
       </figure>
 
+      <!-- DR election: highlights the receiver-side detail that determines who sends the upstream Join. -->
       <section class="article-card">
         <h2>4. Critical Detail: DR Election</h2>
         <p>
@@ -138,6 +148,7 @@
         </p>
       </section>
 
+      <!-- Multicast tree build: explains how the (*,G) tree forms hop by hop toward the RP. -->
       <section class="article-card">
         <h2>5. Building the Multicast Tree (*,G)</h2>
         <p>
@@ -147,6 +158,7 @@
         </p>
       </section>
 
+      <!-- Tree verification: compares PIM topology and MRIB output across the multicast path. -->
       <figure class="article-image">
         <img src="img/multicast-asm/pe2-pim-topology.png" alt="PE-2 PIM topology detail for multicast group" />
         <figcaption>PE-2 PIM topology for 239.1.1.1</figcaption>
@@ -167,6 +179,7 @@
         <figcaption>P6 MRIB verification</figcaption>
       </figure>
 
+      <!-- Real path observed: summarizes the actual receiver-to-RP path built by RPF decisions. -->
       <section class="article-card">
         <h2>6. Real Path Observed</h2>
         <p>The path observed was:</p>
@@ -182,14 +195,12 @@
         </p>
       </section>
 
-        <figure class="article-image">
-            <img src="img/multicast-asm/real-multicast-path-observed.png" alt="Real multicast path observed from receiver toward the RP" />
-            <figcaption>Real multicast path observed from receiver toward the RP</figcaption>
-        </figure>
+      <figure class="article-image">
+        <img src="img/multicast-asm/real-multicast-path-observed.png" alt="Real multicast path observed from receiver toward the RP" />
+        <figcaption>Real multicast path observed from receiver toward the RP</figcaption>
+      </figure>
 
-
-
-
+      <!-- Key takeaways: captures the main lessons learned from the lab. -->
       <section class="article-card">
         <h2>Key Takeaways</h2>
         <ul>
@@ -201,6 +212,7 @@
         </ul>
       </section>
 
+      <!-- Next step: defines the follow-up work for source registration, (S,G), and MVPN. -->
       <section class="article-card">
         <h2>Next Step</h2>
         <p>
@@ -210,10 +222,65 @@
         </p>
       </section>
 
+      <!-- Troubleshooting notes: practical checks to use when multicast state does not build correctly. -->
+      <section class="article-card">
+        <h2>Troubleshooting Notes</h2>
+        <ul>
+          <li>Always confirm IGP reachability to the RP before troubleshooting PIM state.</li>
+          <li>Validate PIM neighbors first; multicast state will not build correctly without stable adjacencies.</li>
+          <li>Check the DR election on receiver-facing segments. The wrong DR can prevent the expected upstream Join.</li>
+          <li>Use MRIB to understand the actual forwarding decision, not only the PIM topology table.</li>
+          <li>If the tree is not forming, follow the RPF path hop by hop toward the RP.</li>
+        </ul>
+      </section>
+
+      <!-- Final study notes: closes the article by connecting PIM behavior with IGP and RPF logic. -->
+      <section class="article-card">
+        <h2>Final Study Notes</h2>
+        <p>
+          This lab helped me connect the multicast control plane with the unicast routing
+          table. The key lesson was that multicast forwarding is not random and it is not
+          simple flooding. It is built around deterministic RPF decisions.
+        </p>
+
+        <p>
+          Once the receiver joined the group, the tree formed hop by hop toward the RP.
+          Seeing the Join messages, MRIB entries, and PIM topology align across the path
+          made the behavior much easier to understand.
+        </p>
+      </section>
+
+      <!-- Final quote: highlights the core mental model learned from the multicast ASM lab. -->
       <blockquote class="article-quote">
         The moment everything clicked was realizing that multicast is not about interfaces.
-        It is about deterministic paths dictated by the IGP and RPF.
+        It is about deterministic paths dictated by the IGP and RPF. Once I followed the
+        receiver-to-RP path hop by hop, the topology stopped being a diagram and became a system.
       </blockquote>
+
+      <!-- Comments section: enables readers to leave feedback through Giscus. -->
+      <section class="article-comments">
+        <h2>Comments & Discussion</h2>
+        <p>
+          If this lab helped you, or if you have feedback, questions, or another way to
+          troubleshoot multicast ASM, feel free to leave a comment below.
+        </p>
+
+        <script src="https://giscus.app/client.js"
+                data-repo="dfonquet/TechVortexHub"
+                data-repo-id="R_kgDOKHmmXQ"
+                data-category="General"
+                data-category-id="DIC_kwDOKHmmXc4DAjYp"
+                data-mapping="pathname"
+                data-strict="0"
+                data-reactions-enabled="1"
+                data-emit-metadata="0"
+                data-input-position="bottom"
+                data-theme="noborder_dark"
+                data-lang="en"
+                crossorigin="anonymous"
+                async>
+        </script>
+      </section>
     </article>
   </div>
 </body>
