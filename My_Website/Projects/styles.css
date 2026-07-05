@@ -1,9 +1,11 @@
+/* Base reset: removes default browser spacing and keeps element sizing predictable. */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* Global page style: defines the main font, text color, and technical background image. */
 body {
   min-height: 100vh;
   font-family: Arial, sans-serif;
@@ -13,12 +15,14 @@ body {
     url("../img/DATA_8.jpg") center / cover fixed;
 }
 
+/* Page wrapper: controls the maximum width and vertical spacing of the Projects page. */
 .page {
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
   padding: 72px 0 42px;
 }
 
+/* Top navigation: styles the Home, Projects, and Blog navigation buttons. */
 .top-nav {
   display: flex;
   justify-content: center;
@@ -42,6 +46,7 @@ body {
   color: #081018;
 }
 
+/* Hero section: introduces the Projects page with title, subtitle, and technical scope. */
 .hero {
   text-align: center;
   margin-bottom: 38px;
@@ -74,6 +79,7 @@ body {
   line-height: 1.7;
 }
 
+/* Project grid: creates the responsive card layout for labs and study areas. */
 .project-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -81,6 +87,7 @@ body {
   margin-top: 34px;
 }
 
+/* Project cards: reusable visual blocks for each certification, lab, or topic area. */
 .project-card {
   min-height: 285px;
   padding: 26px;
@@ -117,6 +124,7 @@ body {
   margin-bottom: 18px;
 }
 
+/* Tags: highlights the technologies and study areas related to each card. */
 .tags {
   display: flex;
   flex-wrap: wrap;
@@ -132,18 +140,21 @@ body {
   font-weight: 700;
 }
 
+/* Footer: keeps ownership information simple and separated from the card grid. */
 footer {
   margin-top: 44px;
   text-align: center;
   color: #b9c9d1;
 }
 
+/* Tablet layout: reduces the project grid from three columns to two. */
 @media (max-width: 900px) {
   .project-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
+/* Mobile layout: adjusts spacing, navigation, and cards for smaller screens. */
 @media (max-width: 640px) {
   .page {
     width: min(100% - 24px, 1180px);
@@ -170,6 +181,7 @@ footer {
   }
 }
 
+/* Mobile polish: improves readability and background behavior on phone screens. */
 @media (max-width: 640px) {
   body {
     background-attachment: scroll;
@@ -254,7 +266,7 @@ footer {
   }
 }
 
-
+/* Card interaction: adds a subtle hover effect to make the cards feel interactive. */
 .project-card {
   transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
 }
