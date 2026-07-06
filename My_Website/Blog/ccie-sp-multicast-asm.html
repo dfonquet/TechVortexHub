@@ -102,13 +102,24 @@
           was that the RP was learned dynamically through BSR, without static RP
           configuration.
         </p>
-        <div class="command-list">
-          <code>show pim bsr election</code>
-          <code>show pim rp mapping</code>
-          <code>show pim group-map</code>
-          <code>show pim range-list</code>
+
+        <!-- CLI command block: verification commands used to validate BSR and RP state. -->
+        <div class="cli-block">
+          <div class="cli-header">
+            <span>IOS XR Verification</span>
+            <button class="copy-command" type="button" data-copy="show pim bsr election&#10;show pim rp mapping&#10;show pim group-map&#10;show pim range-list">
+              Copy
+            </button>
+          </div>
+
+          <pre><code>show pim bsr election
+show pim rp mapping
+show pim group-map
+show pim range-list</code></pre>
         </div>
       </section>
+
+      
 
       <figure class="article-image">
         <img src="img/multicast-asm/bsr-rp-verification.png" alt="BSR and RP verification output" />
