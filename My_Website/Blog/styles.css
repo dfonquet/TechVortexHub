@@ -540,3 +540,71 @@ body.lightbox-open {
   line-height: 1.7;
   margin-bottom: 22px;
 }
+
+
+
+
+/* CLI command blocks: styles verification commands like a technical terminal panel. */
+.cli-block {
+  margin-top: 20px;
+  border: 1px solid rgba(16, 212, 238, 0.55);
+  border-radius: 8px;
+  background: rgba(3, 8, 14, 0.92);
+  overflow: hidden;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+}
+
+.cli-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(16, 212, 238, 0.28);
+  color: #10d4ee;
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.copy-command {
+  padding: 7px 12px;
+  border: 1px solid rgba(16, 212, 238, 0.55);
+  border-radius: 999px;
+  background: rgba(16, 212, 238, 0.12);
+  color: #10d4ee;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.copy-command:hover,
+.copy-command.is-copied {
+  background: #10d4ee;
+  color: #081018;
+}
+
+.cli-block pre {
+  margin: 0;
+  padding: 18px;
+  overflow-x: auto;
+}
+
+.cli-block code {
+  color: #39ff88;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  white-space: pre;
+  text-shadow: 0 0 10px rgba(57, 255, 136, 0.22);
+}
+
+@media (max-width: 640px) {
+  .cli-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .cli-block code {
+    font-size: 0.86rem;
+  }
+}
