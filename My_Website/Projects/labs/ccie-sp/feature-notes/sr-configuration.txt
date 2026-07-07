@@ -1,0 +1,67 @@
+ENABLE SR
+
+
+COMMANDS
+
+sh ip ospf segment-routing
+sh ip ospf segment-routing global-block
+sh ip ospf segment-routing sid-database
+
+PARA PREFERIRI SR 
+segment-routing mpls prefer
+
+
+*****************************
+CONFIGUARTION 
+
+segment-routing mpls
+connected-prefix-sid-map
+ address-family ipv4
+ 72.72.72.72/32 index 72
+
+ router ospf 123
+   segment-routing mpls
+   segment-routing area 0 
+   
+  ********************** 
+   
+   SR TE
+   
+   
+   segment-routing traffic-eng
+   
+   segment-routing
+ segment-list SL-LIST-PATH1
+  index 10 nexthop 16002
+  index 20 nexthop 16003
+  index 30 nexthop 16004
+  index 40 nexthop 16006
+   
+segment-routing
+ traffic-eng
+  policy SRTE-POLICY1
+   color 100 
+end-point ipv4 72.72.72.72   
+   candidate-paths
+    preference 100
+     explicit segment-list SL-LIST-PATH1
+	   preference 100
+     dynamic
+      metric igp
+   
+   
+!
+interface GigabitEthernet1
+ tunnel mpls traffic-eng
+!
+policy P1-to-P4
+ color 10 end-point ipv4 4.4.4.4
+ candidate-paths
+  preference 100
+   explicit segment-list SR_PATH
+!
+segment-list SR_PATH
+ index 10 mpls label 16002
+ index 20 mpls label 16004
+
+

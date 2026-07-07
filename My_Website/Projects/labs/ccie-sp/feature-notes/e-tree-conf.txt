@@ -1,0 +1,68 @@
+E-TREE CONF
+show l2vpn|bridge-d
+show l2vpn vfi
+show bridge-domain 1
+show mpls l2transport vc
+Sh run | s l2vpn
+Sh bridge-domain 1
+Sh l2vpn vfi name Customer-B-22 detail
+Sh l2vpn vfi name Customer-B-22  mac  static  address 
+
+****************
+
+
+R4 R5 R4
+ Customer1   SPOKE
+
+
+Conf  t
+   inter g1
+     service instance 1 ethernet
+    encapsulation default
+Exit
+L2vpn vfi context  Customer1
+Vpn id 1
+Member  10.1.1.1 encapsulation mpls      member is the HUB
+
+
+Bridge-domain 1
+ member g 1 service-instance 1
+ member g 1 service-instance 1 split-horizon
+  exit 
+  member vfi  Customer1
+  
+  
+  ****************************
+  
+  
+  HUB R1
+  
+ Conf  t
+   inter g1
+     service instance 1 ethernet
+    encapsulation default
+Exit
+L2vpn vfi context  Customer1
+Vpn id 1
+Member  10.4.4.4 encapsulation mpls      member is the HUB
+Member  10.5.5.5 encapsulation mpls
+Member  10.6.6.6 encapsulation mpls
+
+
+Bridge-domain 1
+ member g 1 service-instance 1
+  exit 
+  member vfi  Customer1 
+  
+  
+  
+  *************
+  
+     ESAT CONFIOGRUACION ES EN EL ALDO DE LOS BREANCH QUE CONETAC AL PE 
+conf t
+ inter e0/1
+  ip ospf network   point-to-multipoint 
+  
+  o usaar
+  
+  ip ospf priority 0

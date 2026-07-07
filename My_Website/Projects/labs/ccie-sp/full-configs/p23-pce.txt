@@ -1,0 +1,336 @@
+P23-PCE
+
+
+
+RP/0/0/CPU0:P-23-PCE# show run
+Wed May 20 15:51:39.982 UTC
+Building configuration...
+!! IOS XR Configuration 6.3.1
+!! Last configuration change at Tue May  5 18:27:27 2026 by daniel
+!
+hostname P-23-PCE
+banner motd ^C
+Access to this router and all connected network resources
+is restricted to authorized personnel.
+
+Unauthorized access is prohibited and may be subject to
+legal action.
+
+------------------------------------------------------------
+
+Si usted no es personal autorizado,
+ctese inmediatamente.
+
+------------------------------------------------------------
+
+Use of this system indicates acceptance of monitoring
+and security policies.
+
+************************************************************
+^C
+banner login ^C
+************************************************************
+*                                                          *
+*    ██████  ██████ ██  ███████     ███████ ██████         *
+*   ██      ██      ██  ██          ██      ██  ██         *
+*   ██      ██      ██  █████       ███████ ██████         *
+*   ██      ██      ██  ██               ██ ██             *
+*    ██████  ██████ ██  ███████     ███████ ██             *
+*                                                          *
+*            CCIE SERVICE PROVIDER LAB ENVIRONMENT         *
+*                         (SP)                             *
+*                                                          *
+************************************************************
+^C
+ipv4 access-list RP-GROUPS
+ 10 permit ipv4 239.0.0.0 0.255.255.255 any
+!
+interface Loopback600
+ description MgM-000232323
+ ipv4 address 23.23.23.23 255.255.255.255
+ ipv6 address 2001:db8:500:abcd::23/128
+!
+interface MgmtEth0/0/CPU0/0
+ shutdown
+!
+interface GigabitEthernet0/0/0/0
+ description CORE-P2P -> P10 Gi0/0/0/1
+ ipv4 address 10.0.101.3 255.255.255.254
+ ipv6 address 2001:db8:1000:1001::1/127
+!
+interface GigabitEthernet0/0/0/1
+ description CORE-P2P -> P3 Gi0/0/0/1
+ ipv4 address 10.0.32.5 255.255.255.254
+ ipv6 address 2001:db8:1000:302::1/127
+!
+interface GigabitEthernet0/0/0/2
+ shutdown
+!
+interface GigabitEthernet0/0/0/3
+ shutdown
+!
+interface GigabitEthernet0/0/0/4
+ shutdown
+!
+interface GigabitEthernet0/0/0/5
+ shutdown
+!
+interface GigabitEthernet0/0/0/6
+ shutdown
+!
+interface GigabitEthernet0/0/0/7
+ shutdown
+!
+router isis 500-SP
+ is-type level-2-only
+ net 49.0001.0023.0023.0023.00
+ distribute link-state
+ address-family ipv4 unicast
+  metric-style wide
+  advertise passive-only
+  mpls traffic-eng level-2-only
+  mpls traffic-eng router-id Loopback600
+  segment-routing mpls sr-prefer
+ !
+ address-family ipv6 unicast
+  metric-style wide
+  advertise passive-only
+  single-topology
+  segment-routing mpls
+ !
+ interface Loopback600
+  passive
+  address-family ipv4 unicast
+   prefix-sid index 23
+  !
+  address-family ipv6 unicast
+   prefix-sid index 23
+  !
+ !
+ interface GigabitEthernet0/0/0/0
+  circuit-type level-2-only
+  bfd fast-detect ipv4
+  bfd fast-detect ipv6
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+  address-family ipv6 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+ !
+ interface GigabitEthernet0/0/0/1
+  circuit-type level-2-only
+  bfd fast-detect ipv4
+  bfd fast-detect ipv6
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+  address-family ipv6 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+ !
+!
+multicast-routing
+ address-family ipv4
+  interface Loopback600
+   enable
+  !
+  interface all enable
+ !
+!
+router pim
+ address-family ipv4
+  bsr candidate-bsr 23.23.23.23 hash-mask-len 30 priority 1
+  bsr candidate-rp 23.23.23.23 group-list RP-GROUPS priority 1 interval 60
+ !
+!
+end
+
+RP/0/0/CPU0:P-23-PCE#             
+
+
+
+
+
+
+
+*************************
+*************************
+*************************
+
+
+
+! ======================
+! INTERFACE CONFIGURATION
+! ======================
+
+
+
+interface Loopback600
+ description MgM-000232323
+ ipv4 address 23.23.23.23 255.255.255.255
+ ipv6 address 2001:db8:500:abcd::23/128
+
+interface GigabitEthernet0/0/0/0
+description CORE-P2P -> P10 Gi0/0/0/1
+ ipv4 address 10.0.101.3/31
+ ipv6 address 2001:db8:1000:1001::1/127
+ no shutdown
+ 
+ 
+interface GigabitEthernet0/0/0/1
+description CORE-P2P -> P3 Gi0/0/0/1 
+ ipv4 address 10.0.32.5/31
+ ipv6 address 2001:db8:1000:302::1/127
+ no shutdown
+
+
+
+! ======================
+! ISIS CONFIGURATION
+! ======================
+
+router isis 500-SP
+ is-type level-2-only
+ net 49.0001.0023.0023.0023.00
+ distribute link-state
+ address-family ipv4 unicast
+  metric-style wide
+  advertise passive-only
+  mpls traffic-eng level-2-only
+  mpls traffic-eng router-id Loopback600
+  segment-routing mpls sr-prefer
+ !
+ address-family ipv6 unicast
+  metric-style wide
+  advertise passive-only
+  single-topology
+  segment-routing mpls
+ !
+ interface Loopback600
+  passive
+  address-family ipv4 unicast
+   prefix-sid index 23
+  !
+  address-family ipv6 unicast
+   prefix-sid index 23
+  !
+ !
+ interface GigabitEthernet0/0/0/0
+  circuit-type level-2-only
+  bfd fast-detect ipv4
+  bfd fast-detect ipv6
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+  address-family ipv6 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+ !
+ interface GigabitEthernet0/0/0/1
+  circuit-type level-2-only
+  bfd fast-detect ipv4
+  bfd fast-detect ipv6
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+  address-family ipv6 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+ !
+!
+segment-routing
+ traffic-eng
+
+
+ 
+  ! ======================
+! PCE CONFIGURATION
+! ======================
+conf t
+router isis 500-SP
+ distribute link-state
+ address-family ipv4 unicast
+  mpls traffic-eng level-2-only
+  mpls traffic-eng router-id Loopback600
+  segment-routing mpls sr-prefer
+ !
+!
+commit
+
+ address-family ipv6 unicast
+  mpls traffic-en level-2-only 
+   mpls traffic-en  router-id Loopback600
+  segment-routing  mpls sr-prefer
+ !
+
+
+ conf t
+    pce
+	  address ipv4 23.23.23.23
+	  commit
+	  
+	  
+ conf t
+    pce	
+       segment-routing 
+	    traffic-en
+          segment-list name PE-1-P7-P6-P3-P8-P9-PE-3
+          index 1 address ipv4 7.7.7.7
+          index 2 address ipv4 6.6.6.6
+          index 3 address ipv4 3.3.3.3
+          index 4 address ipv4 8.8.8.8
+          index 5 address ipv4 9.9.9.9
+          index 6 address ipv4 103.103.103.103
+          exit
+        !		  
+        peer ipv4 101.101.101.101
+         policy 	PE-1-P7-P6-P3-P8-P9-PE-3
+          color 100 end-point ipv4 103.103.103.103
+		   candidate-paths 
+		    preference 100
+		     explicit segment-list PE-1-P7-P6-P3-P8-P9-PE-3
+		
+	   
+	   
+conf t
+segment-routing
+ traffic-eng
+ !
+ commit
+!
+
+
+
+ 
+  ! ======================
+! BSR CONFIGURATION
+! ======================
+
+ipv4 access-list
+4 permit 239.0.0.0 0.255.255.255
+
+
+configure
+router pim
+candidate-bsr 10.0.0.1 hash-mask-len 30   -- Mirar que sale
+ bsr
+candidate-rp 172.16.0.0 group-list 4
+
+

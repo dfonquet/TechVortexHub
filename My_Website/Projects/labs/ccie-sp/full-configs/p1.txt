@@ -1,0 +1,558 @@
+P1
+!
+
+
+RP/0/0/CPU0:P1#show running-config 
+Wed May 20 15:15:46.417 UTC
+Building configuration...
+!! IOS XR Configuration 6.3.1
+!! Last configuration change at Tue May  5 17:15:12 2026 by daniel
+!
+hostname P1
+banner motd ^C
+Access to this router and all connected network resources
+is restricted to authorized personnel.
+
+Unauthorized access is prohibited and may be subject to
+legal action.
+
+------------------------------------------------------------
+
+Si usted no es personal autorizado,
+ctese inmediatamente.
+
+------------------------------------------------------------
+
+Use of this system indicates acceptance of monitoring
+and security policies.
+
+************************************************************
+^C
+banner login ^C
+************************************************************
+*                                                          *
+*    ██████  ██████ ██  ███████     ███████ ██████         *
+*   ██      ██      ██  ██          ██      ██  ██         *
+*   ██      ██      ██  █████       ███████ ██████         *
+*   ██      ██      ██  ██               ██ ██             *
+*    ██████  ██████ ██  ███████     ███████ ██             *
+*                                                          *
+*            CCIE SERVICE PROVIDER LAB ENVIRONMENT         *
+*                         (SP)                             *
+*                                                          *
+************************************************************
+^C
+interface Loopback600
+ description MgM-000111
+ ipv4 address 1.1.1.1 255.255.255.255
+ ipv6 address 2001:db8:500:abcd::1/128
+!
+interface MgmtEth0/0/CPU0/0
+ shutdown
+!
+interface GigabitEthernet0/0/0/0
+ description CORE-P2P -> P4 Gi0/0/0/2
+ ipv4 address 10.0.12.4 255.255.255.254
+ ipv6 address 2001:db8:1000:102::/127
+!
+interface GigabitEthernet0/0/0/1
+ description CORE-P2P -> P4 Gi0/0/0/3
+ ipv4 address 10.0.11.2 255.255.255.254
+ ipv6 address 2001:db8:1000:101::/127
+!
+interface GigabitEthernet0/0/0/2
+ description CORE-P2P -> P3 Gi0/0/0/5
+ ipv4 address 10.0.13.6 255.255.255.254
+ ipv6 address 2001:db8:1000:103::/127
+!
+interface GigabitEthernet0/0/0/3
+ description CORE-P2P -> P6 Gi0/0/0/2
+ ipv4 address 10.0.14.8 255.255.255.254
+ ipv6 address 2001:db8:1000:104::/127
+!
+interface GigabitEthernet0/0/0/4
+ description CORE-P2P -> P2 Gi0/0/0/6
+ ipv4 address 10.0.15.10 255.255.255.254
+ ipv6 address 2001:db8:1000:105::/127
+!
+interface GigabitEthernet0/0/0/5
+ description CORE-P2P -> P5 Gi0/0/0/5
+ ipv4 address 10.0.16.12 255.255.255.254
+ ipv6 address 2001:db8:1000:106::/127
+!
+interface GigabitEthernet0/0/0/6
+ shutdown
+!
+interface GigabitEthernet0/0/0/7
+ shutdown
+!
+interface GigabitEthernet0/0/0/8
+ shutdown
+!
+router isis 500-SP
+ is-type level-2-only
+ net 49.0001.0001.0001.0001.00
+ distribute link-state
+ address-family ipv4 unicast
+  metric-style wide
+  advertise passive-only
+  mpls traffic-eng level-2-only
+  mpls traffic-eng router-id Loopback600
+  segment-routing mpls sr-prefer
+ !
+ address-family ipv6 unicast
+  metric-style wide
+  advertise passive-only
+  single-topology
+  segment-routing mpls
+ !
+ interface Loopback600
+  passive
+  address-family ipv4 unicast
+   prefix-sid index 1
+  !
+  address-family ipv6 unicast
+   prefix-sid index 1
+  !
+ !
+ interface GigabitEthernet0/0/0/0
+  circuit-type level-2-only
+  bfd fast-detect ipv4
+  bfd fast-detect ipv6
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+  address-family ipv6 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+ !
+ interface GigabitEthernet0/0/0/1
+  circuit-type level-2-only
+  bfd fast-detect ipv4
+  bfd fast-detect ipv6
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+  address-family ipv6 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+ !
+ interface GigabitEthernet0/0/0/2
+  circuit-type level-2-only
+  bfd fast-detect ipv4
+  bfd fast-detect ipv6
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+  address-family ipv6 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+ !
+ interface GigabitEthernet0/0/0/3
+  circuit-type level-2-only
+  bfd fast-detect ipv4
+  bfd fast-detect ipv6
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+  address-family ipv6 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+ !
+ interface GigabitEthernet0/0/0/4
+  circuit-type level-2-only
+  bfd fast-detect ipv4
+  bfd fast-detect ipv6
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+  address-family ipv6 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+ !
+ interface GigabitEthernet0/0/0/5
+  circuit-type level-2-only
+  bfd fast-detect ipv4
+  bfd fast-detect ipv6
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+  address-family ipv6 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+ !
+!
+multicast-routing
+ address-family ipv4
+  interface Loopback600
+   enable
+  !
+  interface all enable
+ !
+!
+segment-routing
+ traffic-eng
+ !
+!
+end
+
+RP/0/0/CPU0:P1#               
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+********************************
+*******************************
+*******************************
+! ======================
+! INTERFACE CONFIGURATION
+! ======================
+
+
+hostname P1
+interface Loopback600
+ description MgM-000111
+ ipv4 address 1.1.1.1 255.255.255.255
+ ipv6 address 2001:db8:500:abcd::1/128
+!
+
+!
+interface GigabitEthernet0/0/0/0
+description CORE-P2P -> P4 Gi0/0/0/2 
+ ipv4 address 10.0.11.2/31
+ ipv6 address 2001:db8:1000:101::0/127
+ no shutdown
+!
+interface GigabitEthernet0/0/0/1
+ description CORE-P2P -> P4 Gi0/0/0/3
+ ipv4 address 10.0.12.4/31
+ ipv6 address 2001:db8:1000:102::0/127
+ no shutdown
+!
+interface GigabitEthernet0/0/0/2
+ description CORE-P2P -> P3 Gi0/0/0/5
+ ipv4 address 10.0.13.6/31
+ ipv6 address 2001:db8:1000:103::0/127
+ no shutdown
+!
+interface GigabitEthernet0/0/0/3
+ description CORE-P2P -> P6 Gi0/0/0/2
+ ipv4 address 10.0.14.8/31
+ ipv6 address 2001:db8:1000:104::0/127
+ no shutdown
+!
+interface GigabitEthernet0/0/0/4
+ description CORE-P2P -> P2 Gi0/0/0/6
+ ipv4 address 10.0.15.10/31
+ ipv6 address 2001:db8:1000:105::0/127
+ no shutdown
+
+!
+interface GigabitEthernet0/0/0/5
+ description CORE-P2P -> P5 Gi0/0/0/5
+ ipv4 address 10.0.16.12/31
+ ipv6 address 2001:db8:1000:106::0/127
+ no shutdown
+!
+
+
+! ======================
+! ISIS CONFIGURATION
+! ======================
+
+router isis 500-SP
+ set-overload-bit on-startup 60
+ net 49.0001.0001.0001.0001.00
+ address-family ipv4 unicast
+  metric-style wide
+  advertise passive-only
+  segment-routing mpls
+ !
+ address-family ipv6 unicast
+  metric-style wide
+  advertise passive-only
+  single-topology
+  segment-routing mpls
+ !
+ interface Loopback600
+  passive
+  address-family ipv4 unicast
+   prefix-sid index 1
+  !
+  address-family ipv6 unicast
+   prefix-sid index 1
+  !
+ !
+ interface GigabitEthernet0/0/0/0
+  circuit-type level-2-only
+  bfd fast-detect ipv4
+  bfd fast-detect ipv6
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+  fast-reroute per-prefix 
+   metric 10
+  !
+  address-family ipv6 unicast
+   fast-reroute per-prefix 
+   metric 10
+  !
+ !
+ interface GigabitEthernet0/0/0/1
+  circuit-type level-2-only
+  bfd fast-detect ipv4
+  bfd fast-detect ipv6
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   fast-reroute per-prefix 
+   metric 10
+  !
+  address-family ipv6 unicast
+  fast-reroute per-prefix 
+   metric 10
+  !
+   interface GigabitEthernet0/0/0/2
+  circuit-type level-2-only
+  bfd fast-detect ipv4
+  bfd fast-detect ipv6
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+  fast-reroute per-prefix 
+   metric 10
+  !
+  address-family ipv6 unicast
+  fast-reroute per-prefix 
+   metric 10
+  !
+   interface GigabitEthernet0/0/0/3
+  circuit-type level-2-only
+  bfd fast-detect ipv4
+  bfd fast-detect ipv6
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+  fast-reroute per-prefix 
+   metric 10
+  !
+  address-family ipv6 unicast
+  fast-reroute per-prefix 
+   metric 10
+  !
+ !
+  interface GigabitEthernet0/0/0/4
+  circuit-type level-2-only
+  bfd fast-detect ipv4
+  bfd fast-detect ipv6
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+  fast-reroute per-prefix 
+   metric 10
+  !
+  address-family ipv6 unicast
+  fast-reroute per-prefix 
+   metric 10
+    !
+  interface GigabitEthernet0/0/0/5
+  circuit-type level-2-only
+  bfd fast-detect ipv4
+  bfd fast-detect ipv6
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+  fast-reroute per-prefix 
+   metric 10
+  !
+  address-family ipv6 unicast
+  fast-reroute per-prefix 
+   metric 10
+    !
+
+
+********************
+!
+banner login ^C
+************************************************************
+*                                                          *
+*    ██████  ██████ ██  ███████     ███████ ██████         *
+*   ██      ██      ██  ██          ██      ██  ██         *
+*   ██      ██      ██  █████       ███████ ██████         *
+*   ██      ██      ██  ██               ██ ██             *
+*    ██████  ██████ ██  ███████     ███████ ██             *
+*                                                          *
+*            CCIE SERVICE PROVIDER LAB ENVIRONMENT         *
+*                         (SP)                             *
+*                                                          *
+************************************************************
+^C
+!
+banner motd ^C
+Access to this router and all connected network resources
+is restricted to authorized personnel.
+
+Unauthorized access is prohibited and may be subject to
+legal action.
+
+------------------------------------------------------------
+
+Si usted no es personal autorizado,
+por favor desconéctese inmediatamente.
+
+------------------------------------------------------------
+
+Use of this system indicates acceptance of monitoring
+and security policies.
+
+************************************************************
+^C
+!
+
+
+
+
+
+
+
+
+
+router isis 500-SP
+
+ nsf ietf 
+address-family ipv4 unicast
+segment-routing mpls
+ address-family ipv6 unicast
+segment-routing mpls
+ !
+interface Loopback600
+  address-family ipv4 unicast
+   prefix-sid index 23
+  !
+  address-family ipv6 unicast
+   prefix-sid index 23
+  !
+  
+  **************
+  
+  iBGP PE
+  
+router bgp 500
+ bgp router-id 104.104.104.104
+ address-family vpnv4 unicast
+ !
+ address-family vpnv6 unicast
+ !
+ neighbor 12.12.12.12
+  remote-as 500
+  update-source Loopback600
+  address-family vpnv4 unicast
+  !
+  address-family vpnv6 unicast
+  !
+ !
+ neighbor 11.11.11.11
+  remote-as 500
+  update-source Loopback600
+  address-family vpnv4 unicast
+  !
+  address-family vpnv6 unicast
+  !
+ !
+
+PE-1
+
+VRF
+
+vrf CUST-A
+ rd 500:10
+ address-family ipv4 unicast
+  import route-target 104.104.104.104:500
+  export route-target 101.101.101.101:500
+ !
+ address-family ipv6 unicast
+  import route-target 104.104.104.104:500
+export route-target 101.101.101.101:500
+ !
+commit
+end
+
+
+
+PE-4
+vrf CUST-A
+ address-family ipv4 unicast
+  import route-target
+   101.101.101.101:500
+  !
+  export route-target
+   104.104.104.104:500
+  !
+ !
+ address-family ipv6 unicast
+  import route-target
+   101.101.101.101:500
+  !
+  export route-target
+   104.104.104.104:500
+  !
+ !
+!
+
+
+conf t
+interface GigabitEthernet0/0/0/2
+VRF -> CUST-A2 Gi1
+ vrf CUST-A
+ ipv4 address 192.0.2.5 255.255.255.252
+ ipv6 address 2001:db8:ce::5/64
+commit
+end
+
+
+2001:db8:5002::10:10:10:10/128
+2001:db8:5002::172:10:10:10/128
+

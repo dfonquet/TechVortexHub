@@ -1,0 +1,159 @@
+
+vrf definition CCIE-SP
+ rd 1:100
+ !
+ address-family ipv4
+  route-target import 100.100.100.100:100
+  route-target import 72.72.72.72:100
+  route-target export 100.100.100.100:100
+  route-target export 72.72.72.72:100
+ exit-address-family
+ address-family ipv4 vrf CCIE-SP 
+
+
+
+VRF INTERNET ACCESS MPLS
+
+router INTERNET
+
+hostname INTERNET
+!
+interface Gi0/0/0
+ description TO-PE3
+ ip address 192.168.3.2 255.255.255.252
+ no shut
+!
+
+
+router bgp 65050
+ address-family ipv4 unicast
+  network 1.1.1.1/32
+  network 8.8.8.8/32
+ !
+ neighbor 192.168.3.1
+  remote-as 100
+  address-family ipv4 unicast
+   route-policy PASS in
+   route-policy PASS out
+  !
+ 
+ 
+***************
+
+router static
+ address-family ipv4 unicast
+  0.0.0.0/0 Null0
+  170.233.55.0/30
+
+*****************
+
+ip nat pool CCIE_POOL 100.64.1.10 100.64.1.254 prefix-length 24
+ip access-list standard CCIE_ACL
+ permit 10.10.10.0 0.0.0.255
+ permit 22.22.22.0 0.0.0.255
+ permit 172.22.22.0 0.0.0.255
+ permit 172.10.22.0 0.0.0.255
+!
+ip nat inside source list CCIE_ACL pool CCIE_POOL vrf CCIE-SP overload
+!
+interface Gi3
+ description To VRF
+ ip nat inside
+!
+interface Gi2
+ description To Internet
+ ip nat outside
+
+
+ip route vrf CCIE-SP 0.0.0.0 0.0.0.0 192.168.3.2 global
+ip route vrf CCIE-SP 1.1.1.1 255.255.255.255 192.168.3.2 global
+ip route vrf CCIE-SP 8.8.8.8 255.255.255.255 192.168.3.2 global
+
+ip access-list standard CCIE_ACL
+ 10 permit 10.10.10.0 0.0.0.255
+ 15 permit 22.22.22.0 0.0.0.255
+ 20 permit 172.22.22.0 0.0.0.255
+ 30 permit 172.10.10.0 0.0.0.255
+++++++++++++++++++++++
+***************
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ip ospf network point-to-point
+ negotiation auto
+ mpls traffic-eng tunnels
+ bfd interval 250 min_rx 250 multiplier 3
+ no mop enabled
+ no mop sysid
+ ip rsvp bandwidth
+ ip rsvp signalling hello bfd
+end
+
+
+
+
+
+ip explicit-path name PE1-PE2 
+ index 1 next-address 5.5.5.5
+ index 2 next-address 6.6.6.6
+ index 3 next-address 72.72.72.72
+
+!
+ip explicit-path name Backup-Path-Explicit enable
+ index 1 next-address 5.5.5.5
+ index 2 next-address 2.2.2.2
+ index 3 next-address 4.4.4.4
+ index 4 next-address 6.6.6.6
+ index 5 next-address 72.72.72.72
+ 
+ 
+ bfd interval 250 min_rx 250 multiplier 3
+ ip rsvp signalling hello bfd
+ bfd interval 250 min_rx 250 multiplier 3
+ ip rsvp signalling hello bfd
+ neighbor 11.11.11.11 fall-over bfd
+ neighbor 12.12.12.12 fall-over bfd
+ip rsvp signalling hello bfd
+ 
+ 
+!
+
+
+
+interface Tunnel0
+ ip unnumbered Loopback600
+ tunnel mode mpls traffic-eng
+ tunnel destination 72.72.72.72
+ tunnel mpls traffic-eng autoroute announce
+ tunnel mpls traffic-eng priority 7 7
+ tunnel mpls traffic-eng bandwidth 55000
+ tunnel mpls traffic-eng fast-reroute
+end
+
+PE-1#
+PE-1#show ru inter tunn1
+Building configuration...
+
+Current configuration : 349 bytes
+!
+interface Tunnel1
+ ip unnumbered Loopback600
+ tunnel mode mpls traffic-eng
+ tunnel destination 72.72.72.72
+ tunnel mpls traffic-eng autoroute announce
+ tunnel mpls traffic-eng priority 7 7
+ tunnel mpls traffic-eng bandwidth 55000
+ tunnel mpls traffic-eng path-option 1 explicit name Backup-Path-Explicit
+ tunnel mpls traffic-eng fast-reroute
+end

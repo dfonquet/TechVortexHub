@@ -1,0 +1,52 @@
+
+
+
+
+
+
+ router isis lab
+ nsf 
+
+LAB 1 cisco Multicas
+
+PE-4 PE-1  PE-2
+
+conf t
+
+ multicast-rounting
+  address-family ipv4
+   interface loopback0
+    enable
+	!
+	interface gigabitethernet 0/0/0/2
+    enable
+	commit
+	
+	
+	sh pim interface
+	sho pim neig
+	
+	
+*****************
+Configure a BSR
+  
+  PE1
+  
+ conf t
+    router pim
+     address-family ipv4 
+       bsr candidate-bsr  23.23.23.23
+commit
+
+
+ sh pim bsr election
+ sh pim rp mapping
+  sh pim group-map
+  
+  
+SOURCE CONFIG  
+  
+  XE- 
+  interface g1
+  ip igmp join-group 229.11.11.11
+	   

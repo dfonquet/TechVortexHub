@@ -1,0 +1,325 @@
+P11-RR-SHADOW
+
+RP/0/0/CPU0:P11-RR-SHADOW#show run
+Wed May 20 15:36:38.189 UTC
+Building configuration...
+!! IOS XR Configuration 6.3.1
+!! Last configuration change at Tue May  5 17:12:13 2026 by daniel
+!
+hostname P11-RR-SHADOW
+banner motd ^C
+Access to this router and all connected network resources
+is restricted to authorized personnel.
+
+Unauthorized access is prohibited and may be subject to
+legal action.
+
+------------------------------------------------------------
+
+Si usted no es personal autorizado,
+ctese inmediatamente.
+
+------------------------------------------------------------
+
+Use of this system indicates acceptance of monitoring
+and security policies.
+
+************************************************************
+^C
+banner login ^C
+************************************************************
+*                                                          *
+*    ██████  ██████ ██  ███████     ███████ ██████         *
+*   ██      ██      ██  ██          ██      ██  ██         *
+*   ██      ██      ██  █████       ███████ ██████         *
+*   ██      ██      ██  ██               ██ ██             *
+*    ██████  ██████ ██  ███████     ███████ ██             *
+*                                                          *
+*            CCIE SERVICE PROVIDER LAB ENVIRONMENT         *
+*                         (SP)                             *
+*                                                          *
+************************************************************
+^C
+interface Loopback600
+ description MgM-000111111
+ ipv4 address 11.11.11.11 255.255.255.255
+ ipv6 address 2001:db8:500:abcd::11/128
+!
+interface MgmtEth0/0/CPU0/0
+ shutdown
+!
+interface GigabitEthernet0/0/0/0
+ description CORE-P2P -> P7 Gi0/0/0/0
+ ipv4 address 10.0.71.3 255.255.255.254
+ ipv6 address 2001:db8:1000:701::1/127
+!
+interface GigabitEthernet0/0/0/1
+ description CORE-P2P -> P6 Gi0/0/0/4
+ ipv4 address 10.0.62.5 255.255.255.254
+ ipv6 address 2001:db8:1000:602::1/127
+!
+interface GigabitEthernet0/0/0/2
+ shutdown
+!
+interface GigabitEthernet0/0/0/3
+ shutdown
+!
+interface GigabitEthernet0/0/0/4
+ shutdown
+!
+interface GigabitEthernet0/0/0/5
+ shutdown
+!
+interface GigabitEthernet0/0/0/6
+ shutdown
+!
+interface GigabitEthernet0/0/0/7
+ shutdown
+!
+interface GigabitEthernet0/0/0/8
+ shutdown
+!
+router isis 500-SP
+ is-type level-2-only
+ net 49.0001.0011.0011.0011.00
+ distribute link-state
+ address-family ipv4 unicast
+  metric-style wide
+  advertise passive-only
+  mpls traffic-eng level-2-only
+  mpls traffic-eng router-id Loopback600
+  segment-routing mpls sr-prefer
+ !
+ address-family ipv6 unicast
+  metric-style wide
+  advertise passive-only
+  single-topology
+  segment-routing mpls
+ !
+ interface Loopback600
+  passive
+  address-family ipv4 unicast
+   prefix-sid index 11
+  !
+  address-family ipv6 unicast
+   prefix-sid index 11
+  !
+ !
+ interface GigabitEthernet0/0/0/0
+  circuit-type level-2-only
+  bfd fast-detect ipv4
+  bfd fast-detect ipv6
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+  address-family ipv6 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+ !
+ interface GigabitEthernet0/0/0/1
+  circuit-type level-2-only
+  bfd fast-detect ipv4
+  bfd fast-detect ipv6
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+  address-family ipv6 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+ !
+!
+router bgp 500
+ bgp router-id 192.168.11.11
+ bgp cluster-id 12.12.12.12
+ bgp log neighbor changes detail
+ address-family vpnv4 unicast
+ !
+ address-family vpnv6 unicast
+ !
+ neighbor 101.101.101.101
+  remote-as 500
+  update-source Loopback600
+  address-family vpnv4 unicast
+   route-reflector-client
+  !
+  address-family vpnv6 unicast
+   route-reflector-client
+  !
+ !
+ neighbor 103.103.103.103
+  remote-as 500
+  update-source Loopback600
+  address-family vpnv4 unicast
+   route-reflector-client
+  !
+  address-family vpnv6 unicast
+   route-reflector-client
+  !
+ !
+ neighbor 104.104.104.104
+  remote-as 500
+  update-source Loopback600
+  address-family vpnv4 unicast
+   route-reflector-client
+  !
+  address-family vpnv6 unicast
+   route-reflector-client
+  !
+ !
+!
+multicast-routing
+ address-family ipv4
+  interface Loopback600
+   enable
+  !
+  interface all enable
+ !
+!
+segment-routing
+ traffic-eng
+ !
+!
+end
+
+
+
+
+
+
+
+
+
+*************************
+*************************
+*************************
+
+
+
+
+! ======================
+! INTERFACE CONFIGURATION
+! ======================
+
+
+
+interface Loopback600
+ description MgM-000111111
+ ipv4 address 11.11.11.11 255.255.255.255
+ ipv6 address 2001:db8:500:abcd::11/128
+
+interface GigabitEthernet0/0/0/0
+description CORE-P2P -> P7 Gi0/0/0/0
+ ipv4 address 10.0.71.3/31
+ ipv6 address 2001:db8:1000:701::1/127
+ no shutdown
+ 
+ 
+interface GigabitEthernet0/0/0/1
+description CORE-P2P -> P6 Gi0/0/0/4 
+ ipv4 address 10.0.62.5/31
+ ipv6 address 2001:db8:1000:602::1/127
+ no shutdown
+ 
+ 
+ 
+ 
+ ! ======================
+! ISIS CONFIGURATION
+! ======================
+
+router isis 500-SP
+ set-overload-bit on-startup 60
+ net 49.0001.0011.0011.0011.00
+ address-family ipv4 unicast
+  metric-style wide
+  advertise passive-only
+  segment-routing mpls
+ !
+ address-family ipv6 unicast
+  metric-style wide
+  advertise passive-only
+  single-topology
+  segment-routing mpls
+ !
+ interface Loopback600
+  passive
+  address-family ipv4 unicast
+   prefix-sid index 11
+  !
+  address-family ipv6 unicast
+   prefix-sid index 11
+  !
+ !
+ interface GigabitEthernet0/0/0/0
+  circuit-type level-2-only
+  bfd fast-detect ipv4
+  bfd fast-detect ipv6
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+  fast-reroute per-prefix 
+   metric 10
+  !
+  address-family ipv6 unicast
+   fast-reroute per-prefix 
+   metric 10
+  !
+ !
+ interface GigabitEthernet0/0/0/1
+  circuit-type level-2-only
+  bfd fast-detect ipv4
+  bfd fast-detect ipv6
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   fast-reroute per-prefix 
+   metric 10
+  !
+  address-family ipv6 unicast
+  fast-reroute per-prefix 
+   metric 10
+  !
+  
+  
+  
+  
+   ! ======================
+! iBGP CONFIGURATION
+! ======================
+  
+router bgp 500
+ bgp router-id  192.168.11.11
+ bgp cluster-id 12.12.12.12
+ bgp log neighbor changes detail
+ address-family vpnv4 unicast
+ !
+ address-family vpnv6 unicast
+ !
+ neighbor 101.101.101.101
+  remote-as 500
+  update-source Loopback600
+  address-family vpnv4 unicast
+   route-reflector-client
+  !
+  address-family vpnv6 unicast
+   route-reflector-client
+  !
+ !
+ neighbor 104.104.104.104
+  remote-as 500
+  update-source Loopback600
+  address-family vpnv4 unicast
+   route-reflector-client
+  !
+  address-family vpnv6 unicast
+   route-reflector-client
+  !
+ ! 

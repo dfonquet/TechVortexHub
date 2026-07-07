@@ -1,0 +1,356 @@
+P8
+
+
+RP/0/0/CPU0:P8# show run
+Wed May 20 15:25:46.700 UTC
+Building configuration...
+!! IOS XR Configuration 6.3.1
+!! Last configuration change at Tue May  5 17:11:18 2026 by daniel
+!
+hostname P8
+banner motd ^C
+Access to this router and all connected network resources
+is restricted to authorized personnel.
+
+Unauthorized access is prohibited and may be subject to
+legal action.
+
+------------------------------------------------------------
+
+Si usted no es personal autorizado,
+ctese inmediatamente.
+
+------------------------------------------------------------
+
+Use of this system indicates acceptance of monitoring
+and security policies.
+
+************************************************************
+^C
+banner login ^C
+************************************************************
+*                                                          *
+*    ██████  ██████ ██  ███████     ███████ ██████         *
+*   ██      ██      ██  ██          ██      ██  ██         *
+*   ██      ██      ██  █████       ███████ ██████         *
+*   ██      ██      ██  ██               ██ ██             *
+*    ██████  ██████ ██  ███████     ███████ ██             *
+*                                                          *
+*            CCIE SERVICE PROVIDER LAB ENVIRONMENT         *
+*                         (SP)                             *
+*                                                          *
+************************************************************
+^C
+interface Loopback600
+ description MgM-000888
+ ipv4 address 8.8.8.8 255.255.255.255
+ ipv6 address 2001:db8:500:abcd::8/128
+!
+interface MgmtEth0/0/CPU0/0
+ shutdown
+!
+interface GigabitEthernet0/0/0/0
+ description CORE-P2P -> P9 Gi0/0/0/1
+ ipv4 address 10.0.81.2 255.255.255.254
+ ipv6 address 2001:db8:1000:801::/127
+!
+interface GigabitEthernet0/0/0/1
+ description CORE-P2P -> P-2 Gi0/0/0/1
+ ipv4 address 10.0.22.5 255.255.255.254
+ ipv6 address 2001:db8:1000:202::1/127
+!
+interface GigabitEthernet0/0/0/2
+ description CORE-P2P -> P2-RR Gi0/0/0/2
+ ipv4 address 10.0.82.4 255.255.255.254
+ ipv6 address 2001:db8:1000:802::/127
+!
+interface GigabitEthernet0/0/0/3
+ description CORE-P2P -> P3 Gi0/0/0/0
+ ipv4 address 10.0.31.3 255.255.255.254
+ ipv6 address 2001:db8:1000:301::1/127
+!
+interface GigabitEthernet0/0/0/4
+ description CORE-P2P -> P10 Gi0/0/0/0
+ ipv4 address 10.0.83.6 255.255.255.254
+ ipv6 address 2001:db8:1000:803::/127
+!
+interface GigabitEthernet0/0/0/5
+ shutdown
+!
+interface GigabitEthernet0/0/0/6
+ shutdown
+!
+interface GigabitEthernet0/0/0/7
+ shutdown
+!
+interface GigabitEthernet0/0/0/8
+ shutdown
+!
+router isis 500-SP
+ is-type level-2-only
+ net 49.0001.0008.0008.0008.00
+ distribute link-state
+ address-family ipv4 unicast
+  metric-style wide
+  advertise passive-only
+  mpls traffic-eng level-2-only
+  mpls traffic-eng router-id Loopback600
+  segment-routing mpls sr-prefer
+ !
+ address-family ipv6 unicast
+  metric-style wide
+  advertise passive-only
+  single-topology
+  segment-routing mpls
+ !
+ interface Loopback600
+  passive
+  address-family ipv4 unicast
+   prefix-sid index 8
+  !
+  address-family ipv6 unicast
+   prefix-sid index 8
+  !
+ !
+ interface GigabitEthernet0/0/0/0
+  circuit-type level-2-only
+  bfd fast-detect ipv4
+  bfd fast-detect ipv6
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+  address-family ipv6 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+ !
+ interface GigabitEthernet0/0/0/1
+  circuit-type level-2-only
+  bfd fast-detect ipv4
+  bfd fast-detect ipv6
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+  address-family ipv6 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+ !
+ interface GigabitEthernet0/0/0/2
+  circuit-type level-2-only
+  bfd fast-detect ipv4
+  bfd fast-detect ipv6
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+  address-family ipv6 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+ !
+ interface GigabitEthernet0/0/0/3
+  circuit-type level-2-only
+  bfd fast-detect ipv4
+  bfd fast-detect ipv6
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+  address-family ipv6 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+ !
+ interface GigabitEthernet0/0/0/4
+  circuit-type level-2-only
+  bfd fast-detect ipv4
+  bfd fast-detect ipv6
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+  address-family ipv6 unicast
+   fast-reroute per-prefix
+   metric 10
+  !
+ !
+!
+multicast-routing
+ address-family ipv4
+  interface Loopback600
+   enable
+  !
+  interface all enable
+ !
+!
+segment-routing
+ traffic-eng
+ !
+!
+end
+
+
+
+*************************
+*************************
+*************************
+
+
+! ======================
+! INTERFACE CONFIGURATION
+! ======================
+
+
+
+
+interface Loopback600
+ description MgM-000888
+ ipv4 address 8.8.8.8 255.255.255.255
+ ipv6 address 2001:db8:500:abcd::8/128
+
+interface GigabitEthernet0/0/0/0
+description CORE-P2P -> P9 Gi0/0/0/1
+ ipv4 address 10.0.81.2/31
+ ipv6 address 2001:db8:1000:801::0/127
+ no shutdown
+ 
+ 
+interface GigabitEthernet0/0/0/1
+description CORE-P2P -> P-2 Gi0/0/0/1 
+ ipv4 address 10.0.22.5/31
+ ipv6 address 2001:db8:1000:202::1/127
+ no shutdown
+ 
+ interface GigabitEthernet0/0/0/2
+description CORE-P2P -> P2-RR Gi0/0/0/2 
+ ipv4 address 10.0.82.4/31
+ ipv6 address 2001:db8:1000:802::0/127
+ no shutdown
+ 
+interface GigabitEthernet0/0/0/3
+description CORE-P2P -> P3 Gi0/0/0/0 
+ ipv4 address 10.0.31.3/31
+ ipv6 address 2001:db8:1000:301::1/127
+ no shutdown
+ 
+interface GigabitEthernet0/0/0/4
+description CORE-P2P -> P10 Gi0/0/0/0 
+ ipv4 address 10.0.83.6/31
+ ipv6 address 2001:db8:1000:803::0/127
+ no shutdown
+ 
+ 
+ 
+ 
+ ! ======================
+! ISIS CONFIGURATION
+! ======================
+
+router isis 500-SP
+ set-overload-bit on-startup 60
+ net 49.0001.0008.0008.0008.00
+ address-family ipv4 unicast
+  metric-style wide
+  advertise passive-only
+  segment-routing mpls
+ !
+ address-family ipv6 unicast
+  metric-style wide
+  advertise passive-only
+  single-topology
+  segment-routing mpls
+ !
+ interface Loopback600
+  passive
+  address-family ipv4 unicast
+   prefix-sid index 8
+  !
+  address-family ipv6 unicast
+   prefix-sid index 8
+  !
+ !
+ interface GigabitEthernet0/0/0/0
+  circuit-type level-2-only
+  bfd fast-detect ipv4
+  bfd fast-detect ipv6
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+  fast-reroute per-prefix 
+   metric 10
+  !
+  address-family ipv6 unicast
+   fast-reroute per-prefix 
+   metric 10
+  !
+ !
+ interface GigabitEthernet0/0/0/1
+  circuit-type level-2-only
+  bfd fast-detect ipv4
+  bfd fast-detect ipv6
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   fast-reroute per-prefix 
+   metric 10
+  !
+  address-family ipv6 unicast
+  fast-reroute per-prefix 
+   metric 10
+  !
+   interface GigabitEthernet0/0/0/2
+  circuit-type level-2-only
+  bfd fast-detect ipv4
+  bfd fast-detect ipv6
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+  fast-reroute per-prefix 
+   metric 10
+  !
+  address-family ipv6 unicast
+  fast-reroute per-prefix 
+   metric 10
+  !
+   interface GigabitEthernet0/0/0/3
+  circuit-type level-2-only
+  bfd fast-detect ipv4
+  bfd fast-detect ipv6
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+  fast-reroute per-prefix 
+   metric 10
+  !
+  address-family ipv6 unicast
+  fast-reroute per-prefix 
+   metric 10
+  !
+ !
+  interface GigabitEthernet0/0/0/4
+  circuit-type level-2-only
+  bfd fast-detect ipv4
+  bfd fast-detect ipv6
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+  fast-reroute per-prefix 
+   metric 10
+  !
+  address-family ipv6 unicast
+  fast-reroute per-prefix 
+   metric 10
+    !
