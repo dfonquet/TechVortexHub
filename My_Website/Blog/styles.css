@@ -608,3 +608,540 @@ body.lightbox-open {
     font-size: 0.86rem;
   }
 }
+
+
+
+
+
+/* RD/RT article helpers: styles tables, concept cards, callouts, and ASCII diagrams. */
+
+.note-callout {
+  margin-top: 18px;
+  padding: 16px 18px;
+  border-left: 4px solid #10d4ee;
+  background: rgba(16, 212, 238, 0.08);
+  color: #d8faff;
+  font-weight: 700;
+}
+
+.ascii-diagram {
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px solid rgba(16, 212, 238, 0.45);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.72);
+  overflow-x: auto;
+}
+
+.ascii-diagram code {
+  color: #39ff88;
+  font-family: Consolas, "Courier New", monospace;
+  line-height: 1.6;
+  white-space: pre;
+}
+
+.concept-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.concept-mini-card {
+  padding: 18px;
+  border: 1px solid rgba(16, 212, 238, 0.5);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.concept-mini-card h3 {
+  color: #10d4ee;
+  margin-bottom: 10px;
+}
+
+.concept-mini-card code {
+  display: inline-block;
+  margin-top: 10px;
+  color: #39ff88;
+  font-weight: 700;
+}
+
+.comparison-table-wrapper {
+  margin: 20px 0;
+  overflow-x: auto;
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(0, 0, 0, 0.58);
+}
+
+.comparison-table th,
+.comparison-table td {
+  padding: 14px;
+  border: 1px solid rgba(16, 212, 238, 0.35);
+  text-align: left;
+  vertical-align: top;
+}
+
+.comparison-table th {
+  color: #10d4ee;
+  background: rgba(16, 212, 238, 0.08);
+}
+
+.flow-list {
+  padding-left: 22px;
+}
+
+.flow-list li {
+  margin-bottom: 10px;
+}
+
+.key-takeaways {
+  border-color: rgba(57, 255, 136, 0.55);
+}
+
+.article-card h3 {
+  color: #10d4ee;
+  margin: 22px 0 12px;
+}
+
+.article-card ul,
+.article-card ol {
+  color: #e7f8fb;
+  line-height: 1.7;
+  margin: 14px 0 0 22px;
+}
+
+.article-card li {
+  margin-bottom: 8px;
+}
+
+.article-card blockquote {
+  margin: 18px 0;
+  padding: 16px 18px;
+  border-left: 4px solid #8162d6;
+  background: rgba(129, 98, 214, 0.12);
+  color: #ffffff;
+  font-style: italic;
+}
+
+@media (max-width: 760px) {
+  .concept-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .comparison-table th,
+  .comparison-table td {
+    padding: 12px;
+    font-size: 0.92rem;
+  }
+}
+
+
+
+
+
+/* Article hero badges: keeps the intro metadata clean and easier to scan. */
+
+.compact-hero h1 span {
+  color: #10d4ee;
+}
+
+.article-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 18px auto;
+}
+
+.article-badges span {
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: rgba(129, 98, 214, 0.28);
+  color: #ffffff;
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+/* Blog card article links: allows one category card to point to multiple posts. */
+
+.post-link-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.post-link-list .post-link {
+  margin-top: 0;
+}
+
+/* Mermaid diagrams: styles Obsidian-style diagrams used inside technical notes. */
+
+.mermaid-card {
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px solid rgba(16, 212, 238, 0.45);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.62);
+  overflow-x: auto;
+}
+
+.mermaid-card .mermaid {
+  min-width: 680px;
+  display: flex;
+  justify-content: center;
+}
+
+.mermaid-caption {
+  margin-top: 14px;
+  color: #d8faff;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+/* RD/RT article helpers: styles tables, concept cards, callouts, and ASCII diagrams. */
+
+.note-callout {
+  margin-top: 18px;
+  padding: 16px 18px;
+  border-left: 4px solid #10d4ee;
+  background: rgba(16, 212, 238, 0.08);
+  color: #d8faff;
+  font-weight: 700;
+}
+
+.ascii-diagram {
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px solid rgba(16, 212, 238, 0.45);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.72);
+  overflow-x: auto;
+}
+
+.ascii-diagram code {
+  color: #39ff88;
+  font-family: Consolas, "Courier New", monospace;
+  line-height: 1.6;
+  white-space: pre;
+}
+
+.concept-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.concept-mini-card {
+  padding: 18px;
+  border: 1px solid rgba(16, 212, 238, 0.5);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.concept-mini-card h3 {
+  color: #10d4ee;
+  margin-bottom: 10px;
+}
+
+.concept-mini-card code {
+  display: inline-block;
+  margin-top: 10px;
+  color: #39ff88;
+  font-weight: 700;
+}
+
+.comparison-table-wrapper {
+  margin: 20px 0;
+  overflow-x: auto;
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(0, 0, 0, 0.58);
+}
+
+.comparison-table th,
+.comparison-table td {
+  padding: 14px;
+  border: 1px solid rgba(16, 212, 238, 0.35);
+  text-align: left;
+  vertical-align: top;
+}
+
+.comparison-table th {
+  color: #10d4ee;
+  background: rgba(16, 212, 238, 0.08);
+}
+
+.flow-list {
+  padding-left: 22px;
+}
+
+.flow-list li {
+  margin-bottom: 10px;
+}
+
+.key-takeaways {
+  border-color: rgba(57, 255, 136, 0.55);
+}
+
+.article-card h3 {
+  color: #10d4ee;
+  margin: 22px 0 12px;
+}
+
+.article-card ul,
+.article-card ol {
+  color: #e7f8fb;
+  line-height: 1.7;
+  margin: 14px 0 0 22px;
+}
+
+.article-card li {
+  margin-bottom: 8px;
+}
+
+.article-card blockquote {
+  margin: 18px 0;
+  padding: 16px 18px;
+  border-left: 4px solid #8162d6;
+  background: rgba(129, 98, 214, 0.12);
+  color: #ffffff;
+  font-style: italic;
+}
+
+@media (max-width: 760px) {
+  .article-badges {
+    justify-content: flex-start;
+  }
+
+  .mermaid-card {
+    padding: 12px;
+  }
+
+  .mermaid-card .mermaid {
+    min-width: 560px;
+  }
+
+  .concept-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .comparison-table th,
+  .comparison-table td {
+    padding: 12px;
+    font-size: 0.92rem;
+  }
+}
+
+
+
+
+
+
+/* Article intro polish: makes the technical metadata and summary easier to read. */
+
+.article-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 22px auto 18px;
+}
+
+.article-badges span {
+  padding: 8px 13px;
+  border: 1px solid rgba(16, 212, 238, 0.45);
+  border-radius: 999px;
+  background: rgba(16, 212, 238, 0.1);
+  color: #10d4ee;
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.hero-summary {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 18px 22px;
+  border: 1px solid rgba(16, 212, 238, 0.45);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.58);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.26);
+}
+
+.hero-summary p {
+  margin: 0;
+  color: #e7f8fb;
+  font-size: 1.02rem;
+  line-height: 1.75;
+  text-align: center;
+}
+
+.hero-summary strong {
+  color: #10d4ee;
+}
+
+@media (max-width: 760px) {
+  .article-badges {
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .article-badges span {
+    font-size: 0.78rem;
+    padding: 7px 10px;
+  }
+
+  .hero-summary {
+    padding: 15px;
+  }
+
+  .hero-summary p {
+    font-size: 0.94rem;
+    line-height: 1.6;
+  }
+}
+
+
+
+
+
+/* Mermaid motion: adds a subtle animated entrance to technical diagrams. */
+
+.mermaid-card {
+  animation: diagramFadeIn 0.7s ease both;
+}
+
+@keyframes diagramFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.mermaid-card:hover {
+  border-color: #39ff88;
+  box-shadow: 0 16px 36px rgba(57, 255, 136, 0.12);
+}
+
+.mermaid-card:hover .mermaid {
+  filter: drop-shadow(0 0 10px rgba(16, 212, 238, 0.22));
+}
+
+/* Mermaid hover zoom: enlarges technical diagrams softly on desktop hover. */
+
+@media (min-width: 761px) {
+  .mermaid-card {
+    position: relative;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+
+  .mermaid-card:hover {
+    transform: scale(1.035);
+    z-index: 20;
+    border-color: #39ff88;
+    box-shadow: 0 20px 46px rgba(57, 255, 136, 0.16);
+  }
+
+  .mermaid-card:hover .mermaid {
+    filter: drop-shadow(0 0 12px rgba(16, 212, 238, 0.28));
+  }
+}
+
+
+
+
+
+/* Diagram lightbox: opens Mermaid diagrams in a larger focused overlay. */
+
+.mermaid-card {
+  cursor: zoom-in;
+}
+
+.diagram-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 28px;
+  background: rgba(0, 0, 0, 0.84);
+}
+
+.diagram-lightbox.is-open {
+  display: flex;
+}
+
+.diagram-lightbox-content {
+  width: min(1100px, 96vw);
+  max-height: 88vh;
+  padding: 24px;
+  border: 1px solid rgba(16, 212, 238, 0.65);
+  border-radius: 8px;
+  background: rgba(2, 8, 14, 0.96);
+  box-shadow: 0 24px 70px rgba(16, 212, 238, 0.18);
+  overflow: auto;
+}
+
+.diagram-lightbox-content svg {
+  width: 100%;
+  height: auto;
+  min-width: 780px;
+}
+
+.diagram-lightbox-caption {
+  margin-top: 16px;
+  color: #d8faff;
+  text-align: center;
+  font-weight: 700;
+}
+
+.diagram-lightbox-close {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(16, 212, 238, 0.65);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.85);
+  color: #10d4ee;
+  font-size: 1.8rem;
+  cursor: pointer;
+}
+
+.diagram-lightbox-close:hover {
+  background: #10d4ee;
+  color: #081018;
+}
+
+body.diagram-open {
+  overflow: hidden;
+}
+
+@media (max-width: 760px) {
+  .diagram-lightbox {
+    padding: 14px;
+  }
+
+  .diagram-lightbox-content {
+    padding: 16px;
+  }
+
+  .diagram-lightbox-content svg {
+    min-width: 620px;
+  }
+}

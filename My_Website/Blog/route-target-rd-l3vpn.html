@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="author" content="Daniel Fonque" />
+  <title>RD vs RT in MPLS L3VPN - Daniel Fonque</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div class="article-page">
+
+    <!-- Main navigation: connects this technical note with the main website sections. -->
+    <nav class="top-nav">
+      <a href="../daftiel.html">Home</a>
+      <a href="../Projects/projects.html">Projects</a>
+      <a href="blog.html">Blog</a>
+    </nav>
+
+    <!-- Article container: keeps the RD/RT technical note grouped as one study entry. -->
+    <article class="article-shell">
+
+      <!-- Article intro: presents the topic, certification context, and scope. -->
+      <header class="article-hero compact-hero">
+        <p class="eyebrow">CCIE SP Study Note</p>
+
+        <h1>
+          Route Distinguisher <span>vs Route Target</span>
+        </h1>
+
+        <div class="article-badges">
+          <span>CCIE SP</span>
+          <span>JNCIE-SP</span>
+          <span>MP-BGP</span>
+          <span>VPNv4</span>
+          <span>VRF Import/Export</span>
+        </div>
+
+        <div class="hero-summary">
+          <p>
+            This technical note explains the difference between <strong>Route Distinguisher</strong>
+            and <strong>Route Target</strong>, how both are used in MPLS L3VPN, and how static
+            PE-CE routes are propagated through MP-BGP using VRFs, VPNv4 routes, labels,
+            and BGP Extended Communities.
+          </p>
+        </div>
+      </header>
+
+
+
+      <!-- Mental model: explains the role of RD and RT before going into details. -->
+      <section class="article-card">
+        <h2>1. MPLS L3VPN Mental Model</h2>
+        <p>
+          MPLS L3VPN allows multiple customers to use overlapping IPv4 prefixes across
+          the same Service Provider backbone. PE routers isolate customer routing using
+          VRFs, while MP-BGP carries VPNv4 routes between PEs.
+        </p>
+
+        <div class="mermaid-card">
+          <pre class="mermaid">
+flowchart LR
+  CEA["CE-A<br/>Customer A<br/>10.0.0.0/24"] --> PEA["PE<br/>VRF-A"]
+  CEB["CE-B<br/>Customer B<br/>10.0.0.0/24"] --> PEB["PE<br/>VRF-B"]
+
+  PEA <--> CORE["MP-BGP VPNv4 Core"]
+  PEB <--> CORE
+
+  CORE --> RD["RD<br/>Creates unique VPNv4 prefixes"]
+  CORE --> RT["RT<br/>Controls VRF import/export"]
+
+  classDef customer fill:#061116,stroke:#10d4ee,color:#f4f7fb;
+  classDef core fill:#1b1238,stroke:#8162d6,color:#ffffff;
+  classDef policy fill:#052b31,stroke:#39ff88,color:#ffffff;
+
+  class CEA,CEB,PEA,PEB customer;
+  class CORE core;
+  class RD,RT policy;
+          </pre>
+          <p class="mermaid-caption">
+            RD solves prefix uniqueness. RT solves route import/export policy.
+          </p>
+        </div>
+
+        <div class="note-callout">
+          Key idea: P routers transport MPLS labels. PE routers understand VRFs,
+          VPNv4 routes, Route Distinguishers, Route Targets, and VPN labels.
+        </div>
+      </section>
+
+      <!-- RD explanation: shows how overlapping IPv4 prefixes become unique VPNv4 routes. -->
+      <section class="article-card">
+        <h2>2. Route Distinguisher</h2>
+        <p>
+          The Route Distinguisher has one purpose: make customer IPv4 prefixes globally
+          unique inside the provider control plane. It does not control route import,
+          export, or route leaking policy.
+        </p>
+        <p>
+          A Route Distinguisher is an 8-octet value prepended to an IPv4 prefix. The
+          result is a VPNv4 prefix. This allows two customers to use the same IPv4
+          prefix without creating ambiguity inside MP-BGP.
+        </p>
+
+        <div class="mermaid-card">
+          <pre class="mermaid">
+flowchart LR
+  RD["Route Distinguisher<br/>64 bits"] --> VPNV4["VPNv4 Prefix<br/>96 bits"]
+  IPV4["IPv4 Prefix<br/>32 bits"] --> VPNV4
+  VPNV4 --> MBGP["MP-BGP VPNv4 NLRI"]
+
+  classDef rd fill:#1b1238,stroke:#8162d6,color:#ffffff;
+  classDef ip fill:#061116,stroke:#10d4ee,color:#f4f7fb;
+  classDef result fill:#052b31,stroke:#39ff88,color:#ffffff;
+
+  class RD rd;
+  class IPV4 ip;
+  class VPNV4,MBGP result;
+          </pre>
+          <p class="mermaid-caption">
+            RD plus IPv4 prefix creates a unique VPNv4 route.
+          </p>
+        </div>
+
+        <pre class="ascii-diagram"><code>Customer A prefix:
+10.0.0.0/24
+
+Customer B prefix:
+10.0.0.0/24
+
+With RD:
+100:1:10.0.0.0/24
+200:1:10.0.0.0/24
+
+Result:
+Both prefixes can coexist in MP-BGP VPNv4.</code></pre>
+
+        <div class="note-callout">
+          RD = uniqueness. It tells BGP how to distinguish overlapping customer prefixes.
+        </div>
+      </section>
+
+      <!-- RT explanation: explains how BGP Extended Communities drive VRF policy. -->
+      <section class="article-card">
+        <h2>3. Route Target</h2>
+        <p>
+          Route Target is different. It is a BGP Extended Community used to control
+          which VPN routes are exported from a VRF and which routes are imported into
+          another VRF.
+        </p>
+        <p>
+          RFC 4360 defines BGP Extended Communities as Attribute Type Code 16. Route
+          Target is a specific subtype inside Extended Communities and is heavily used
+          in MPLS L3VPN designs.
+        </p>
+
+        <blockquote>
+          "The BGP Extended Communities attribute provides a mechanism for tagging routes
+          with information that can be used for policy decisions."
+        </blockquote>
+
+        <div class="mermaid-card">
+          <pre class="mermaid">
+flowchart TD
+  UPDATE["BGP UPDATE"] --> ATTR["Attribute Type Code 16<br/>Extended Communities"]
+  ATTR --> EXT["Extended Community<br/>8 octets"]
+  EXT --> TYPE["Type<br/>0x00 / 0x01 / 0x02"]
+  EXT --> SUBTYPE["Subtype<br/>0x02 Route Target"]
+  EXT --> VALUE["Value<br/>100:1"]
+  VALUE --> POLICY["VRF import/export policy"]
+
+  classDef bgp fill:#061116,stroke:#10d4ee,color:#f4f7fb;
+  classDef rt fill:#1b1238,stroke:#8162d6,color:#ffffff;
+  classDef policy fill:#052b31,stroke:#39ff88,color:#ffffff;
+
+  class UPDATE,ATTR,EXT bgp;
+  class TYPE,SUBTYPE,VALUE rt;
+  class POLICY policy;
+          </pre>
+          <p class="mermaid-caption">
+            Route Target lives inside BGP Extended Communities and drives VRF policy.
+          </p>
+        </div>
+
+        <div class="note-callout">
+          RT = policy. It decides what a VRF exports and what another VRF imports.
+        </div>
+      </section>
+
+      <!-- Comparison table: prevents confusing RD and RT during study or troubleshooting. -->
+      <section class="article-card">
+        <h2>4. RD vs RT</h2>
+
+        <div class="comparison-table-wrapper">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>Concept</th>
+                <th>Main Purpose</th>
+                <th>Common Misunderstanding</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Route Distinguisher</td>
+                <td>Makes IPv4 prefixes unique as VPNv4 routes.</td>
+                <td>It does not control route leaking.</td>
+              </tr>
+              <tr>
+                <td>Route Target</td>
+                <td>Controls VRF import and export policy.</td>
+                <td>It does not make prefixes unique by itself.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          A common mistake is thinking the RD controls which VRF receives a route.
+          It does not. Route leaking behavior is controlled by Route Targets through
+          import and export policy.
+        </p>
+      </section>
+
+      <!-- RT encoding: documents the Route Target formats relevant for CCIE/JNCIE exams. -->
+      <section class="article-card">
+        <h2>5. Route Target Encoding</h2>
+        <p>
+          Route Target is always subtype <strong>0x02</strong>. The high-order octet
+          of the Type field can be 0x00, 0x01, or 0x02 depending on the format used.
+        </p>
+
+        <div class="concept-grid">
+          <div class="concept-mini-card">
+            <h3>Type 0x00</h3>
+            <p>Two-octet AS specific format.</p>
+            <code>ASN:nn</code>
+          </div>
+
+          <div class="concept-mini-card">
+            <h3>Type 0x01</h3>
+            <p>IPv4 address specific format.</p>
+            <code>IPv4:nn</code>
+          </div>
+
+          <div class="concept-mini-card">
+            <h3>Type 0x02</h3>
+            <p>Four-octet AS specific format.</p>
+            <code>ASN(4B):nn</code>
+          </div>
+        </div>
+
+        <div class="note-callout">
+          CCIE/JNCIE point: the RT format can change, but the import/export decision
+          is still based on the VRF policy using that Route Target.
+        </div>
+      </section>
+
+      <!-- CLI examples: provides copyable Cisco and Junos syntax without using images. -->
+      <section class="article-card">
+        <h2>6. CLI Configuration Examples</h2>
+
+        <h3>Cisco IOS / IOS-XR</h3>
+        <div class="cli-block">
+          <div class="cli-header">
+            <span>Cisco Route Target Formats</span>
+            <button class="copy-command" type="button" data-copy="route-target export 100:1&#10;route-target export 192.168.1.1:100&#10;route-target export 65546:100&#10;route-target export 1.10:100">
+              Copy
+            </button>
+          </div>
+          <pre><code>route-target export 100:1
+route-target export 192.168.1.1:100
+route-target export 65546:100
+route-target export 1.10:100</code></pre>
+        </div>
+
+        <h3>Junos OS</h3>
+        <div class="cli-block">
+          <div class="cli-header">
+            <span>Junos Route Target Formats</span>
+            <button class="copy-command" type="button" data-copy="set routing-instances VRF_A vrf-target target:100:1&#10;set routing-instances VRF_A vrf-target target:192.168.1.1:100&#10;set routing-instances VRF_A vrf-target target:65546:100">
+              Copy
+            </button>
+          </div>
+          <pre><code>set routing-instances VRF_A vrf-target target:100:1
+set routing-instances VRF_A vrf-target target:192.168.1.1:100
+set routing-instances VRF_A vrf-target target:65546:100</code></pre>
+        </div>
+      </section>
+
+      <!-- Static PE-CE routing: connects RD/RT theory with a practical MPLS L3VPN lab. -->
+      <section class="article-card">
+        <h2>7. Static PE-CE Routing in MPLS L3VPN</h2>
+        <p>
+          In a simple MPLS L3VPN lab, the PE can learn customer routes using static
+          routing toward the CE. The important detail is that the static route must be
+          configured inside the correct VRF, not in the global routing table.
+        </p>
+
+        <ul>
+          <li>The CE usually does not know anything about VRFs.</li>
+          <li>The PE interface facing the CE belongs to the customer VRF.</li>
+          <li>Static routes learned inside the VRF must be redistributed into BGP.</li>
+          <li>MP-BGP carries those routes as VPNv4 routes between PE routers.</li>
+        </ul>
+
+        <div class="cli-block">
+          <div class="cli-header">
+            <span>VRF Static Route Redistribution</span>
+            <button class="copy-command" type="button" data-copy="router bgp 65000&#10; address-family ipv4 vrf SPCOR&#10;  redistribute static&#10;  redistribute connected">
+              Copy
+            </button>
+          </div>
+          <pre><code>router bgp 65000
+ address-family ipv4 vrf SPCOR
+  redistribute static
+  redistribute connected</code></pre>
+        </div>
+      </section>
+
+      <!-- End-to-end flow: summarizes how routes move across the MPLS L3VPN control plane. -->
+      <section class="article-card">
+        <h2>8. Complete MPLS L3VPN Flow</h2>
+
+        <div class="mermaid-card">
+          <pre class="mermaid">
+flowchart LR
+  CE1["CE<br/>Customer Routes"] --> PE1["PE<br/>VRF + RD + RT"]
+  PE1 --> VPNV4["VPNv4 Route<br/>RD + IPv4 Prefix"]
+  VPNV4 --> MBGP["MP-BGP<br/>VPNv4 Address Family"]
+  MBGP --> PE2["Remote PE<br/>RT Import Check"]
+  PE2 --> VRF["Destination VRF"]
+  VRF --> CE2["Remote CE<br/>IPv4 Forwarding"]
+
+  classDef edge fill:#061116,stroke:#10d4ee,color:#f4f7fb;
+  classDef control fill:#1b1238,stroke:#8162d6,color:#ffffff;
+  classDef result fill:#052b31,stroke:#39ff88,color:#ffffff;
+
+  class CE1,CE2 edge;
+  class PE1,VPNV4,MBGP,PE2 control;
+  class VRF result;
+          </pre>
+          <p class="mermaid-caption">
+            Static PE-CE routes become VPNv4 routes and are imported by remote VRFs using RT policy.
+          </p>
+        </div>
+
+        <ol class="flow-list">
+          <li>Create the VRF on the PE with RD and RT values.</li>
+          <li>Assign the PE-CE interface to the correct VRF.</li>
+          <li>Learn customer routes from the CE using static routing or a routing protocol.</li>
+          <li>Redistribute the VRF routes into MP-BGP.</li>
+          <li>The PE converts IPv4 customer routes into VPNv4 routes using the RD.</li>
+          <li>The PE attaches Route Targets as BGP Extended Communities.</li>
+          <li>MP-BGP advertises VPNv4 routes to remote PE routers.</li>
+          <li>The remote PE checks RT import policy to decide whether the route enters a VRF.</li>
+          <li>The MPLS core forwards traffic using transport labels and VPN labels.</li>
+          <li>The egress PE removes the VPN label and forwards pure IPv4 traffic to the CE.</li>
+        </ol>
+      </section>
+
+      <!-- Troubleshooting: captures practical checks from lab work. -->
+      <section class="article-card">
+        <h2>9. Operational Notes and Troubleshooting</h2>
+        <p>
+          If connectivity fails, the issue is often not the RD itself. Most failures are
+          related to missing VRF routes, missing redistribution, incorrect RT import/export,
+          or ICMP sourcing from the wrong interface.
+        </p>
+
+        <div class="cli-block">
+          <div class="cli-header">
+            <span>Verification Commands</span>
+            <button class="copy-command" type="button" data-copy="show bgp vpnv4 unicast all&#10;show route vrf SPCOR&#10;show mpls forwarding-table&#10;show bgp vpnv4 unicast vrf SPCOR">
+              Copy
+            </button>
+          </div>
+          <pre><code>show bgp vpnv4 unicast all
+show route vrf SPCOR
+show mpls forwarding-table
+show bgp vpnv4 unicast vrf SPCOR</code></pre>
+        </div>
+
+        <ul>
+          <li>If the CE only has one exit point, a default route may be enough.</li>
+          <li>If the PE learns static VRF routes, redistribute them into BGP.</li>
+          <li>If the remote PE does not install the VPNv4 route, check RT import policy.</li>
+          <li>If ping fails, verify the source interface and VRF context.</li>
+        </ul>
+      </section>
+
+      <!-- Final summary: reinforces the core CCIE/JNCIE takeaways. -->
+      <section class="article-card key-takeaways">
+        <h2>Key Takeaways</h2>
+        <ul>
+          <li>RD makes customer prefixes globally unique in VPNv4.</li>
+          <li>RT controls import and export behavior between VRFs.</li>
+          <li>Extended Communities use BGP Attribute Type Code 16.</li>
+          <li>Route Target is subtype 0x02.</li>
+          <li>Static PE-CE routes must be redistributed into BGP to cross the MPLS VPN.</li>
+          <li>P routers transport labels; PE routers understand VRFs and VPN labels.</li>
+        </ul>
+      </section>
+
+      <!-- References: primary RFC sources used for the RD/RT technical explanation. -->
+      <section class="article-card">
+        <h2>References</h2>
+        <ul>
+          <li><a href="https://www.rfc-editor.org/rfc/rfc4360.html" target="_blank">RFC 4360 - BGP Extended Communities Attribute</a></li>
+          <li><a href="https://www.rfc-editor.org/rfc/rfc4364.html" target="_blank">RFC 4364 - BGP/MPLS IP VPNs</a></li>
+        </ul>
+      </section>
+
+    </article>
+
+<!-- Diagram lightbox: opens Mermaid diagrams in a larger preview overlay. -->
+<div class="diagram-lightbox" id="diagramLightbox" aria-hidden="true">
+  <button class="diagram-lightbox-close" type="button" aria-label="Close diagram preview">&times;</button>
+  <div class="diagram-lightbox-content" id="diagramLightboxContent"></div>
+</div>
+
+    <!-- Back to top: helps readers return quickly to the beginning of the technical note. -->
+    <button class="back-to-top" type="button" aria-label="Back to top">Top</button>
+
+    <!-- Mermaid diagrams: renders Obsidian-style diagrams directly in the browser. -->
+    <script type="module">
+      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: "dark",
+        flowchart: {
+          htmlLabels: true,
+          curve: "basis"
+        },
+        themeVariables: {
+          background: "transparent",
+          primaryColor: "#061116",
+          primaryTextColor: "#f4f7fb",
+          primaryBorderColor: "#10d4ee",
+          lineColor: "#10d4ee",
+          secondaryColor: "#1b1238",
+          tertiaryColor: "#052b31",
+          fontFamily: "Arial"
+        }
+      });
+    </script>
+
+<!-- Diagram interactions: opens Mermaid diagrams in a larger overlay on click. -->
+<script>
+  window.addEventListener("load", function () {
+    setTimeout(function () {
+      const diagramLightbox = document.getElementById("diagramLightbox");
+      const diagramLightboxContent = document.getElementById("diagramLightboxContent");
+      const diagramLightboxClose = document.querySelector(".diagram-lightbox-close");
+      const diagramCards = document.querySelectorAll(".mermaid-card");
+
+      function openDiagramLightbox(card) {
+        if (!diagramLightbox || !diagramLightboxContent) return;
+
+        const renderedDiagram = card.querySelector("svg");
+        const caption = card.querySelector(".mermaid-caption");
+
+        if (!renderedDiagram) return;
+
+        diagramLightboxContent.innerHTML = "";
+
+        const clonedDiagram = renderedDiagram.cloneNode(true);
+        const clonedCaption = document.createElement("p");
+
+        clonedCaption.className = "diagram-lightbox-caption";
+        clonedCaption.textContent = caption ? caption.textContent : "Technical diagram";
+
+        diagramLightboxContent.appendChild(clonedDiagram);
+        diagramLightboxContent.appendChild(clonedCaption);
+
+        diagramLightbox.classList.add("is-open");
+        diagramLightbox.setAttribute("aria-hidden", "false");
+        document.body.classList.add("diagram-open");
+      }
+
+      function closeDiagramLightbox() {
+        if (!diagramLightbox || !diagramLightboxContent) return;
+
+        diagramLightbox.classList.remove("is-open");
+        diagramLightbox.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("diagram-open");
+        diagramLightboxContent.innerHTML = "";
+      }
+
+      diagramCards.forEach(function (card) {
+        card.addEventListener("click", function () {
+          openDiagramLightbox(card);
+        });
+      });
+
+      diagramLightboxClose?.addEventListener("click", closeDiagramLightbox);
+
+      diagramLightbox?.addEventListener("click", function (event) {
+        if (event.target === diagramLightbox) {
+          closeDiagramLightbox();
+        }
+      });
+
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+          closeDiagramLightbox();
+        }
+      });
+    }, 800);
+  });
+</script>
+
+
+
+
+
+
+
+    <script src="article.js"></script>
+  </div>
+</body>
+</html>
