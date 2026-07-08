@@ -11,18 +11,20 @@ document.addEventListener("DOMContentLoaded", function () {
   function toggleBackToTop() {
     if (!backToTopButton) return;
 
-    if (window.scrollY > 420) {
-      backToTopButton.classList.add("is-visible");
-    } else {
-      backToTopButton.classList.remove("is-visible");
-    }
+    backToTopButton.classList.toggle("is-visible", window.scrollY > 420);
+  }
+
+  function getImageCaption(image) {
+    const figure = image.closest("figure");
+    const caption = figure?.querySelector("figcaption")?.textContent;
+
+    return caption || image.alt || "Article image";
   }
 
   function openLightbox(image) {
     if (!lightbox || !lightboxImage || !lightboxCaption) return;
 
-    const figure = image.closest("figure");
-    const caption = figure?.querySelector("figcaption")?.textContent || image.alt || "Article image";
+    const caption = getImageCaption(image);
 
     lightboxImage.src = image.currentSrc || image.src;
     lightboxImage.alt = image.alt || caption;
@@ -34,16 +36,20 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function closeLightbox() {
-    if (!lightbox || !lightboxImage) return;
+    if (!lightbox || !lightboxImage || !lightboxCaption) return;
 
     lightbox.classList.remove("is-open");
     lightbox.setAttribute("aria-hidden", "true");
     document.body.classList.remove("lightbox-open");
+
     lightboxImage.src = "";
+    lightboxImage.alt = "";
+    lightboxCaption.textContent = "";
   }
 
   function fallbackCopyText(text) {
     const textarea = document.createElement("textarea");
+
     textarea.value = text;
     textarea.setAttribute("readonly", "");
     textarea.style.position = "fixed";
@@ -71,18 +77,52 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  function prepareArticleImages() {
+    articleImages.forEach(function (image) {
+      image.setAttribute("role", "button");
+      image.setAttribute("tabindex", "0");
+      image.setAttribute("title", "Open image preview");
+
+      image.addEventListener("click", function () {
+        openLightbox(image);
+      });
+
+      image.addEventListener("keydown", function (event) {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          openLightbox(image);
+        }
+      });
+    });
+  }
+
+  function prepareCopyButtons() {
+    copyButtons.forEach(function (button) {
+      button.addEventListener("click", async function () {
+        const textToCopy = button.dataset.copy;
+        const originalText = button.textContent;
+
+        if (!textToCopy) return;
+
+        const copied = await copyText(textToCopy);
+
+        button.textContent = copied ? "Copied" : "Error";
+        button.classList.toggle("is-copied", copied);
+
+        setTimeout(function () {
+          button.textContent = originalText;
+          button.classList.remove("is-copied");
+        }, 1400);
+      });
+    });
+  }
+
   window.addEventListener("scroll", toggleBackToTop, { passive: true });
 
   backToTopButton?.addEventListener("click", function () {
     window.scrollTo({
       top: 0,
       behavior: "smooth"
-    });
-  });
-
-  articleImages.forEach(function (image) {
-    image.addEventListener("click", function () {
-      openLightbox(image);
     });
   });
 
@@ -94,30 +134,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  copyButtons.forEach(function (button) {
-    button.addEventListener("click", async function () {
-      const textToCopy = button.dataset.copy;
-      const originalText = button.textContent;
-
-      if (!textToCopy) return;
-
-      const copied = await copyText(textToCopy);
-
-      button.textContent = copied ? "Copied" : "Error";
-      button.classList.toggle("is-copied", copied);
-
-      setTimeout(function () {
-        button.textContent = originalText;
-        button.classList.remove("is-copied");
-      }, 1400);
-    });
-  });
-
   document.addEventListener("keydown", function (event) {
     if (event.key === "Escape") {
       closeLightbox();
     }
   });
 
+  prepareArticleImages();
+  prepareCopyButtons();
   toggleBackToTop();
 });

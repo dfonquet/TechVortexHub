@@ -1,531 +1,103 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Daftiel</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <style>
+  <meta name="author" content="Daniel Fonque" />
+  <meta
+    name="description"
+    content="Personal technical portfolio for Daniel Fonque, focused on network engineering, security, service provider technologies, automation, and AI-assisted engineering."
+  />
 
+  <title>Daftiel | Daniel Fonque</title>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap"
+    rel="stylesheet"
+  />
 
-
-
-
-    /* Estilos generales */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: Arial, sans-serif;
-      overflow-x: hidden;
-      overflow-y: auto;
-      min-height: 100vh;
-    }
-
-    /* Estilos del fondo con imagen */
-    #particles-js {
-      background-image: url('img/DATA_8.jpg');
-      background-size: cover;
-      background-position: center;
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      z-index: -1;
-    }
-
-
-/* Estilos del encabezado principal */
-#principal {
-  text-align: center;
-  margin-top: 7%;
-  /*font-weight: bold;*/
-  position: relative;
-}
-
-
-.hero-title {
-  color: #8162d6;
-  font-family: Arial, sans-serif;
-  font-size: clamp(2rem, 5vw, 4.3rem);
-  
-  line-height: 1.1;
-  text-align: center;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
-  margin: 0 auto;
-  max-width: 1200px;
-  padding: 0 20px;
-}
-
-.hero-title span {
-  color: #10d4ee;
-}
-
-
-#principal::before {
-  content: attr(data-text);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  color: rgb(255, 252, 252); /* Color del texto */
-  animation: fadeInLetters 3s forwards; /* Animación de desvanecimiento debo revisar ya que (no me funciono) */
-  opacity: 0;
-}
-
-@keyframes fadeInLetters {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-
-
-
-/* Estilos para la sección de botones */
-.section-title {
-  text-align: center;
-  margin-top: 100px; /* Aca yo Ajusto el valor según lo desee */
-  position: relative;
-  overflow: hidden; /* Ocultar cualquier desbordamiento */
-}
-
-
-  .section-title .button {
-  display: inline-block;
-  margin: 10px;
-  padding: 15px 30px;
-  background-color: #8b5db6;
-  color: white;
-  text-decoration: none;
-  border: none;
-  border-radius: 50px;
-  font-size: 16px;
-  font-weight: bold;
-  letter-spacing: 1px;
-  font-family: 'Roboto', sans-serif;
-  cursor: pointer;
-  opacity: 1;
-  transition: transform 0.2s ease, background-color 0.2s ease;
-}
-
-.section-title .button:hover {
-  transform: translateY(-3px);
-  background-color: #10d4ee;
-  color: #081018;
-}
-
-    @keyframes fadeInOut {
-      0%, 100% {
-        opacity: 0;
-        transform: translateY(5px) scale(0.95);
-      }
-      50% {
-        opacity: 1;
-        transform: translateY(-5px) scale(1);
-      }
-    }
-
-    .section-title .button:focus {
-      outline: none;
-      opacity: 1;
-    }
-
-  /* Estilos para los logotipos de redes sociales */
-.social-icons {
-  text-align: center;
-  margin-top: 35px;
-  padding-bottom: 30px;
-}
-
-    .social-icons a {
-      display: inline-block;
-      margin: 0 10px;
-    }
-
-    .social-icons img {
-      width: 40px;
-      height: 40px;
-      filter: saturate(1.5) brightness(1.2);
-      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-      transform: perspective(200px) rotateY(10deg);
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-
-    .social-icons img:hover {
-      transform: perspective(200px) rotateY(20deg) scale(1.1);
-      box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.4);
-    }
-
-    /* Estilos específicos para dispositivos móviles (Debo correjir ya que no se visualiza correctamente en telefonos android) */
-    @media (max-width: 768px) {
-      #principal {
-        margin-top: 10%;
-      }
-    }
-    
-/* Estilos para el mensaje adicional */
-.additional-message {
-  text-align: left;
-  margin: 35px auto;
-  max-width: 900px;
-  font-size: clamp(1rem, 1.4vw, 1.15rem);
-  font-family: Arial, sans-serif;
-  color: #00ffcc;
-  line-height: 1.65;
-  background-color: rgba(0, 0, 0, 0.78);
-  padding: 32px 38px;
-  border-radius: 10px;
-  border: 2px solid #00ffcc;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
-  position: relative;
-}
-
-.additional-message p {
-  margin-bottom: 16px;
-}
-
-.additional-message p:last-child {
-  margin-bottom: 0;
-}
-
-    .additional-message p {
-      position: relative;
-      display: inline-block;
-      z-index: 1; /* Asegura que el texto esté en frente de la animación */
-      animation: fadeInText 3s ease-in-out; /* Animación de aparición */
-    }
-
-    .additional-message p::after {
-      content: attr(data-text);
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      opacity: 0.5;
-      color: #10d4ee;
-      transform: scale(1.05);
-      animation: pulse 3s infinite ease-in-out;
-      z-index: -1; /* Asegura que la animación esté detrás del texto */
-    }
-
-    @keyframes pulse {
-      0%, 100% {
-        transform: scale(1.05);
-        opacity: 0.5;
-      }
-      50% {
-        transform: scale(1);
-        opacity: 1;
-      }
-    }
-
-    @keyframes fadeInText {
-      0% {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-
-
-
-
-
-/* Homepage layout polish */
-.section-title {
-  text-align: center;
-  margin: 56px 0 58px;
-  position: relative;
-  overflow: visible;
-}
-
-#principal {
-  text-align: center;
-  margin-top: 0;
-  position: relative;
-  padding: 0 18px;
-}
-
-.hero-title {
-  color: #8162d6;
-  font-family: Arial, sans-serif;
-  font-size: clamp(2.1rem, 5vw, 4.3rem);
-  font-weight: 800;
-  line-height: 1.08;
-  text-align: center;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
-  margin: 0 auto;
-  max-width: 1200px;
-  padding: 0 20px;
-}
-
-.hero-title span {
-  color: #10d4ee;
-}
-
-.additional-message {
-  text-align: left;
-  margin: 32px auto 0;
-  max-width: 900px;
-  font-size: clamp(1rem, 1.4vw, 1.15rem);
-  font-family: Arial, sans-serif;
-  font-weight: 500;
-  color: #00ffcc;
-  line-height: 1.65;
-  background-color: rgba(0, 0, 0, 0.78);
-  padding: 32px 38px;
-  border-radius: 10px;
-  border: 2px solid #00ffcc;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
-}
-
-.additional-message p {
-  display: block;
-  position: static;
-  margin: 0 0 18px;
-  animation: none;
-}
-
-.additional-message p:last-child {
-  margin-bottom: 0;
-}
-
-.additional-message p::after {
-  content: none;
-}
-
-@media (max-width: 768px) {
-  .section-title {
-    margin: 32px 0 34px;
-  }
-
-  .section-title .button {
-    padding: 12px 22px;
-    font-size: 14px;
-  }
-
-  .hero-title {
-    font-size: clamp(2rem, 12vw, 3.4rem);
-    padding: 0 12px;
-  }
-
-  .additional-message {
-    margin-top: 24px;
-    padding: 24px 22px;
-    font-size: 0.98rem;
-    line-height: 1.6;
-  }
-}
-    
-
-  </style>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
-<!-- Private visitor analytics via Web-Stat -->
-<!-- begin Web-Stat code v 7.0 -->
-<span id="wts2216711"></span>
-<script>
-  var wts = document.createElement('script');
-  wts.async = true;
-  wts.src = 'https://app.ardalio.com/wts7.js';
-  document.head.appendChild(wts);
-  wts.onload = function () {
-    wtsl7(2216711, 1);
-  };
-</script>
-<noscript>
-  <img src="https://app.ardalio.com/7/1/2216711.png" alt="Web-Stat tracker">
-</noscript>
-<!-- end Web-Stat code v 7.0 -->
+  <!-- Private visitor analytics via Web-Stat. -->
+  <span id="wts2216711"></span>
+  <script>
+    var wts = document.createElement("script");
+    wts.async = true;
+    wts.src = "https://app.ardalio.com/wts7.js";
+    document.head.appendChild(wts);
+    wts.onload = function () {
+      wtsl7(2216711, 1);
+    };
+  </script>
+  <noscript>
+    <img src="https://app.ardalio.com/7/1/2216711.png" alt="Web-Stat tracker" />
+  </noscript>
 
+  <!-- Animated background layer: particles.js renders the moving network effect here. -->
+  <div id="particles-js" aria-hidden="true"></div>
 
-
-  
-
-  <div id="particles-js"></div>
-
-  <!-- Animated background layer: particles.js uses this container for the moving network effect. -->
-
-  <div class="container">
-    <nav class="section-title">
-    <a href="Projects/projects.html" class="button">Projects</a>
-    <a href="Blog/blog.html" class="button">Blog</a>
+  <div class="page-shell">
+    <!-- Main navigation: connects the homepage with the Projects and Blog sections. -->
+    <nav class="main-nav" aria-label="Main navigation">
+      <a href="Projects/projects.html" class="nav-button">Projects</a>
+      <a href="Blog/blog.html" class="nav-button">Blog</a>
     </nav>
-  </div>
-<!-- Main navigation: connects the homepage with the Projects and Blog sections. -->
-  <div class="container">
-    <main id="principal">
+
+    <!-- Hero section: first impression and professional identity. -->
+    <main class="hero">
       <h1 class="hero-title">
-       &iexcl;Step into my World! <span>I am</span> Daniel Fonque
-    </h1>
-    <div class="additional-message">
-  <p>
-    As a Senior Network and Security Engineer, I am passionate about building reliable,
-    scalable, and secure technology environments.
-  </p>
+        &iexcl;Step into my World!
+        <span class="hero-intro">I am</span>
+        <span class="hero-name">Daniel Fonque</span>
+      </h1>
 
-  <p>
-    I have a strong background in networking, security, Service Provider technologies,
-    cloud connectivity, and infrastructure design. My work focuses on understanding how
-    systems operate end to end, from routing architecture and security policies to
-    automation and operational reliability.
-  </p>
+      <section class="bio-card" aria-label="Professional summary">
+        <p>
+          As a Senior Network and Security Engineer, I am passionate about building reliable,
+          scalable, and secure technology environments.
+        </p>
 
-  <p>
-    I am continuously expanding my knowledge in IP/MPLS, Segment Routing, SD-WAN,
-    cloud networking, APIs, automation, and AI-assisted engineering.
-  </p>
+        <p>
+          I have a strong background in networking, security, Service Provider technologies,
+          cloud connectivity, and infrastructure design. My work focuses on understanding how
+          systems operate end to end, from routing architecture and security policies to
+          automation and operational reliability.
+        </p>
 
-  <p>
-    I consider myself a lifelong learner and technology enthusiast, always focused on
-    improving, building, and understanding how things work under the hood.
-  </p>
-</div>
+        <p>
+          I am continuously expanding my knowledge in IP/MPLS, Segment Routing, SD-WAN,
+          cloud networking, APIs, automation, and AI-assisted engineering.
+        </p>
+
+        <p>
+          I consider myself a lifelong learner and technology enthusiast, always focused on
+          improving, building, and understanding how things work under the hood.
+        </p>
+      </section>
     </main>
+
+    <!-- Social links: external profiles for GitHub and LinkedIn. -->
+    <footer class="social-footer" aria-label="Social links">
+      <a href="https://github.com/dfonquet" target="_blank" rel="noopener noreferrer" class="social-link">
+        <img src="img/GIT.png" alt="GitHub" class="social-icon" />
+      </a>
+
+      <a href="https://www.linkedin.com/in/danielfonquetorres-188851a2/" target="_blank" rel="noopener noreferrer" class="social-link">
+        <img src="img/IN.png" alt="LinkedIn" class="social-icon" />
+      </a>
+    </footer>
   </div>
-<!-- Social links: external profiles for GitHub and LinkedIn. -->
-  <div class="social-icons">
-    <a href="https://github.com/dfonquet" target="_blank" class="social-link">
-      <img src="img/GIT.png" alt="GitHub" class="social-icon" style="transition: transform 0.3s, box-shadow 0.3s;">
-    </a>
-    <a href="https://www.linkedin.com/in/danielfonquetorres-188851a2/" target="_blank" class="social-link">
-      <img src="img/IN.png" alt="LinkedIn" class="social-icon" style="transition: transform 0.3s, box-shadow 0.3s;">
-    </a>
-  </div>
-<!-- Particles.js library and configuration: controls the animated background behavior. -->
+
+  <!-- Particles.js library and configuration. -->
   <script src="particles.min.js"></script>
   <script>
-    particlesJS({
-      "particles": {
-        "number": {
-          "value": 152,
-          "density": {
-            "enable": true,
-            "value_area": 800
-          }
-        },
-        "color": {
-          "value": "#ffffff"
-        },
-        "shape": {
-          "type": "circle",
-          "stroke": {
-            "width": 0,
-            "color": "#000000"
-          },
-          "polygon": {
-            "nb_sides": 5
-          },
-          "image": {
-            "src": "img/github.svg",
-            "width": 100,
-            "height": 100
-          }
-        },
-        "opacity": {
-          "value": 0.5,
-          "random": false,
-          "anim": {
-            "enable": false,
-            "speed": 1,
-            "opacity_min": 0.1,
-            "sync": false
-          }
-        },
-        "size": {
-          "value": 3,
-          "random": true,
-          "anim": {
-            "enable": false,
-            "speed": 40,
-            "size_min": 0.1,
-            "sync": false
-          }
-        },
-        "line_linked": {
-          "enable": true,
-          "distance": 150,
-          "color": "#ffffff",
-          "opacity": 0.4,
-          "width": 1
-        },
-        "move": {
-          "enable": true,
-          "speed": 6,
-          "direction": "none",
-          "random": false,
-          "straight": false,
-          "out_mode": "out",
-          "bounce": false,
-          "attract": {
-            "enable": false,
-            "rotateX": 600,
-            "rotateY": 1200
-          }
-        }
-      },
-      "interactivity": {
-        "detect_on": "canvas",
-        "events": {
-          "onhover": {
-            "enable": true,
-            "mode": "repulse"
-          },
-          "onclick": {
-            "enable": true,
-            "mode": "push"
-          },
-          "resize": true
-        },
-        "modes": {
-          "grab": {
-            "distance": 400,
-            "line_linked": {
-              "opacity": 1
-            }
-          },
-          "bubble": {
-            "distance": 400,
-            "size": 40,
-            "duration": 2,
-            "opacity": 8,
-            "speed": 3
-          },
-          "repulse": {
-            "distance": 200,
-            "duration": 0.4
-          },
-          "push": {
-            "particles_nb": 4
-          },
-          "remove": {
-            "particles_nb": 2
-          }
-        }
-      },
-      "retina_detect": true
-    });
+    particlesJS.load("particles-js", "particlesjs-config.json");
   </script>
 </body>
-
 </html>

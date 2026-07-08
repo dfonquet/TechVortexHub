@@ -4,13 +4,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="author" content="Daniel Fonque" />
-  <title>CCIE SP Labs - Daniel Fonque</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta
+    name="description"
+    content="CCIE Service Provider lab library by Daniel Fonque, including full device configurations, feature notes, lab artifacts, and technical references."
+  />
+  <title>CCIE SP Labs | Daniel Fonque</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="ccie-sp-labs.css" />
 </head>
 
 <body>
   <div class="page">
-    <nav class="top-nav">
+    <nav class="top-nav" aria-label="Main navigation">
       <a href="../daftiel.html">Home</a>
       <a href="projects.html">Projects</a>
       <a href="../Blog/blog.html">Blog</a>
@@ -25,121 +37,123 @@
       </p>
     </header>
 
-    <section class="lab-summary">
-      <div>
-        <span class="status">In Progress</span>
-        <h2>Dual-Stack SP Backbone Lab</h2>
-        <p>
-          Service Provider lab focused on IS-IS, SR-MPLS, L3VPN, MP-BGP, PCE,
-          TI-LFA, BFD, Internet VRFs, multicast ASM, and operational troubleshooting.
-        </p>
-      </div>
-
-      <div class="lab-actions">
-        <a href="../Blog/ccie-sp-multicast-asm.html">Read multicast article</a>
-        <a href="projects.html">Back to projects</a>
-      </div>
-    </section>
-
-    <section class="lab-metrics">
-      <div>
-        <strong>20+</strong>
-        <span>Device configs</span>
-      </div>
-      <div>
-        <strong>4</strong>
-        <span>Feature notes</span>
-      </div>
-      <div>
-        <strong>SP</strong>
-        <span>Architecture focus</span>
-      </div>
-    </section>
-
-    <main class="lab-grid">
-      <section class="lab-panel">
-        <div class="panel-top">
-          <span class="status">Running Configs</span>
+    <main>
+      <section class="lab-summary" aria-label="Lab overview">
+        <div>
+          <span class="status">In Progress</span>
+          <h2>Dual-Stack SP Backbone Lab</h2>
+          <p>
+            Service Provider lab focused on IS-IS, SR-MPLS, L3VPN, MP-BGP, PCE,
+            TI-LFA, BFD, Internet VRFs, multicast ASM, and operational troubleshooting.
+          </p>
         </div>
-    <h2>Full Device Configurations</h2>
-    <p>
-        Complete show running-config outputs from the lab devices. These files are shared
-        as study artifacts and may evolve as the lab grows.
-    </p>
 
-        <div class="file-grid">
-          <a href="labs/ccie-sp/full-configs/p1.txt" target="_blank">P1</a>
-          <a href="labs/ccie-sp/full-configs/p2.txt" target="_blank">P2</a>
-          <a href="labs/ccie-sp/full-configs/p3.txt" target="_blank">P3</a>
-          <a href="labs/ccie-sp/full-configs/p3-4.txt" target="_blank">P3-4</a>
-          <a href="labs/ccie-sp/full-configs/p4.txt" target="_blank">P4</a>
-          <a href="labs/ccie-sp/full-configs/p5.txt" target="_blank">P5</a>
-          <a href="labs/ccie-sp/full-configs/p6.txt" target="_blank">P6</a>
-          <a href="labs/ccie-sp/full-configs/p7.txt" target="_blank">P7</a>
-          <a href="labs/ccie-sp/full-configs/p8.txt" target="_blank">P8</a>
-          <a href="labs/ccie-sp/full-configs/p9.txt" target="_blank">P9</a>
-          <a href="labs/ccie-sp/full-configs/p10.txt" target="_blank">P10</a>
-          <a href="labs/ccie-sp/full-configs/p11-rr-shadown.txt" target="_blank">P11 RR Shadow</a>
-          <a href="labs/ccie-sp/full-configs/p12-rr-primary.txt" target="_blank">P12 RR Primary</a>
-          <a href="labs/ccie-sp/full-configs/p23-pce.txt" target="_blank">P23 PCE</a>
-          <a href="labs/ccie-sp/full-configs/pe-1.txt" target="_blank">PE-1</a>
-          <a href="labs/ccie-sp/full-configs/pe-2.txt" target="_blank">PE-2</a>
-          <a href="labs/ccie-sp/full-configs/pe-3.txt" target="_blank">PE-3</a>
-          <a href="labs/ccie-sp/full-configs/cust-b1-source.txt" target="_blank">CUST B1 Source</a>
-          <a href="labs/ccie-sp/full-configs/cust-b2-receiver.txt" target="_blank">CUST B2 Receiver</a>
-          <a href="labs/ccie-sp/full-configs/cust-d2-receiver-1.txt" target="_blank">CUST D2 Receiver</a>
+        <div class="lab-actions">
+          <a href="../Blog/ccie-sp-multicast-asm.html">Read multicast article</a>
+          <a href="projects.html">Back to projects</a>
         </div>
       </section>
 
-      <section class="lab-panel">
-        <div class="panel-top">
-          <span class="status">Feature Notes</span>
+      <section class="lab-metrics" aria-label="Lab metrics">
+        <div>
+          <strong>20+</strong>
+          <span>Device configs</span>
         </div>
-        <h2>Technology Notes</h2>
-        <p>
-          Focused notes and configuration references grouped by feature.
-        </p>
-
-        <div class="file-list">
-          <a href="labs/ccie-sp/feature-notes/sr-configuration.txt" target="_blank">Segment Routing configuration</a>
-          <a href="labs/ccie-sp/feature-notes/vrf-internet-access-mpls.txt" target="_blank">VRF Internet access over MPLS</a>
-          <a href="labs/ccie-sp/feature-notes/multicast-configuration.txt" target="_blank">Multicast configuration</a>
-          <a href="labs/ccie-sp/feature-notes/e-tree-conf.txt" target="_blank">E-Tree configuration</a>
+        <div>
+          <strong>4</strong>
+          <span>Feature notes</span>
+        </div>
+        <div>
+          <strong>SP</strong>
+          <span>Architecture focus</span>
         </div>
       </section>
 
-      <section class="lab-panel">
-        <div class="panel-top">
-          <span class="status">Related Work</span>
-        </div>
-        <h2>Multicast ASM Article</h2>
-        <p>
-          Detailed write-up explaining multicast ASM behavior, BSR, RP discovery,
-          RPF logic, MRIB validation, and receiver-to-RP tree building.
-        </p>
+      <section class="lab-grid" aria-label="Lab resources">
+        <article class="lab-panel">
+          <div class="panel-top">
+            <span class="status">Running Configs</span>
+          </div>
+          <h2>Full Device Configurations</h2>
+          <p>
+            Complete running configurations from the lab devices. These files are shared
+            as study artifacts and may evolve as the topology grows.
+          </p>
 
-        <a class="card-link" href="../Blog/ccie-sp-multicast-asm.html">Open article</a>
-      </section>
+          <div class="file-grid">
+            <a href="labs/ccie-sp/full-configs/p1.txt" target="_blank" rel="noopener noreferrer">P1</a>
+            <a href="labs/ccie-sp/full-configs/p2.txt" target="_blank" rel="noopener noreferrer">P2</a>
+            <a href="labs/ccie-sp/full-configs/p3.txt" target="_blank" rel="noopener noreferrer">P3</a>
+            <a href="labs/ccie-sp/full-configs/p3-4.txt" target="_blank" rel="noopener noreferrer">P3-4</a>
+            <a href="labs/ccie-sp/full-configs/p4.txt" target="_blank" rel="noopener noreferrer">P4</a>
+            <a href="labs/ccie-sp/full-configs/p5.txt" target="_blank" rel="noopener noreferrer">P5</a>
+            <a href="labs/ccie-sp/full-configs/p6.txt" target="_blank" rel="noopener noreferrer">P6</a>
+            <a href="labs/ccie-sp/full-configs/p7.txt" target="_blank" rel="noopener noreferrer">P7</a>
+            <a href="labs/ccie-sp/full-configs/p8.txt" target="_blank" rel="noopener noreferrer">P8</a>
+            <a href="labs/ccie-sp/full-configs/p9.txt" target="_blank" rel="noopener noreferrer">P9</a>
+            <a href="labs/ccie-sp/full-configs/p10.txt" target="_blank" rel="noopener noreferrer">P10</a>
+            <a href="labs/ccie-sp/full-configs/p11-rr-shadown.txt" target="_blank" rel="noopener noreferrer">P11 RR Shadow</a>
+            <a href="labs/ccie-sp/full-configs/p12-rr-primary.txt" target="_blank" rel="noopener noreferrer">P12 RR Primary</a>
+            <a href="labs/ccie-sp/full-configs/p23-pce.txt" target="_blank" rel="noopener noreferrer">P23 PCE</a>
+            <a href="labs/ccie-sp/full-configs/pe-1.txt" target="_blank" rel="noopener noreferrer">PE-1</a>
+            <a href="labs/ccie-sp/full-configs/pe-2.txt" target="_blank" rel="noopener noreferrer">PE-2</a>
+            <a href="labs/ccie-sp/full-configs/pe-3.txt" target="_blank" rel="noopener noreferrer">PE-3</a>
+            <a href="labs/ccie-sp/full-configs/cust-b1-source.txt" target="_blank" rel="noopener noreferrer">CUST B1 Source</a>
+            <a href="labs/ccie-sp/full-configs/cust-b2-receiver.txt" target="_blank" rel="noopener noreferrer">CUST B2 Receiver</a>
+            <a href="labs/ccie-sp/full-configs/cust-d2-receiver-1.txt" target="_blank" rel="noopener noreferrer">CUST D2 Receiver</a>
+          </div>
+        </article>
 
-      <section class="lab-panel">
-        <div class="panel-top">
-          <span class="status">Scope</span>
-        </div>
-        <h2>Lab Topics</h2>
-        <div class="tags">
-          <span>IS-IS</span>
-          <span>SR-MPLS</span>
-          <span>L3VPN</span>
-          <span>MP-BGP</span>
-          <span>PCE</span>
-          <span>TI-LFA</span>
-          <span>BFD</span>
-          <span>Multicast ASM</span>
-        </div>
+        <article class="lab-panel">
+          <div class="panel-top">
+            <span class="status">Feature Notes</span>
+          </div>
+          <h2>Technology Notes</h2>
+          <p>
+            Focused notes and configuration references grouped by feature.
+          </p>
+
+          <div class="file-list">
+            <a href="labs/ccie-sp/feature-notes/sr-configuration.txt" target="_blank" rel="noopener noreferrer">Segment Routing configuration</a>
+            <a href="labs/ccie-sp/feature-notes/vrf-internet-access-mpls.txt" target="_blank" rel="noopener noreferrer">VRF Internet access over MPLS</a>
+            <a href="labs/ccie-sp/feature-notes/multicast-configuration.txt" target="_blank" rel="noopener noreferrer">Multicast configuration</a>
+            <a href="labs/ccie-sp/feature-notes/e-tree-conf.txt" target="_blank" rel="noopener noreferrer">E-Tree configuration</a>
+          </div>
+        </article>
+
+        <article class="lab-panel">
+          <div class="panel-top">
+            <span class="status">Related Work</span>
+          </div>
+          <h2>Multicast ASM Article</h2>
+          <p>
+            Detailed write-up explaining multicast ASM behavior, BSR, RP discovery,
+            RPF logic, MRIB validation, and receiver-to-RP tree building.
+          </p>
+
+          <a class="card-link" href="../Blog/ccie-sp-multicast-asm.html">Open article</a>
+        </article>
+
+        <article class="lab-panel">
+          <div class="panel-top">
+            <span class="status">Scope</span>
+          </div>
+          <h2>Lab Topics</h2>
+          <div class="tags">
+            <span>IS-IS</span>
+            <span>SR-MPLS</span>
+            <span>L3VPN</span>
+            <span>MP-BGP</span>
+            <span>PCE</span>
+            <span>TI-LFA</span>
+            <span>BFD</span>
+            <span>Multicast ASM</span>
+          </div>
+        </article>
       </section>
     </main>
 
-    <footer>
+    <footer class="page-footer">
       <p>&copy; 2026 Daniel Fonque</p>
     </footer>
   </div>

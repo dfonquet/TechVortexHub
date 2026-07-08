@@ -4,7 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="author" content="Daniel Fonque" />
-  <title>Blog - Daniel Fonque</title>
+  <meta
+    name="description"
+    content="Technical blog by Daniel Fonque focused on CCIE SP, JNCIE-SP, CCDE design, automation, network engineering, and study labs."
+  />
+  <title>Blog | Daniel Fonque</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap"
+    rel="stylesheet"
+  />
+
   <link rel="stylesheet" href="styles.css" />
 </head>
 
@@ -12,108 +24,132 @@
   <div class="page">
 
     <!-- Main navigation: connects the Blog with the homepage and Projects sections. -->
-    <nav class="top-nav">
+    <nav class="top-nav" aria-label="Main navigation">
       <a href="../daftiel.html">Home</a>
       <a href="../Projects/projects.html">Projects</a>
-      <a href="blog.html">Blog</a>
+      <a href="blog.html" aria-current="page">Blog</a>
     </nav>
 
-    <!-- Hero section: introduces the study areas and purpose of the Blog page. -->
+    <!-- Hero section: introduces the Blog as a technical study journal. -->
     <header class="hero">
-      <p class="eyebrow">Engineering Study Journey</p>
-      <h1>Expert Studies <span>& Labs</span></h1>
+      <p class="eyebrow">Engineering Study Journal</p>
+      <h1>Technical Notes <span>& Labs</span></h1>
       <p>
-        A personal space to document my studies, lab practice, troubleshooting notes,
-        and lessons learned across CCIE Service Provider, JNCIE-SP, CCDE design,
-        CCIE Automation, network automation, infrastructure automation, and modern engineering.
+        A personal space to document study notes, lab validation, troubleshooting,
+        design ideas, and lessons learned across Service Provider networking,
+        automation, security, and infrastructure engineering.
       </p>
     </header>
 
-    <!-- Blog post grid: organizes study topics and article entries into reusable cards. -->
-    <main class="post-grid">
+    <!-- Blog post grid: organizes study areas and published notes into reusable cards. -->
+    <main>
+      <section class="post-grid" aria-label="Technical blog categories">
 
-      <!-- Featured Cisco SP card: groups CCIE SP study articles under one clean category. -->
-      <article class="post-card">
-        <span class="status">Cisco</span>
-        <h2>CCIE Service Provider</h2>
-        <p>
-          Study notes and lab practice focused on MPLS, L3VPN, MP-BGP, QoS,
-          Segment Routing, service provider architecture, multicast, and troubleshooting scenarios.
-        </p>
+        <!-- CCIE SP category: groups published Service Provider articles in one place. -->
+        <article class="post-card">
+          <span class="status">Cisco</span>
+          <h2>CCIE Service Provider</h2>
+          <p>
+            Study notes and lab practice focused on MPLS, L3VPN, MP-BGP, QoS,
+            Segment Routing, service provider architecture, multicast, and troubleshooting.
+          </p>
 
-        <div class="tags">
-          <span>CCIE SP</span>
-          <span>MPLS</span>
-          <span>Multicast</span>
-          <span>L3VPN</span>
-        </div>
+          <div class="tags">
+            <span>CCIE SP</span>
+            <span>MPLS</span>
+            <span>Multicast</span>
+            <span>L3VPN</span>
+          </div>
 
-        <div class="post-link-list">
-          <a class="post-link" href="ccie-sp-multicast-asm.html">Read multicast ASM lab</a>
-          <a class="post-link" href="route-target-rd-l3vpn.html">Read RD/RT L3VPN note</a>
-        </div>
-      </article>
+          <div class="post-link-list">
+            <a class="post-link" href="ccie-sp-multicast-asm.html">Read multicast ASM lab</a>
+            <a class="post-link" href="route-target-rd-l3vpn.html">Read RD/RT L3VPN note</a>
+          </div>
+        </article>
 
-      <article class="post-card">
-        <span class="status">Juniper</span>
-        <h2>JNCIE-SP</h2>
-        <p>
-          Notes and labs focused on Junos, IS-IS, BGP, MPLS, L3VPN, RSVP,
-          Segment Routing, routing policy, and service provider design concepts.
-        </p>
-        <div class="tags">
-          <span>JNCIE-SP</span>
-          <span>Junos</span>
-          <span>SP</span>
-        </div>
-      </article>
+   <article class="post-card">
+  <span class="status">Juniper</span>
+  <h2>JNCIE-SP</h2>
+  <p>
+    Notes and labs focused on Junos, IS-IS, BGP, MPLS, L3VPN, RSVP,
+    Segment Routing, routing policy, and Service Provider design scenarios.
+  </p>
 
-      <article class="post-card">
-        <span class="status">Design</span>
-        <h2>CCDE Design Studies</h2>
-        <p>
-          Study notes and preparation around network design principles, requirements analysis,
-          constraints, trade-offs, scalability, resiliency, service provider architecture,
-          and operational simplicity.
-        </p>
-        <div class="tags">
-          <span>CCDE</span>
-          <span>Design</span>
-          <span>Preparation</span>
-        </div>
-      </article>
+  <div class="tags">
+    <span>JNCIE-SP</span>
+    <span>Junos</span>
+    <span>SP</span>
+  </div>
 
-      <article class="post-card">
-        <span class="status">Automation</span>
-        <h2>CCIE Automation</h2>
-        <p>
-          Study notes and preparation around network programmability, APIs, model-driven
-          telemetry, automation workflows, Python, validation, templates, and infrastructure operations.
-        </p>
-        <div class="tags">
-          <span>CCIE Automation</span>
-          <span>APIs</span>
-          <span>Telemetry</span>
-        </div>
-      </article>
+  <div class="post-link-list">
+    <span class="post-link is-disabled">Coming soon</span>
+  </div>
+</article>
 
-      <article class="post-card">
-        <span class="status">Automation</span>
-        <h2>Network Automation</h2>
-        <p>
-          Experiments and notes about APIs, Python, Git, structured data,
-          configuration templates, validation workflows, and automation-assisted network operations.
-        </p>
-        <div class="tags">
-          <span>Python</span>
-          <span>APIs</span>
-          <span>NetDevOps</span>
-        </div>
-      </article>
+        <article class="post-card">
+          <span class="status">Design</span>
+          <h2>CCDE Design Studies</h2>
+          <p>
+            Study notes around requirements analysis, constraints, trade-offs,
+            routing architecture, resiliency, scalability, and operational simplicity.
+          </p>
+
+          <div class="tags">
+            <span>CCDE</span>
+            <span>Design</span>
+            <span>Architecture</span>
+          </div>
+
+          <div class="post-link-list">
+              <span class="post-link is-disabled">Coming soon</span>
+          </div>
+
+        </article>
+
+        <article class="post-card">
+          <span class="status">Automation</span>
+          <h2>CCIE Automation</h2>
+          <p>
+            Preparation notes around programmability, APIs, model-driven telemetry,
+            automation workflows, Python, validation, templates, and infrastructure operations.
+          </p>
+
+          <div class="tags">
+            <span>CCIE Automation</span>
+            <span>APIs</span>
+            <span>Telemetry</span>
+          </div>
+
+          <div class="post-link-list">
+              <span class="post-link is-disabled">Coming soon</span>
+          </div>
+
+        </article>
+
+        <article class="post-card">
+          <span class="status">Automation</span>
+          <h2>Network Automation</h2>
+          <p>
+            Experiments and notes about Python, Git, structured data, templates,
+            validation workflows, documentation, and automation-assisted network operations.
+          </p>
+
+          <div class="tags">
+            <span>Python</span>
+            <span>Git</span>
+            <span>NetDevOps</span>
+          </div>
+
+          <div class="post-link-list">
+              <span class="post-link is-disabled">Coming soon</span>
+          </div>
+          
+        </article>
+      </section>
     </main>
 
     <!-- Footer: simple ownership and copyright information. -->
-    <footer>
+    <footer class="page-footer">
       <p>&copy; 2026 Daniel Fonque</p>
     </footer>
   </div>

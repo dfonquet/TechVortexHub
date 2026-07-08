@@ -1,100 +1,172 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap");
+
+/* Projects visual system: dark technical style with controlled accent colors. */
+
+:root {
+  --color-bg: #0a0e1a;
+  --color-surface: rgba(17, 24, 39, 0.74);
+  --color-surface-strong: rgba(5, 10, 18, 0.84);
+  --color-primary: #7c6fdc;
+  --color-accent: #0fd4e8;
+  --color-text: #e2e8f0;
+  --color-text-muted: #94a3b8;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-accent: rgba(15, 212, 232, 0.42);
+  --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.34);
+  --font-body: "Inter", Arial, sans-serif;
+  --font-display: "Space Grotesk", "Inter", Arial, sans-serif;
+  --content-width: 1180px;
+  --radius-pill: 999px;
+  --radius-card: 8px;
+  --transition-fast: 0.22s ease;
+  --transition-medium: 0.24s ease;
+}
+
 /* Base reset: removes default browser spacing and keeps element sizing predictable. */
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Global page style: defines the main font, text color, and technical background image. */
+html {
+  min-height: 100%;
+  scroll-behavior: smooth;
+}
+
 body {
   min-height: 100vh;
-  font-family: Arial, sans-serif;
-  color: #f4f7fb;
+  font-family: var(--font-body);
+  color: var(--color-text);
   background:
-    linear-gradient(rgba(4, 8, 14, 0.82), rgba(4, 8, 14, 0.9)),
+    linear-gradient(rgba(10, 14, 26, 0.76), rgba(10, 14, 26, 0.9)),
     url("../img/DATA_8.jpg") center / cover fixed;
 }
 
-/* Page wrapper: controls the maximum width and vertical spacing of the Projects page. */
-.page {
-  width: min(1180px, calc(100% - 32px));
-  margin: 0 auto;
-  padding: 72px 0 42px;
+/* Visible focus: keeps keyboard navigation accessible and polished. */
+
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 4px;
 }
 
-/* Top navigation: styles the Home, Projects, and Blog navigation buttons. */
+/* Page wrapper: controls width and vertical rhythm. */
+
+.page {
+  width: min(var(--content-width), calc(100% - 32px));
+  margin: 0 auto;
+  padding: 64px 0 42px;
+}
+
+/* Top navigation: primary links across the website. */
+
 .top-nav {
   display: flex;
   justify-content: center;
-  gap: 16px;
-  margin-bottom: 54px;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 58px;
 }
 
 .top-nav a {
-  padding: 13px 26px;
-  border-radius: 50px;
-  background: #8b5db6;
-  color: #fff;
+  min-width: 104px;
+  padding: 12px 22px;
+  border: 1px solid rgba(124, 111, 220, 0.36);
+  border-radius: var(--radius-pill);
+  background: rgba(124, 111, 220, 0.86);
+  color: #ffffff;
+  text-align: center;
   text-decoration: none;
-  font-weight: 700;
-  transition: transform 0.2s ease, background-color 0.2s ease;
+  font-weight: 800;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+  transition:
+    transform var(--transition-fast),
+    background-color var(--transition-fast),
+    color var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
-.top-nav a:hover {
+.top-nav a:hover,
+.top-nav a[aria-current="page"] {
   transform: translateY(-3px);
-  background: #10d4ee;
+  border-color: var(--color-accent);
+  background: var(--color-accent);
   color: #081018;
 }
 
-/* Hero section: introduces the Projects page with title, subtitle, and technical scope. */
+/* Hero section: introduces the Projects page with clearer hierarchy. */
+
 .hero {
   text-align: center;
   margin-bottom: 38px;
 }
 
 .eyebrow {
-  color: #10d4ee;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  color: var(--color-accent);
+  font-size: 0.86rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .hero h1 {
-  color: #8162d6;
-  font-size: clamp(2.4rem, 6vw, 5rem);
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 6vw, 5.2rem);
   line-height: 1;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+  letter-spacing: 0;
+  text-shadow: 0 8px 28px rgba(0, 0, 0, 0.54);
 }
 
 .hero h1 span {
-  color: #10d4ee;
+  color: var(--color-primary);
 }
 
 .hero p {
-  max-width: 820px;
+  max-width: 840px;
   margin: 22px auto 0;
-  color: #d8faff;
-  font-size: 1.08rem;
-  line-height: 1.7;
+  color: var(--color-text-muted);
+  font-size: 1.06rem;
+  line-height: 1.75;
 }
 
-/* Project grid: creates the responsive card layout for labs and study areas. */
+/* Project grid: creates the responsive card layout. */
+
 .project-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 22px;
-  margin-top: 34px;
+  margin-top: 36px;
 }
 
-/* Project cards: reusable visual blocks for each certification, lab, or topic area. */
+/* Project cards: reusable blocks for certifications, labs, and engineering areas. */
+
 .project-card {
-  min-height: 285px;
-  padding: 26px;
-  border: 1px solid rgba(16, 212, 238, 0.65);
-  border-radius: 8px;
-  background: rgba(0, 0, 0, 0.72);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  min-height: 292px;
+  padding: 28px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-strong);
+  box-shadow: var(--shadow-soft);
+  transition:
+    transform var(--transition-medium),
+    border-color var(--transition-medium),
+    box-shadow var(--transition-medium),
+    background-color var(--transition-medium);
+}
+
+.project-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--color-border-accent);
+  background: rgba(8, 15, 28, 0.9);
+  box-shadow:
+    0 22px 52px rgba(0, 0, 0, 0.42),
+    0 0 30px rgba(15, 212, 232, 0.1);
 }
 
 .card-top {
@@ -105,125 +177,126 @@ body {
 
 .status {
   padding: 6px 10px;
-  border-radius: 999px;
-  background: rgba(16, 212, 238, 0.14);
-  color: #10d4ee;
+  border: 1px solid rgba(15, 212, 232, 0.22);
+  border-radius: var(--radius-pill);
+  background: rgba(15, 212, 232, 0.09);
+  color: var(--color-accent);
   font-size: 0.78rem;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .project-card h2 {
-  color: #10d4ee;
-  font-size: 1.35rem;
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: 1.34rem;
+  line-height: 1.2;
   margin-bottom: 12px;
 }
 
 .project-card p {
-  color: #e7f8fb;
-  line-height: 1.65;
+  color: var(--color-text-muted);
+  line-height: 1.68;
   margin-bottom: 18px;
 }
 
-/* Tags: highlights the technologies and study areas related to each card. */
 .tags {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  margin-top: auto;
 }
 
 .tags span {
   padding: 7px 10px;
-  border-radius: 999px;
-  background: rgba(129, 98, 214, 0.28);
-  color: #fff;
-  font-size: 0.85rem;
-  font-weight: 700;
+  border-radius: var(--radius-pill);
+  background: rgba(124, 111, 220, 0.22);
+  color: var(--color-text);
+  font-size: 0.84rem;
+  font-weight: 800;
 }
 
-/* Footer: keeps ownership information simple and separated from the card grid. */
-footer {
+.card-link {
+  display: inline-block;
+  align-self: flex-start;
+  margin-top: 18px;
+  padding: 10px 14px;
+  border: 1px solid rgba(15, 212, 232, 0.48);
+  border-radius: var(--radius-pill);
+  background: rgba(15, 212, 232, 0.1);
+  color: var(--color-accent);
+  font-weight: 800;
+  text-decoration: none;
+  transition:
+    transform var(--transition-fast),
+    background-color var(--transition-fast),
+    color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.card-link:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: #081018;
+}
+
+/* Footer: simple ownership information. */
+
+.page-footer {
   margin-top: 44px;
   text-align: center;
-  color: #b9c9d1;
+  color: var(--color-text-muted);
 }
 
-/* Tablet layout: reduces the project grid from three columns to two. */
+/* Tablet layout: two-column project grid. */
+
 @media (max-width: 900px) {
   .project-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-/* Mobile layout: adjusts spacing, navigation, and cards for smaller screens. */
-@media (max-width: 640px) {
-  .page {
-    width: min(100% - 24px, 1180px);
-    padding-top: 28px;
-  }
+/* Mobile layout: improves readability and background behavior on phones. */
 
-  .top-nav {
-    margin-bottom: 34px;
-    gap: 10px;
-  }
-
-  .top-nav a {
-    padding: 11px 18px;
-    font-size: 0.9rem;
-  }
-
-  .project-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .project-card {
-    min-height: auto;
-    padding: 22px;
-  }
-}
-
-/* Mobile polish: improves readability and background behavior on phone screens. */
-@media (max-width: 640px) {
+@media (max-width: 760px) {
   body {
     background-attachment: scroll;
   }
 
   .page {
     width: 100%;
-    padding: 24px 14px 32px;
+    padding: 28px 14px 32px;
   }
 
   .top-nav {
-    flex-wrap: wrap;
     gap: 8px;
-    margin-bottom: 28px;
+    margin-bottom: 34px;
   }
 
   .top-nav a {
+    min-width: 86px;
     padding: 10px 14px;
     font-size: 0.86rem;
-    min-width: 86px;
-    text-align: center;
   }
 
   .hero {
-    margin-bottom: 26px;
+    margin-bottom: 28px;
   }
 
   .eyebrow {
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     letter-spacing: 0.12em;
-    margin-bottom: 10px;
   }
 
   .hero h1 {
-    font-size: clamp(2.2rem, 14vw, 3.2rem);
+    font-size: clamp(2.35rem, 14vw, 3.35rem);
     line-height: 0.98;
   }
 
   .hero p {
     margin-top: 16px;
     font-size: 0.95rem;
-    line-height: 1.55;
+    line-height: 1.58;
   }
 
   .project-grid {
@@ -234,8 +307,7 @@ footer {
 
   .project-card {
     min-height: auto;
-    padding: 20px;
-    border-radius: 8px;
+    padding: 22px;
   }
 
   .card-top {
@@ -248,7 +320,7 @@ footer {
 
   .project-card p {
     font-size: 0.95rem;
-    line-height: 1.55;
+    line-height: 1.58;
   }
 
   .tags {
@@ -256,202 +328,28 @@ footer {
   }
 
   .tags span {
-    font-size: 0.78rem;
     padding: 6px 9px;
+    font-size: 0.78rem;
   }
 
-  footer {
+  .page-footer {
     margin-top: 30px;
     font-size: 0.85rem;
   }
 }
 
-/* Card interaction: adds a subtle hover effect to make the cards feel interactive. */
-.project-card {
-  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
-}
+/* Reduced motion: respects users who prefer less animation. */
 
-.project-card:hover {
-  transform: translateY(-6px);
-  border-color: #10d4ee;
-  box-shadow: 0 14px 34px rgba(16, 212, 238, 0.16);
-}
-
-
-
-
-
-
-/* Card links: adds clear actions inside project and lab cards. */
-.card-link {
-  display: inline-block;
-  margin-top: 22px;
-  padding: 10px 14px;
-  border: 1px solid rgba(16, 212, 238, 0.55);
-  border-radius: 999px;
-  background: rgba(16, 212, 238, 0.14);
-  color: #10d4ee;
-  font-weight: 800;
-  text-decoration: none;
-}
-
-.card-link:hover {
-  background: #10d4ee;
-  color: #081018;
-}
-
-/* Lab summary: highlights the purpose and current state of the CCIE SP lab library. */
-.lab-summary {
-  display: flex;
-  justify-content: space-between;
-  gap: 24px;
-  margin: 34px 0 22px;
-  padding: 28px;
-  border: 1px solid rgba(16, 212, 238, 0.65);
-  border-radius: 8px;
-  background: rgba(0, 0, 0, 0.72);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-}
-
-.lab-summary h2 {
-  margin: 16px 0 12px;
-  color: #10d4ee;
-  font-size: 1.7rem;
-}
-
-.lab-summary p {
-  max-width: 760px;
-  color: #e7f8fb;
-  line-height: 1.65;
-}
-
-/* Lab actions: provides quick navigation to the related article and project index. */
-.lab-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  min-width: 190px;
-}
-
-.lab-actions a {
-  padding: 11px 14px;
-  border: 1px solid rgba(16, 212, 238, 0.55);
-  border-radius: 999px;
-  background: rgba(16, 212, 238, 0.12);
-  color: #10d4ee;
-  font-weight: 800;
-  text-align: center;
-  text-decoration: none;
-}
-
-.lab-actions a:hover {
-  background: #10d4ee;
-  color: #081018;
-}
-
-/* Lab metrics: summarizes the library content in compact technical counters. */
-.lab-metrics {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-  margin-bottom: 24px;
-}
-
-.lab-metrics div {
-  padding: 20px;
-  border: 1px solid rgba(16, 212, 238, 0.45);
-  border-radius: 8px;
-  background: rgba(0, 0, 0, 0.62);
-  text-align: center;
-}
-
-.lab-metrics strong {
-  display: block;
-  color: #10d4ee;
-  font-size: 1.8rem;
-}
-
-.lab-metrics span {
-  color: #d8faff;
-  font-weight: 700;
-}
-
-/* Lab grid: organizes the lab artifacts into library-style panels. */
-.lab-grid {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  gap: 22px;
-  margin-top: 28px;
-}
-
-.lab-panel {
-  padding: 26px;
-  border: 1px solid rgba(16, 212, 238, 0.65);
-  border-radius: 8px;
-  background: rgba(0, 0, 0, 0.72);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-}
-
-.panel-top {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 18px;
-}
-
-.lab-panel h2 {
-  color: #10d4ee;
-  font-size: 1.35rem;
-  margin-bottom: 12px;
-}
-
-.lab-panel p {
-  color: #e7f8fb;
-  line-height: 1.65;
-  margin-bottom: 18px;
-}
-
-/* File links: makes text artifacts easy to scan and open from the lab library. */
-.file-grid,
-.file-list {
-  display: grid;
-  gap: 10px;
-}
-
-.file-grid {
-  grid-template-columns: repeat(2, 1fr);
-}
-
-.file-grid a,
-.file-list a {
-  padding: 10px 12px;
-  border: 1px solid rgba(16, 212, 238, 0.28);
-  border-radius: 8px;
-  background: rgba(3, 8, 14, 0.88);
-  color: #d8faff;
-  font-weight: 700;
-  text-decoration: none;
-}
-
-.file-grid a:hover,
-.file-list a:hover {
-  border-color: #10d4ee;
-  color: #10d4ee;
-  transform: translateY(-2px);
-}
-
-/* Mobile lab layout: keeps the lab library readable on phone screens. */
-@media (max-width: 760px) {
-  .lab-summary {
-    flex-direction: column;
+@media (prefers-reduced-motion: reduce) {
+  .top-nav a,
+  .project-card,
+  .card-link {
+    transition: none;
   }
 
-  .lab-actions {
-    min-width: 0;
-  }
-
-  .lab-metrics,
-  .lab-grid,
-  .file-grid {
-    grid-template-columns: 1fr;
+  .top-nav a:hover,
+  .project-card:hover,
+  .card-link:hover {
+    transform: none;
   }
 }
