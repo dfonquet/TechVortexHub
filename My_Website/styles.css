@@ -275,6 +275,160 @@ button:focus-visible {
   color: #ffffff;
 }
 
+/* Credentials: compact badge cards for certifications and community recognition. */
+
+.credentials-showcase {
+  width: min(980px, calc(100% - 24px));
+  margin: 32px auto 0;
+}
+
+.credentials-title {
+  margin: 0 0 18px;
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: clamp(1.55rem, 3vw, 2.35rem);
+  font-weight: 700;
+  line-height: 1.08;
+  text-align: center;
+  text-shadow: 0 8px 28px rgba(0, 0, 0, 0.54);
+  animation: nameGlow 5.5s ease-in-out infinite;
+}
+
+.credentials-title span {
+  color: var(--color-primary);
+}
+
+.credential-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.credential-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 170px;
+  padding: 16px 14px;
+  border: 1px solid rgba(15, 212, 232, 0.18);
+  border-radius: 10px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(15, 212, 232, 0.14), transparent 52%),
+    linear-gradient(180deg, rgba(124, 111, 220, 0.06), rgba(3, 8, 14, 0.18)),
+    rgba(3, 8, 14, 0.58);
+  color: inherit;
+  text-align: center;
+  text-decoration: none;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.025),
+    0 0 18px rgba(15, 212, 232, 0.04);
+  transition:
+    transform var(--transition-fast),
+    border-color var(--transition-fast),
+    background-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.credential-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(90deg, rgba(15, 212, 232, 0.58), transparent 18%),
+    radial-gradient(circle at top, rgba(124, 111, 220, 0.14), transparent 55%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-fast);
+}
+
+.credential-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.credential-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(15, 212, 232, 0.48);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(15, 212, 232, 0.20), transparent 56%),
+    linear-gradient(180deg, rgba(124, 111, 220, 0.10), rgba(3, 8, 14, 0.24)),
+    rgba(3, 8, 14, 0.70);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.035),
+    0 0 24px rgba(15, 212, 232, 0.08);
+}
+
+.credential-card:hover::after {
+  opacity: 0.18;
+}
+
+.credential-media {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 96px;
+  height: 96px;
+  margin-bottom: 14px;
+  border: 1px solid rgba(124, 111, 220, 0.28);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(15, 212, 232, 0.18), transparent 46%),
+    linear-gradient(135deg, rgba(124, 111, 220, 0.20), rgba(15, 212, 232, 0.10)),
+    rgba(5, 10, 18, 0.46);
+  overflow: hidden;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.025),
+    0 12px 28px rgba(0, 0, 0, 0.24);
+  color: inherit;
+  text-decoration: none;
+  transition:
+    transform var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.credential-media:hover {
+  transform: translateY(-2px) scale(1.03);
+  border-color: rgba(15, 212, 232, 0.56);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.045),
+    0 14px 30px rgba(15, 212, 232, 0.12);
+}
+
+.credential-media img {
+  position: absolute;
+  inset: 8px;
+  width: calc(100% - 16px);
+  height: calc(100% - 16px);
+  object-fit: contain;
+  filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.32));
+}
+
+.credential-media-light {
+  background: #ffffff;
+}
+
+.credential-media-light img {
+  filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.18));
+}
+
+.credential-mark {
+  color: #b7f7ff;
+  font-size: 0.86rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.credential-card h2 {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  line-height: 1.18;
+}
+
 /* Resume CTA: note, arrow, and button. */
 
 .resume-link-wrapper {
@@ -283,7 +437,7 @@ button:focus-visible {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .resume-arrow {
@@ -459,6 +613,20 @@ button:focus-visible {
     padding: 18px;
   }
 
+  .credentials-showcase {
+    width: 100%;
+    margin-top: 24px;
+  }
+
+  .credentials-title {
+    margin-bottom: 16px;
+    font-size: clamp(1.4rem, 8vw, 2rem);
+  }
+
+  .credential-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .focus-tags {
     gap: 8px;
   }
@@ -501,6 +669,14 @@ button:focus-visible {
     padding: 20px;
   }
 
+  .credential-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .credential-card {
+    min-height: auto;
+  }
+
   .resume-arrow {
     font-size: 1.05rem;
   }
@@ -516,6 +692,7 @@ button:focus-visible {
   .hero-title,
   .hero-name,
   .bio-card,
+  .credential-card,
   .nav-button,
   .social-icon,
   .resume-arrow {
