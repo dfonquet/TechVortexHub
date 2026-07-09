@@ -275,6 +275,69 @@ button:focus-visible {
   color: #ffffff;
 }
 
+/* Latest notes: small live links into the technical notebook. */
+
+.latest-notes {
+  width: min(900px, calc(100% - 24px));
+  margin: 16px auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px 12px;
+}
+
+.latest-label {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.latest-note-list {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.latest-note-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 8px 13px;
+  border: 1px solid rgba(15, 212, 232, 0.3);
+  border-radius: var(--radius-pill);
+  background:
+    linear-gradient(135deg, rgba(15, 212, 232, 0.1), rgba(124, 111, 220, 0.1)),
+    rgba(5, 10, 18, 0.42);
+  color: #b7f7ff;
+  font-size: 0.84rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-decoration: none;
+  box-shadow: 0 0 16px rgba(15, 212, 232, 0.05);
+  transition:
+    transform var(--transition-fast),
+    border-color var(--transition-fast),
+    background-color var(--transition-fast),
+    color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.latest-note-link:hover {
+  transform: translateY(-1px);
+  border-color: rgba(15, 212, 232, 0.72);
+  background:
+    linear-gradient(135deg, rgba(15, 212, 232, 0.18), rgba(124, 111, 220, 0.18)),
+    rgba(5, 10, 18, 0.58);
+  color: #ffffff;
+  box-shadow: 0 0 22px rgba(15, 212, 232, 0.1);
+}
+
 /* Resume CTA: note, arrow, and button. */
 
 .resume-link-wrapper {
@@ -468,6 +531,22 @@ button:focus-visible {
     padding: 7px 10px;
   }
 
+  .latest-notes {
+    width: 100%;
+    margin-top: 16px;
+    gap: 9px;
+  }
+
+  .latest-label {
+    width: 100%;
+    text-align: center;
+  }
+
+  .latest-note-link {
+    font-size: 0.8rem;
+    padding: 8px 11px;
+  }
+
   .resume-link-wrapper {
     margin-top: 22px;
     gap: 7px;
@@ -518,6 +597,7 @@ button:focus-visible {
   .bio-card,
   .nav-button,
   .social-icon,
+  .latest-note-link,
   .resume-arrow {
     animation: none;
     transition: none;

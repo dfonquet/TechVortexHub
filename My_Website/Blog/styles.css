@@ -254,27 +254,34 @@ button:focus-visible {
   align-items: center;
   justify-content: center;
   padding: 9px 12px;
-  border: 1px solid rgba(15, 212, 232, 0.34);
+  border: 1px solid rgba(15, 212, 232, 0.36);
   border-radius: var(--radius-pill);
-  background: rgba(15, 212, 232, 0.08);
-  color: var(--color-accent);
+  background:
+    linear-gradient(135deg, rgba(15, 212, 232, 0.1), rgba(124, 111, 220, 0.1)),
+    rgba(5, 10, 18, 0.42);
+  color: #b7f7ff;
   font-size: 0.88rem;
   font-weight: 700;
   text-decoration: none;
   line-height: 1.2;
+  box-shadow: 0 0 16px rgba(15, 212, 232, 0.05);
   transition:
     transform var(--transition-fast),
     background-color var(--transition-fast),
     color var(--transition-fast),
-    border-color var(--transition-fast);
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
 .post-link:hover,
 .clickable-card:hover .post-link {
   transform: translateY(-2px);
-  background: rgba(15, 212, 232, 0.15);
-  border-color: var(--color-accent);
-  color: #7ceaf5;
+  background:
+    linear-gradient(135deg, rgba(15, 212, 232, 0.18), rgba(124, 111, 220, 0.18)),
+    rgba(5, 10, 18, 0.58);
+  border-color: rgba(15, 212, 232, 0.72);
+  color: #ffffff;
+  box-shadow: 0 0 22px rgba(15, 212, 232, 0.1);
 }
 
 .post-link.is-disabled {
@@ -285,9 +292,12 @@ button:focus-visible {
 
 .post-link.is-disabled:hover {
   transform: translateY(-2px);
-  background: rgba(15, 212, 232, 0.15);
-  border-color: var(--color-accent);
-  color: #7ceaf5;
+  background:
+    linear-gradient(135deg, rgba(15, 212, 232, 0.12), rgba(124, 111, 220, 0.12)),
+    rgba(5, 10, 18, 0.48);
+  border-color: rgba(15, 212, 232, 0.5);
+  color: #b7f7ff;
+  box-shadow: 0 0 18px rgba(15, 212, 232, 0.08);
 }
 
 /* Footer */
