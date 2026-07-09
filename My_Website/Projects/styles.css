@@ -73,9 +73,9 @@ button:focus-visible {
 .top-nav a {
   min-width: 104px;
   padding: 12px 22px;
-  border: 1px solid rgba(124, 111, 220, 0.36);
+  border: 1px solid rgba(124, 111, 220, 0.28);
   border-radius: var(--radius-pill);
-  background: rgba(124, 111, 220, 0.86);
+  background: rgba(124, 111, 220, 0.78);
   color: #ffffff;
   text-align: center;
   text-decoration: none;
