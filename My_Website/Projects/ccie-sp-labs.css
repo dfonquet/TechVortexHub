@@ -411,45 +411,108 @@ button:focus-visible {
 
 .config-group {
   padding: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: var(--radius-card);
-  background: rgba(3, 8, 14, 0.42);
+  border: 1px solid rgba(15, 212, 232, 0.10);
+  border-radius: 10px;
+  background:
+    linear-gradient(135deg, rgba(15, 212, 232, 0.04), rgba(124, 111, 220, 0.035)),
+    rgba(3, 8, 14, 0.42);
 }
 
 .config-group h3 {
   margin-bottom: 12px;
   color: #b7f7ff;
   font-size: 0.94rem;
+  letter-spacing: 0.01em;
 }
 
 .file-grid a,
 .file-list a {
-  padding: 10px 12px;
-  border: 1px solid rgba(15, 212, 232, 0.18);
-  border-radius: var(--radius-card);
-  background: rgba(3, 8, 14, 0.82);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 46px;
+  padding: 12px 14px;
+  border: 1px solid rgba(15, 212, 232, 0.20);
+  border-radius: 10px;
+  background:
+    linear-gradient(135deg, rgba(15, 212, 232, 0.07), rgba(124, 111, 220, 0.06)),
+    rgba(3, 8, 14, 0.78);
   color: var(--color-text);
   font-weight: 700;
   text-decoration: none;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.018),
+    0 0 14px rgba(15, 212, 232, 0.035);
   transition:
     transform 0.2s ease,
     border-color 0.2s ease,
     color 0.2s ease,
-    background-color 0.2s ease;
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.file-grid a::after,
+.file-list a::after {
+  flex: 0 0 auto;
+  padding: 5px 8px;
+  border: 1px solid rgba(57, 255, 136, 0.24);
+  border-radius: var(--radius-pill);
+  background: rgba(57, 255, 136, 0.07);
+  color: #39ff88;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.file-grid a::after {
+  content: "CFG";
+}
+
+.file-list a::after {
+  content: "NOTE";
 }
 
 .file-grid a:hover,
 .file-list a:hover {
   transform: translateY(-2px);
-  border-color: var(--color-accent);
-  background: rgba(15, 212, 232, 0.08);
-  color: var(--color-accent);
+  border-color: rgba(15, 212, 232, 0.64);
+  background:
+    linear-gradient(135deg, rgba(15, 212, 232, 0.14), rgba(124, 111, 220, 0.10)),
+    rgba(3, 8, 14, 0.88);
+  color: #ffffff;
+  box-shadow:
+    inset 3px 0 0 rgba(15, 212, 232, 0.72),
+    0 0 20px rgba(15, 212, 232, 0.08);
 }
 
 .card-link-list {
   display: grid;
   gap: 10px;
-  max-width: 240px;
+  max-width: 320px;
+}
+
+.card-link-list .card-link {
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+}
+
+.card-link-list .card-link::after {
+  content: "READ";
+  flex: 0 0 auto;
+  padding: 5px 8px;
+  border: 1px solid rgba(57, 255, 136, 0.24);
+  border-radius: var(--radius-pill);
+  background: rgba(57, 255, 136, 0.07);
+  color: #39ff88;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1;
 }
 
 /* Topic tags */
