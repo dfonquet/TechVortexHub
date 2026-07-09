@@ -11,7 +11,7 @@ The project brings together my personal website, technical blog posts, and lab-o
 
 ## Live Site
 
-[tech-vortex-hub.vercel.app](https://dfonquet.github.io/TechVortexHub/My_Website/daftiel.html)
+[https://dfonquet.github.io/TechVortexHub/My_Website/daftiel.html](https://dfonquet.github.io/TechVortexHub/My_Website/daftiel.html)
 
 ## Overview
 
@@ -75,7 +75,7 @@ The main technical areas currently covered in this repository include:
 - JavaScript
 - Mermaid.js for technical diagrams
 - Giscus for article comments
-- Vercel for deployment
+- GitHub Pages for publishing
 
 ## Purpose
 
