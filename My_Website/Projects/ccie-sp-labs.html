@@ -17,7 +17,7 @@
     rel="stylesheet"
   />
 
-  <link rel="stylesheet" href="ccie-sp-labs.css" />
+  <link rel="stylesheet" href="ccie-sp-labs.css?v=20260709a" />
 </head>
 
 <body>
@@ -49,23 +49,70 @@
         </div>
 
         <div class="lab-actions">
-          <a href="../Blog/ccie-sp-multicast-asm.html">Read multicast article</a>
           <a href="projects.html">Back to projects</a>
+        </div>
+      </section>
+
+      <section class="quick-lab-map" aria-label="Quick lab map">
+        <div class="section-heading">
+          <span class="status">Lab Map</span>
+          <h2>Quick Lab Map</h2>
+          <p>
+            The lab is organized around the same flow I use when troubleshooting:
+            first the backbone, then the services, then the edge behavior.
+          </p>
+        </div>
+
+        <div class="lab-pill-grid">
+          <article class="lab-pill">
+            <h3>Control Plane</h3>
+            <p>IS-IS, MP-BGP, RR, PCE.</p>
+            <code>routing core</code>
+          </article>
+          <article class="lab-pill">
+            <h3>Transport</h3>
+            <p>SR-MPLS, TI-LFA, BFD.</p>
+            <code>underlay</code>
+          </article>
+          <article class="lab-pill">
+            <h3>Services</h3>
+            <p>L3VPN and Internet VRFs.</p>
+            <code>vpnv4</code>
+          </article>
+          <article class="lab-pill">
+            <h3>Multicast</h3>
+            <p>ASM, RP discovery, RPF.</p>
+            <code>mroute</code>
+          </article>
+          <article class="lab-pill">
+            <h3>Customer Edge</h3>
+            <p>Source and receiver validation.</p>
+            <code>CE view</code>
+          </article>
+          <article class="lab-pill">
+            <h3>Ops Notes</h3>
+            <p>Show commands and checks.</p>
+            <code>verify</code>
+          </article>
         </div>
       </section>
 
       <section class="lab-metrics" aria-label="Lab metrics">
         <div>
-          <strong>20+</strong>
-          <span>Device configs</span>
+          <strong>20</strong>
+          <span>Config files</span>
         </div>
         <div>
           <strong>4</strong>
           <span>Feature notes</span>
         </div>
         <div>
-          <strong>SP</strong>
-          <span>Architecture focus</span>
+          <strong>8</strong>
+          <span>Core topics</span>
+        </div>
+        <div>
+          <strong>May 2026</strong>
+          <span>Last update</span>
         </div>
       </section>
 
@@ -80,27 +127,50 @@
             as study artifacts and may evolve as the topology grows.
           </p>
 
-          <div class="file-grid">
-            <a href="labs/ccie-sp/full-configs/p1.txt" target="_blank" rel="noopener noreferrer">P1</a>
-            <a href="labs/ccie-sp/full-configs/p2.txt" target="_blank" rel="noopener noreferrer">P2</a>
-            <a href="labs/ccie-sp/full-configs/p3.txt" target="_blank" rel="noopener noreferrer">P3</a>
-            <a href="labs/ccie-sp/full-configs/p3-4.txt" target="_blank" rel="noopener noreferrer">P3-4</a>
-            <a href="labs/ccie-sp/full-configs/p4.txt" target="_blank" rel="noopener noreferrer">P4</a>
-            <a href="labs/ccie-sp/full-configs/p5.txt" target="_blank" rel="noopener noreferrer">P5</a>
-            <a href="labs/ccie-sp/full-configs/p6.txt" target="_blank" rel="noopener noreferrer">P6</a>
-            <a href="labs/ccie-sp/full-configs/p7.txt" target="_blank" rel="noopener noreferrer">P7</a>
-            <a href="labs/ccie-sp/full-configs/p8.txt" target="_blank" rel="noopener noreferrer">P8</a>
-            <a href="labs/ccie-sp/full-configs/p9.txt" target="_blank" rel="noopener noreferrer">P9</a>
-            <a href="labs/ccie-sp/full-configs/p10.txt" target="_blank" rel="noopener noreferrer">P10</a>
-            <a href="labs/ccie-sp/full-configs/p11-rr-shadown.txt" target="_blank" rel="noopener noreferrer">P11 RR Shadow</a>
-            <a href="labs/ccie-sp/full-configs/p12-rr-primary.txt" target="_blank" rel="noopener noreferrer">P12 RR Primary</a>
-            <a href="labs/ccie-sp/full-configs/p23-pce.txt" target="_blank" rel="noopener noreferrer">P23 PCE</a>
-            <a href="labs/ccie-sp/full-configs/pe-1.txt" target="_blank" rel="noopener noreferrer">PE-1</a>
-            <a href="labs/ccie-sp/full-configs/pe-2.txt" target="_blank" rel="noopener noreferrer">PE-2</a>
-            <a href="labs/ccie-sp/full-configs/pe-3.txt" target="_blank" rel="noopener noreferrer">PE-3</a>
-            <a href="labs/ccie-sp/full-configs/cust-b1-source.txt" target="_blank" rel="noopener noreferrer">CUST B1 Source</a>
-            <a href="labs/ccie-sp/full-configs/cust-b2-receiver.txt" target="_blank" rel="noopener noreferrer">CUST B2 Receiver</a>
-            <a href="labs/ccie-sp/full-configs/cust-d2-receiver-1.txt" target="_blank" rel="noopener noreferrer">CUST D2 Receiver</a>
+          <div class="config-groups">
+            <div class="config-group">
+              <h3>P Routers</h3>
+              <div class="file-grid">
+                <a href="labs/ccie-sp/full-configs/p1.txt" target="_blank" rel="noopener noreferrer">P1</a>
+                <a href="labs/ccie-sp/full-configs/p2.txt" target="_blank" rel="noopener noreferrer">P2</a>
+                <a href="labs/ccie-sp/full-configs/p3.txt" target="_blank" rel="noopener noreferrer">P3</a>
+                <a href="labs/ccie-sp/full-configs/p3-4.txt" target="_blank" rel="noopener noreferrer">P3-4</a>
+                <a href="labs/ccie-sp/full-configs/p4.txt" target="_blank" rel="noopener noreferrer">P4</a>
+                <a href="labs/ccie-sp/full-configs/p5.txt" target="_blank" rel="noopener noreferrer">P5</a>
+                <a href="labs/ccie-sp/full-configs/p6.txt" target="_blank" rel="noopener noreferrer">P6</a>
+                <a href="labs/ccie-sp/full-configs/p7.txt" target="_blank" rel="noopener noreferrer">P7</a>
+                <a href="labs/ccie-sp/full-configs/p8.txt" target="_blank" rel="noopener noreferrer">P8</a>
+                <a href="labs/ccie-sp/full-configs/p9.txt" target="_blank" rel="noopener noreferrer">P9</a>
+                <a href="labs/ccie-sp/full-configs/p10.txt" target="_blank" rel="noopener noreferrer">P10</a>
+              </div>
+            </div>
+
+            <div class="config-group">
+              <h3>PE Routers</h3>
+              <div class="file-grid">
+                <a href="labs/ccie-sp/full-configs/pe-1.txt" target="_blank" rel="noopener noreferrer">PE-1</a>
+                <a href="labs/ccie-sp/full-configs/pe-2.txt" target="_blank" rel="noopener noreferrer">PE-2</a>
+                <a href="labs/ccie-sp/full-configs/pe-3.txt" target="_blank" rel="noopener noreferrer">PE-3</a>
+              </div>
+            </div>
+
+            <div class="config-group">
+              <h3>RR / PCE</h3>
+              <div class="file-grid">
+                <a href="labs/ccie-sp/full-configs/p11-rr-shadown.txt" target="_blank" rel="noopener noreferrer">P11 RR Shadow</a>
+                <a href="labs/ccie-sp/full-configs/p12-rr-primary.txt" target="_blank" rel="noopener noreferrer">P12 RR Primary</a>
+                <a href="labs/ccie-sp/full-configs/p23-pce.txt" target="_blank" rel="noopener noreferrer">P23 PCE</a>
+              </div>
+            </div>
+
+            <div class="config-group">
+              <h3>Customer Edge</h3>
+              <div class="file-grid">
+                <a href="labs/ccie-sp/full-configs/cust-b1-source.txt" target="_blank" rel="noopener noreferrer">CUST B1 Source</a>
+                <a href="labs/ccie-sp/full-configs/cust-b2-receiver.txt" target="_blank" rel="noopener noreferrer">CUST B2 Receiver</a>
+                <a href="labs/ccie-sp/full-configs/cust-d2-receiver-1.txt" target="_blank" rel="noopener noreferrer">CUST D2 Receiver</a>
+              </div>
+            </div>
           </div>
         </article>
 
@@ -125,13 +195,16 @@
           <div class="panel-top">
             <span class="status">Related Work</span>
           </div>
-          <h2>Multicast ASM Article</h2>
+          <h2>Related Lab Notes</h2>
           <p>
-            Detailed write-up explaining multicast ASM behavior, BSR, RP discovery,
-            RPF logic, MRIB validation, and receiver-to-RP tree building.
+            Related notes connected to this lab: multicast ASM behavior and the RD/RT
+            L3VPN model behind the service side.
           </p>
 
-          <a class="card-link" href="../Blog/ccie-sp-multicast-asm.html">Open article</a>
+          <div class="card-link-list">
+            <a class="card-link" href="../Blog/ccie-sp-multicast-asm.html">Open multicast article</a>
+            <a class="card-link" href="../Blog/route-target-rd-l3vpn.html">Open RD/RT note</a>
+          </div>
         </article>
 
         <article class="lab-panel">
