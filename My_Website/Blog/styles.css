@@ -197,9 +197,11 @@ button:focus-visible {
 
 .status {
   display: inline-flex;
+  align-self: flex-end;
   align-items: center;
   justify-content: center;
   width: fit-content;
+  margin-left: auto;
   margin-bottom: 18px;
   padding: 5px 10px;
   border: 1px solid rgba(15, 212, 232, 0.22);

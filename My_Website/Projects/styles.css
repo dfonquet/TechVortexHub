@@ -216,16 +216,20 @@ button:focus-visible {
 }
 
 .card-link {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   align-self: flex-start;
   margin-top: 18px;
-  padding: 10px 14px;
+  padding: 9px 12px;
   border: 1px solid rgba(15, 212, 232, 0.48);
   border-radius: var(--radius-pill);
   background: rgba(15, 212, 232, 0.1);
   color: var(--color-accent);
-  font-weight: 800;
+  font-size: 0.88rem;
+  font-weight: 700;
   text-decoration: none;
+  line-height: 1.2;
   transition:
     transform var(--transition-fast),
     background-color var(--transition-fast),
@@ -238,6 +242,19 @@ button:focus-visible {
   border-color: var(--color-accent);
   background: var(--color-accent);
   color: #081018;
+}
+
+.card-link.is-disabled {
+  cursor: default;
+  background: rgba(15, 212, 232, 0.08);
+  color: var(--color-accent);
+}
+
+.card-link.is-disabled:hover {
+  transform: translateY(-2px);
+  border-color: rgba(15, 212, 232, 0.48);
+  background: rgba(15, 212, 232, 0.08);
+  color: var(--color-accent);
 }
 
 /* Footer: simple ownership information. */
