@@ -1,9 +1,9 @@
 # TechVortexHub
 
 ![Static Site](https://img.shields.io/badge/site-static-0f172a?style=for-the-badge)
-![HTML](https://img.shields.io/badge/HTML-64.4%25-e34f26?style=for-the-badge)
-![CSS](https://img.shields.io/badge/CSS-31.8%25-1572b6?style=for-the-badge)
-![JavaScript](https://img.shields.io/badge/JavaScript-3.8%25-f7df1e?style=for-the-badge&logo=javascript&logoColor=000)
+![HTML](https://img.shields.io/badge/HTML-54.2%25-e34f26?style=for-the-badge&logo=html5&logoColor=white)
+![CSS](https://img.shields.io/badge/CSS-41.6%25-1572b6?style=for-the-badge&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-4.2%25-f7df1e?style=for-the-badge&logo=javascript&logoColor=000)
 
 TechVortexHub is my personal technical website and study hub focused on Service Provider networking, lab documentation, and engineering notes.
 
@@ -32,18 +32,22 @@ TechVortexHub/
 │   ├── Blog/
 │   ├── Projects/
 │   └── img/
+├── README.md
 └── .gitignore
 ```
 
 ## Main Sections
 
 ### Home
+
 The landing page introduces my profile, technical focus, and navigation to the main site sections.
 
 ### Projects
+
 This section contains technical project pages, lab summaries, and implementation-focused content related to Service Provider technologies.
 
 ### Blog
+
 This section contains technical articles and study notes covering:
 - CCIE Service Provider
 - JNCIE-SP topics
