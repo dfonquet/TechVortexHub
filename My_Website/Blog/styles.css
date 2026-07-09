@@ -166,6 +166,9 @@ button:focus-visible {
 }
 
 .post-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   min-height: 100%;
@@ -181,11 +184,38 @@ button:focus-visible {
     background-color var(--transition-medium);
 }
 
+.post-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(
+      420px circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%),
+      rgba(15, 212, 232, 0.16),
+      rgba(124, 111, 220, 0.08) 38%,
+      transparent 70%
+    );
+  opacity: 0;
+  transition: opacity var(--transition-medium);
+  pointer-events: none;
+}
+
+.post-card > * {
+  position: relative;
+  z-index: 1;
+}
+
 .post-card:hover {
   transform: translateY(-5px);
   border-color: var(--color-border-accent);
   background: rgba(8, 15, 28, 0.88);
   box-shadow: var(--shadow-hover);
+}
+
+.post-card:hover::before {
+  opacity: 1;
 }
 
 .clickable-card {
@@ -1114,6 +1144,7 @@ body.diagram-open {
 
   .top-nav a,
   .post-card,
+  .post-card::before,
   .post-link,
   .copy-command,
   .back-to-top,

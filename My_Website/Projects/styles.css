@@ -145,6 +145,9 @@ button:focus-visible {
 /* Project cards: reusable blocks for certifications, labs, and engineering areas. */
 
 .project-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   min-height: 292px;
@@ -160,6 +163,29 @@ button:focus-visible {
     background-color var(--transition-medium);
 }
 
+.project-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(
+      420px circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%),
+      rgba(15, 212, 232, 0.16),
+      rgba(124, 111, 220, 0.08) 38%,
+      transparent 70%
+    );
+  opacity: 0;
+  transition: opacity var(--transition-medium);
+  pointer-events: none;
+}
+
+.project-card > * {
+  position: relative;
+  z-index: 1;
+}
+
 .project-card:hover {
   transform: translateY(-6px);
   border-color: var(--color-border-accent);
@@ -167,6 +193,10 @@ button:focus-visible {
   box-shadow:
     0 22px 52px rgba(0, 0, 0, 0.42),
     0 0 30px rgba(15, 212, 232, 0.1);
+}
+
+.project-card:hover::before {
+  opacity: 1;
 }
 
 .card-top {
@@ -371,6 +401,7 @@ button:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   .top-nav a,
   .project-card,
+  .project-card::before,
   .card-link {
     transition: none;
   }
