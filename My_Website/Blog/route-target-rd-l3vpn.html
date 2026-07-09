@@ -4,8 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="author" content="Daniel Fonque" />
+  <meta
+    name="description"
+    content="Technical note explaining Route Distinguishers, Route Targets, VPNv4 routes, MP-BGP extended communities, and MPLS L3VPN import/export behavior."
+  />
   <title>RD vs RT in MPLS L3VPN - Daniel Fonque</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=20260709d" />
 </head>
 
 <body>
@@ -47,7 +51,35 @@
         </div>
       </header>
 
+      <!-- Quick difference: gives the reader the core idea before the deeper dive. -->
+      <section class="article-card">
+        <h2>Quick Difference</h2>
+        <div class="concept-grid">
+          <div class="concept-mini-card">
+            <h3>RD</h3>
+            <p>
+              Makes overlapping customer prefixes unique inside the VPNv4 control plane.
+            </p>
+            <code>RD = uniqueness</code>
+          </div>
 
+          <div class="concept-mini-card">
+            <h3>RT</h3>
+            <p>
+              Controls which VPN routes a VRF exports and which VPN routes it imports.
+            </p>
+            <code>RT = policy</code>
+          </div>
+
+          <div class="concept-mini-card">
+            <h3>PE Role</h3>
+            <p>
+              The PE attaches RD and RT information before advertising VPNv4 routes.
+            </p>
+            <code>PE = VRF edge</code>
+          </div>
+        </div>
+      </section>
 
       <!-- Mental model: explains the role of RD and RT before going into details. -->
       <section class="article-card">
@@ -155,9 +187,10 @@ Both prefixes can coexist in MP-BGP VPNv4.</code></pre>
           in MPLS L3VPN designs.
         </p>
 
-        <blockquote>
+        <blockquote cite="https://www.rfc-editor.org/rfc/rfc4360.html">
           "The BGP Extended Communities attribute provides a mechanism for tagging routes
           with information that can be used for policy decisions."
+          <footer>RFC 4360 - BGP Extended Communities Attribute</footer>
         </blockquote>
 
         <div class="mermaid-card">
@@ -368,6 +401,11 @@ flowchart LR
           related to missing VRF routes, missing redistribution, incorrect RT import/export,
           or ICMP sourcing from the wrong interface.
         </p>
+        <p>
+          The commands below are a study checklist. Exact syntax can vary between
+          Cisco IOS, IOS-XR, and Junos, but the troubleshooting logic is the same:
+          verify the VPNv4 route, the VRF route table, label forwarding, and RT policy.
+        </p>
 
         <div class="cli-block">
           <div class="cli-header">
@@ -490,8 +528,19 @@ show bgp vpnv4 unicast vrf SPCOR</code></pre>
       }
 
       diagramCards.forEach(function (card) {
+        card.setAttribute("role", "button");
+        card.setAttribute("tabindex", "0");
+        card.setAttribute("title", "Open diagram preview");
+
         card.addEventListener("click", function () {
           openDiagramLightbox(card);
+        });
+
+        card.addEventListener("keydown", function (event) {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            openDiagramLightbox(card);
+          }
         });
       });
 
