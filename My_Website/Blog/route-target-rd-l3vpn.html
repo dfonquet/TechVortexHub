@@ -9,7 +9,7 @@
     content="Technical note explaining Route Distinguishers, Route Targets, VPNv4 routes, MP-BGP extended communities, and MPLS L3VPN import/export behavior."
   />
   <title>RD vs RT in MPLS L3VPN - Daniel Fonque</title>
-  <link rel="stylesheet" href="styles.css?v=20260709d" />
+  <link rel="stylesheet" href="styles.css?v=20260709e" />
 </head>
 
 <body>
@@ -54,7 +54,7 @@
       <!-- Quick difference: gives the reader the core idea before the deeper dive. -->
       <section class="article-card">
         <h2>Quick Difference</h2>
-        <div class="concept-grid">
+        <div class="concept-grid mental-model-grid">
           <div class="concept-mini-card">
             <h3>RD</h3>
             <p>
@@ -69,6 +69,14 @@
               Controls which VPN routes a VRF exports and which VPN routes it imports.
             </p>
             <code>RT = policy</code>
+          </div>
+
+          <div class="concept-mini-card">
+            <h3>VPNv4</h3>
+            <p>
+              Combines the RD with the customer IPv4 prefix so MP-BGP can carry it.
+            </p>
+            <code>RD + IPv4</code>
           </div>
 
           <div class="concept-mini-card">

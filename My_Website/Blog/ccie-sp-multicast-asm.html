@@ -4,8 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="author" content="Daniel Fonque" />
+  <meta
+    name="description"
+    content="CCIE SP lab note documenting Multicast ASM, PIM-SM, dynamic RP with BSR, DR election, RPF logic, MRIB verification, and receiver-to-RP tree building."
+  />
   <title>Understanding Multicast ASM in a Service Provider Lab</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=20260709g" />
 </head>
 
 <body>
@@ -40,6 +44,36 @@
         <img src="img/multicast-asm/multicast-asm-cover27.png" alt="Multicast ASM over SR and BSR lab cover" />
       </figure>
 
+      <!-- Quick mental model: frames the multicast behavior before the evidence-heavy lab steps. -->
+      <section class="article-card">
+        <h2>Quick Mental Model</h2>
+        <div class="concept-grid mental-model-grid">
+          <div class="concept-mini-card">
+            <h3>ASM Starts With Interest</h3>
+            <p>The receiver joins the group first. That join is what starts the tree.</p>
+            <code>Receiver -> Join</code>
+          </div>
+
+          <div class="concept-mini-card">
+            <h3>RP Is the Anchor</h3>
+            <p>The shared tree is built toward the Rendezvous Point learned through BSR.</p>
+            <code>Tree -> RP</code>
+          </div>
+
+          <div class="concept-mini-card">
+            <h3>RPF Picks the Path</h3>
+            <p>The multicast path follows the unicast route back toward the RP.</p>
+            <code>RPF = unicast logic</code>
+          </div>
+
+          <div class="concept-mini-card">
+            <h3>DR Sends the Join</h3>
+            <p>The receiver-side DR decides which router sends the upstream PIM Join.</p>
+            <code>DR matters</code>
+          </div>
+        </div>
+      </section>
+
       <!-- Lab objective: explains what the lab is proving before showing the verification steps. -->
       <section class="article-card">
         <h2>Lab Objective</h2>
@@ -68,7 +102,7 @@
 
       <!-- Study topology: shows the complete SP lab used for the multicast validation. -->
       <figure class="article-image">
-        <img src="img/multicast-asm/ccie-sp-study-topology.png" alt="CCIE SP multicast study topology" />
+        <img src="img/multicast-asm/ccie-sp-study-topology.png" alt="CCIE SP multicast study topology" loading="lazy" decoding="async" />
         <figcaption>CCIE SP study topology</figcaption>
       </figure>
 
@@ -84,12 +118,12 @@
 
       <!-- PIM neighbor evidence: confirms multicast control-plane adjacencies in the backbone. -->
       <figure class="article-image">
-        <img src="img/multicast-asm/pim-neighbor-p6.png" alt="PIM neighbor verification on P6" />
+        <img src="img/multicast-asm/pim-neighbor-p6.png" alt="PIM neighbor verification on P6" loading="lazy" decoding="async" />
         <figcaption>P6 PIM neighbor verification</figcaption>
       </figure>
 
       <figure class="article-image">
-        <img src="img/multicast-asm/pim-neighbor-pe2.png" alt="PIM neighbor and interface verification on PE-2" />
+        <img src="img/multicast-asm/pim-neighbor-pe2.png" alt="PIM neighbor and interface verification on PE-2" loading="lazy" decoding="async" />
         <figcaption>PE-2 PIM neighbor and interface verification</figcaption>
       </figure>
 
@@ -122,12 +156,12 @@ show pim range-list</code></pre>
       
 
       <figure class="article-image">
-        <img src="img/multicast-asm/bsr-rp-verification.png" alt="BSR and RP verification output" />
+        <img src="img/multicast-asm/bsr-rp-verification.png" alt="BSR and RP verification output" loading="lazy" decoding="async" />
         <figcaption>Dynamic RP learned through BSR</figcaption>
       </figure>
 
       <figure class="article-image">
-        <img src="img/multicast-asm/bsr-range-list.png" alt="BSR range list verification" />
+        <img src="img/multicast-asm/bsr-range-list.png" alt="BSR range list verification" loading="lazy" decoding="async" />
         <figcaption>BSR range-list verification</figcaption>
       </figure>
 
@@ -142,7 +176,7 @@ show pim range-list</code></pre>
       </section>
 
       <figure class="article-image">
-        <img src="img/multicast-asm/receiver-igmp.png" alt="Receiver IGMP join configuration" />
+        <img src="img/multicast-asm/receiver-igmp.png" alt="Receiver IGMP join configuration" loading="lazy" decoding="async" />
         <figcaption>Receiver IGMP join configuration</figcaption>
       </figure>
 
@@ -171,22 +205,22 @@ show pim range-list</code></pre>
 
       <!-- Tree verification: compares PIM topology and MRIB output across the multicast path. -->
       <figure class="article-image">
-        <img src="img/multicast-asm/pe2-pim-topology.png" alt="PE-2 PIM topology detail for multicast group" />
+        <img src="img/multicast-asm/pe2-pim-topology.png" alt="PE-2 PIM topology detail for multicast group" loading="lazy" decoding="async" />
         <figcaption>PE-2 PIM topology for 239.1.1.1</figcaption>
       </figure>
 
       <figure class="article-image">
-        <img src="img/multicast-asm/pe2-mrib.png" alt="PE-2 MRIB route for multicast group" />
+        <img src="img/multicast-asm/pe2-mrib.png" alt="PE-2 MRIB route for multicast group" loading="lazy" decoding="async" />
         <figcaption>PE-2 MRIB route for 239.1.1.1</figcaption>
       </figure>
 
       <figure class="article-image">
-        <img src="img/multicast-asm/p6-pim-topology.png" alt="P6 PIM topology output" />
+        <img src="img/multicast-asm/p6-pim-topology.png" alt="P6 PIM topology output" loading="lazy" decoding="async" />
         <figcaption>P6 PIM topology</figcaption>
       </figure>
 
       <figure class="article-image">
-        <img src="img/multicast-asm/p6-mrib.png" alt="P6 MRIB verification" />
+        <img src="img/multicast-asm/p6-mrib.png" alt="P6 MRIB verification" loading="lazy" decoding="async" />
         <figcaption>P6 MRIB verification</figcaption>
       </figure>
 
@@ -207,7 +241,7 @@ show pim range-list</code></pre>
       </section>
 
       <figure class="article-image">
-        <img src="img/multicast-asm/real-multicast-path-observed.png" alt="Real multicast path observed from receiver toward the RP" />
+        <img src="img/multicast-asm/real-multicast-path-observed.png" alt="Real multicast path observed from receiver toward the RP" loading="lazy" decoding="async" />
         <figcaption>Real multicast path observed from receiver toward the RP</figcaption>
       </figure>
 
@@ -236,6 +270,21 @@ show pim range-list</code></pre>
       <!-- Troubleshooting notes: practical checks to use when multicast state does not build correctly. -->
       <section class="article-card">
         <h2>Troubleshooting Notes</h2>
+        <div class="cli-block">
+          <div class="cli-header">
+            <span>Multicast Troubleshooting Checklist</span>
+            <button class="copy-command" type="button" data-copy="show pim neighbor&#10;show pim interface&#10;show pim topology 239.1.1.1&#10;show mrib route 239.1.1.1&#10;show pim rp mapping">
+              Copy
+            </button>
+          </div>
+
+          <pre><code>show pim neighbor
+show pim interface
+show pim topology 239.1.1.1
+show mrib route 239.1.1.1
+show pim rp mapping</code></pre>
+        </div>
+
         <ul>
           <li>Always confirm IGP reachability to the RP before troubleshooting PIM state.</li>
           <li>Validate PIM neighbors first; multicast state will not build correctly without stable adjacencies.</li>
