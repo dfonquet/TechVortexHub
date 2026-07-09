@@ -36,12 +36,29 @@ html {
 }
 
 body {
+  position: relative;
   min-height: 100vh;
   font-family: var(--font-body);
   color: var(--color-text);
   background:
     linear-gradient(rgba(10, 14, 26, 0.76), rgba(10, 14, 26, 0.9)),
     url("../img/DATA_8.jpg") center / cover fixed;
+}
+
+body.has-ambient-glow::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(
+      760px circle at var(--ambient-x, 50vw) var(--ambient-y, 36vh),
+      rgba(15, 212, 232, 0.075),
+      rgba(124, 111, 220, 0.045) 34%,
+      transparent 72%
+    );
+  opacity: 0.82;
+  pointer-events: none;
 }
 
 /* Visible focus: keeps keyboard navigation accessible and polished. */
@@ -55,6 +72,8 @@ button:focus-visible {
 /* Page wrapper: controls width and vertical rhythm. */
 
 .page {
+  position: relative;
+  z-index: 1;
   width: min(var(--content-width), calc(100% - 32px));
   margin: 0 auto;
   padding: 64px 0 42px;
@@ -321,6 +340,10 @@ button:focus-visible {
     background-attachment: scroll;
   }
 
+  body.has-ambient-glow::before {
+    display: none;
+  }
+
   .page {
     width: 100%;
     padding: 28px 14px 32px;
@@ -400,6 +423,7 @@ button:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
   .top-nav a,
+  body.has-ambient-glow::before,
   .project-card,
   .project-card::before,
   .card-link {

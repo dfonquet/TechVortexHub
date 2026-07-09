@@ -6,6 +6,11 @@
     return;
   }
 
+  document.addEventListener("pointermove", function (event) {
+    document.documentElement.style.setProperty("--ambient-x", event.clientX + "px");
+    document.documentElement.style.setProperty("--ambient-y", event.clientY + "px");
+  });
+
   var cards = document.querySelectorAll(".project-card");
 
   cards.forEach(function (card) {

@@ -39,12 +39,29 @@ html {
 }
 
 body {
+  position: relative;
   min-height: 100vh;
   font-family: var(--font-body);
   color: var(--color-text);
   background:
     linear-gradient(rgba(4, 8, 14, 0.82), rgba(4, 8, 14, 0.90)),
     url("../img/DATA_8.jpg") center / cover fixed;
+}
+
+body.has-ambient-glow::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(
+      760px circle at var(--ambient-x, 50vw) var(--ambient-y, 36vh),
+      rgba(15, 212, 232, 0.07),
+      rgba(124, 111, 220, 0.045) 34%,
+      transparent 72%
+    );
+  opacity: 0.78;
+  pointer-events: none;
 }
 
 img,
@@ -67,6 +84,8 @@ button:focus-visible {
 /* Shared wrappers */
 
 .page {
+  position: relative;
+  z-index: 1;
   width: min(var(--content-width), calc(100% - 32px));
   margin: 0 auto;
   padding: 72px 0 42px;
@@ -1023,6 +1042,10 @@ body.diagram-open {
     background-attachment: scroll;
   }
 
+  body.has-ambient-glow::before {
+    display: none;
+  }
+
   .page,
   .article-page {
     width: 100%;
@@ -1143,6 +1166,7 @@ body.diagram-open {
   }
 
   .top-nav a,
+  body.has-ambient-glow::before,
   .post-card,
   .post-card::before,
   .post-link,
