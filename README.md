@@ -11,7 +11,7 @@ The project brings together my personal website, technical blog posts, and lab-o
 
 ## Live Site
 
-[tech-vortex-hub.vercel.app](https://tech-vortex-hub.vercel.app/)
+[tech-vortex-hub.vercel.app](https://dfonquet.github.io/TechVortexHub/My_Website/daftiel.html)
 
 ## Overview
 
