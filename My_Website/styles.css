@@ -186,6 +186,60 @@ button:focus-visible {
   margin-bottom: 0;
 }
 
+/* Resume CTA: note, arrow, and button. */
+
+.resume-link-wrapper {
+  margin-top: 24px;
+  margin-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.resume-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent);
+  font-size: 1.35rem;
+  line-height: 1;
+  margin-bottom: -2px;
+  opacity: 0.95;
+  animation: resumeArrowFloat 1.8s ease-in-out infinite;
+}
+.resume-note {
+  margin: 0;
+  color: #b8c4d6;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.resume-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 18px;
+  border: 1px solid rgba(16, 212, 238, 0.35);
+  border-radius: 999px;
+  background: rgba(16, 212, 238, 0.08);
+  color: #10d4ee;
+  text-decoration: none;
+  font-weight: 700;
+  transition:
+    transform 0.22s ease,
+    background-color 0.22s ease,
+    color 0.22s ease,
+    border-color 0.22s ease;
+}
+
+.resume-link:hover {
+  transform: translateY(-2px);
+  background: rgba(16, 212, 238, 0.16);
+  border-color: #10d4ee;
+  color: #7ceaf5;
+}
+
 /* Social links: external GitHub and LinkedIn icons. */
 
 .social-footer {
@@ -246,6 +300,18 @@ button:focus-visible {
   }
 }
 
+@keyframes resumeArrowFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.75;
+  }
+  50% {
+    transform: translateY(4px);
+    opacity: 1;
+  }
+}
+
 /* Responsive layout: keeps the homepage comfortable on tablets and phones. */
 
 @media (max-width: 768px) {
@@ -281,6 +347,20 @@ button:focus-visible {
     line-height: 1.62;
   }
 
+  .resume-link-wrapper {
+    margin-top: 22px;
+    gap: 7px;
+  }
+
+  .resume-note {
+    font-size: 0.92rem;
+  }
+
+  .resume-link {
+    padding: 11px 16px;
+    font-size: 0.95rem;
+  }
+
   .social-footer {
     margin-top: 26px;
   }
@@ -299,6 +379,14 @@ button:focus-visible {
     width: 100%;
     padding: 20px;
   }
+
+  .resume-arrow {
+    font-size: 1.05rem;
+  }
+
+  .resume-note {
+    font-size: 0.9rem;
+  }
 }
 
 /* Reduced motion: respects users who prefer less animation. */
@@ -308,7 +396,8 @@ button:focus-visible {
   .hero-name,
   .bio-card,
   .nav-button,
-  .social-icon {
+  .social-icon,
+  .resume-arrow {
     animation: none;
     transition: none;
   }
