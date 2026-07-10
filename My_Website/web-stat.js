@@ -1,6 +1,6 @@
 (function () {
-  var accountId = 2216711;
-  var trackerMode = 1;
+  var accountId = 2217668;
+  var trackerMode = 4;
 
   function loadWebStat() {
     var script = document.createElement("script");
