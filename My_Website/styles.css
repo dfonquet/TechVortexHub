@@ -63,22 +63,7 @@ button:focus-visible {
     url("img/DATA_8.jpg") center / cover no-repeat;
 }
 
-/* Web-Stat badge: keeps the live traffic badge visible above the background. */
-
-.web-stat-anchor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 20;
-  display: inline-block;
-}
-
-.web-stat-anchor iframe,
-.web-stat-anchor img,
-noscript img[alt="Web-Stat tracker"] {
-  position: relative;
-  z-index: 21;
-}
+/* Web-Stat tracking stays installed without showing a visible badge. */
 
 .web-stat-hidden {
   position: absolute !important;
