@@ -80,6 +80,16 @@ noscript img[alt="Web-Stat tracker"] {
   z-index: 21;
 }
 
+.web-stat-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+}
+
 /* Page shell: keeps the homepage content centered and readable. */
 
 .page-shell {

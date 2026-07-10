@@ -1,0 +1,25 @@
+(function () {
+  var accountId = 2216711;
+  var trackerMode = 1;
+
+  function loadWebStat() {
+    var script = document.createElement("script");
+
+    script.async = true;
+    script.src = "https://app.ardalio.com/wts7.js";
+    script.onload = function () {
+      if (typeof window.wtsl7 === "function") {
+        window.wtsl7(accountId, trackerMode);
+      }
+    };
+
+    document.head.appendChild(script);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", loadWebStat);
+    return;
+  }
+
+  loadWebStat();
+})();
