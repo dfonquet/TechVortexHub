@@ -7,11 +7,11 @@
   --color-surface: rgba(17, 24, 39, 0.74);
   --color-surface-strong: rgba(5, 10, 18, 0.84);
   --color-primary: #7c6fdc;
-  --color-accent: #0fd4e8;
+  --color-accent: #1d9bf0;
   --color-text: #e2e8f0;
   --color-text-muted: #94a3b8;
   --color-border: rgba(255, 255, 255, 0.08);
-  --color-border-accent: rgba(15, 212, 232, 0.42);
+  --color-border-accent: rgba(29, 155, 240, 0.42);
   --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.34);
   --font-body: "Inter", Arial, sans-serif;
   --font-display: "Space Grotesk", "Inter", Arial, sans-serif;
@@ -53,7 +53,7 @@ body.has-ambient-glow::before {
   background:
     radial-gradient(
       760px circle at var(--ambient-x, 50vw) var(--ambient-y, 36vh),
-      rgba(15, 212, 232, 0.075),
+      rgba(29, 155, 240, 0.075),
       rgba(124, 111, 220, 0.045) 34%,
       transparent 72%
     );
@@ -201,7 +201,7 @@ button:focus-visible {
   background:
     radial-gradient(
       420px circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%),
-      rgba(15, 212, 232, 0.16),
+      rgba(29, 155, 240, 0.16),
       rgba(124, 111, 220, 0.08) 38%,
       transparent 70%
     );
@@ -221,7 +221,7 @@ button:focus-visible {
   background: rgba(8, 15, 28, 0.9);
   box-shadow:
     0 22px 52px rgba(0, 0, 0, 0.42),
-    0 0 30px rgba(15, 212, 232, 0.1);
+    0 0 30px rgba(29, 155, 240, 0.1);
 }
 
 .project-card:hover::before {
@@ -236,9 +236,9 @@ button:focus-visible {
 
 .status {
   padding: 6px 10px;
-  border: 1px solid rgba(15, 212, 232, 0.22);
+  border: 1px solid rgba(29, 155, 240, 0.22);
   border-radius: var(--radius-pill);
-  background: rgba(15, 212, 232, 0.09);
+  background: rgba(29, 155, 240, 0.09);
   color: var(--color-accent);
   font-size: 0.78rem;
   font-weight: 800;
@@ -281,17 +281,17 @@ button:focus-visible {
   align-self: flex-start;
   margin-top: 18px;
   padding: 9px 12px;
-  border: 1px solid rgba(15, 212, 232, 0.36);
+  border: 1px solid rgba(29, 155, 240, 0.36);
   border-radius: var(--radius-pill);
   background:
-    linear-gradient(135deg, rgba(15, 212, 232, 0.1), rgba(124, 111, 220, 0.1)),
+    linear-gradient(135deg, rgba(29, 155, 240, 0.1), rgba(124, 111, 220, 0.1)),
     rgba(5, 10, 18, 0.42);
   color: #b7f7ff;
   font-size: 0.88rem;
   font-weight: 700;
   text-decoration: none;
   line-height: 1.2;
-  box-shadow: 0 0 16px rgba(15, 212, 232, 0.05);
+  box-shadow: 0 0 16px rgba(29, 155, 240, 0.05);
   transition:
     transform var(--transition-fast),
     background-color var(--transition-fast),
@@ -302,27 +302,27 @@ button:focus-visible {
 
 .card-link:hover {
   transform: translateY(-2px);
-  border-color: rgba(15, 212, 232, 0.72);
+  border-color: rgba(29, 155, 240, 0.72);
   background:
-    linear-gradient(135deg, rgba(15, 212, 232, 0.18), rgba(124, 111, 220, 0.18)),
+    linear-gradient(135deg, rgba(29, 155, 240, 0.18), rgba(124, 111, 220, 0.18)),
     rgba(5, 10, 18, 0.58);
   color: #ffffff;
-  box-shadow: 0 0 22px rgba(15, 212, 232, 0.1);
+  box-shadow: 0 0 22px rgba(29, 155, 240, 0.1);
 }
 
 .card-link.is-disabled {
   cursor: default;
   background:
-    linear-gradient(135deg, rgba(15, 212, 232, 0.08), rgba(124, 111, 220, 0.08)),
+    linear-gradient(135deg, rgba(29, 155, 240, 0.08), rgba(124, 111, 220, 0.08)),
     rgba(5, 10, 18, 0.36);
   color: #b7f7ff;
 }
 
 .card-link.is-disabled:hover {
   transform: translateY(-2px);
-  border-color: rgba(15, 212, 232, 0.48);
+  border-color: rgba(29, 155, 240, 0.48);
   background:
-    linear-gradient(135deg, rgba(15, 212, 232, 0.1), rgba(124, 111, 220, 0.1)),
+    linear-gradient(135deg, rgba(29, 155, 240, 0.1), rgba(124, 111, 220, 0.1)),
     rgba(5, 10, 18, 0.42);
   color: #b7f7ff;
 }
