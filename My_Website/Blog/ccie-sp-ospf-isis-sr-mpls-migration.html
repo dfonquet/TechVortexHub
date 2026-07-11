@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="author" content="Daniel Fonque" />
+  <meta
+    name="description"
+    content="CCIE-SP lab note covering OSPF to IS-IS migration, SR-MPLS deployment, LDP removal, route reflector resiliency, VRF-aware NAT, and SR-TE/PCE preparation."
+  />
+  <title>CCIE-SP Lab: OSPF to IS-IS, SR-MPLS, RR Design, NAT, and SR-TE Groundwork</title>
+  <link rel="stylesheet" href="styles.css?v=20260711a" />
+</head>
+
+<body>
+  <!-- Private visitor analytics via Web-Stat. -->
+  <span id="wts2217668" class="web-stat-hidden" aria-hidden="true"></span>
+  <script src="../web-stat.js?v=20260710b"></script>
+  <noscript>
+    <img class="web-stat-hidden" src="https://app.ardalio.com/7/4/2217668.png" alt="" />
+  </noscript>
+
+  <div class="article-page">
+
+    <!-- Main navigation: connects this lab note with the main website sections. -->
+    <nav class="top-nav">
+      <a href="../daftiel.html">Home</a>
+      <a href="../Projects/projects.html">Projects</a>
+      <a href="blog.html">Blog</a>
+    </nav>
+
+    <!-- Article container: keeps the SP migration write-up grouped as one lab note. -->
+    <article class="article-shell">
+
+      <!-- Article intro: presents the scope and certification context of the migration lab. -->
+      <header class="article-hero compact-hero">
+        <p class="eyebrow">CCIE-SP Lab Preparation</p>
+        <h1>
+          OSPF to IS-IS, <span>SR-MPLS</span>, RR Design, NAT, and SR-TE Groundwork
+        </h1>
+
+        <div class="article-badges">
+          <span>CCIE SP</span>
+          <span>IS-IS</span>
+          <span>SR-MPLS</span>
+          <span>Route Reflectors</span>
+          <span>VRF NAT</span>
+          <span>PCE Ready</span>
+        </div>
+
+        <div class="hero-summary">
+          <p>
+            This lab documents one of the most realistic Service Provider migrations in my
+            CCIE-SP journey: moving the core IGP from <strong>OSPF to IS-IS</strong>,
+            enabling <strong>Segment Routing MPLS</strong>, removing LDP after validation,
+            strengthening the RR design, modernizing NAT, and preparing the backbone for
+            SR-TE and PCE.
+          </p>
+        </div>
+
+        <div class="article-meta">
+          <span>Daniel Fonque Torres</span>
+          <span>July 11, 2026</span>
+          <span>CCIE-SP In Progress</span>
+        </div>
+      </header>
+
+      <!-- Cover image: shows the full ISP lab topology used during the migration. -->
+      <figure class="article-cover">
+        <img
+          src="img/ospf-isis-sr-mpls-migration/ccie-sp-isp-backbone-lab.png"/>
+          <figcaption>"CCIE Service Provider ISP backbone lab with IS-IS, SR-MPLS, MPLS, BGP, route reflectors, and VRFs"</figcaption>
+      
+      </figure>
+
+      <!-- Quick migration map: gives the reader the lab flow before the detailed notes. -->
+      <section class="article-card">
+        <h2>Quick Migration Map</h2>
+        <div class="concept-grid mental-model-grid">
+          <div class="concept-mini-card">
+            <h3>IGP Migration</h3>
+            <p>Move the backbone from OSPF into an SP-style IS-IS design.</p>
+            <code>OSPF -> IS-IS</code>
+          </div>
+
+          <div class="concept-mini-card">
+            <h3>SR-MPLS First</h3>
+            <p>Validate SRGB, SRLB, prefix-SIDs, adjacency SIDs, and LFIB behavior.</p>
+            <code>SR labels carry the core</code>
+          </div>
+
+          <div class="concept-mini-card">
+            <h3>LDP Exit</h3>
+            <p>Remove LDP only after SR forwarding is clean and end-to-end traffic works.</p>
+            <code>No LDP after proof</code>
+          </div>
+
+          <div class="concept-mini-card">
+            <h3>RR Resiliency</h3>
+            <p>Use BFD, add-paths, diverse paths, and cleaner cluster design.</p>
+            <code>RR is control-plane armor</code>
+          </div>
+        </div>
+      </section>
+
+      <!-- Lab scope: summarizes the topology roles before going into the migration phases. -->
+      <section class="article-card">
+        <h2>Lab Scope and Objective</h2>
+        <p>
+          Over the past days, I completed one of the most realistic Service Provider labs
+          of my CCIE-SP journey. The objective was ambitious but practical:
+        </p>
+
+        <ul>
+          <li>Migrate the core IGP from OSPF to IS-IS.</li>
+          <li>Enable Segment Routing MPLS (SR-MPLS) across the full backbone.</li>
+          <li>Remove LDP cleanly once SR forwarding was validated.</li>
+          <li>Redesign NAT on PE-3 Boundary using a real ISP-style public IP pool.</li>
+          <li>Maintain customer VRF reachability throughout the migration.</li>
+          <li>Strengthen the Route Reflector (RR) architecture using BFD, diverse-paths, and backup paths.</li>
+          <li>Begin preparing the network for SR-TE, PCE, and Traffic Engineering Databases.</li>
+        </ul>
+
+        <h3>Lab Setup</h3>
+        <p>All of this was running in a setup where:</p>
+
+        <div class="concept-grid mental-model-grid">
+          <div class="concept-mini-card">
+            <h3>Backbone</h3>
+            <p>P routers run IS-IS Level-2 only.</p>
+            <code>P = L2-only</code>
+          </div>
+
+          <div class="concept-mini-card">
+            <h3>Provider Edge</h3>
+            <p>PE routers run IS-IS Level-1-2.</p>
+            <code>PE = L1-L2</code>
+          </div>
+
+          <div class="concept-mini-card">
+            <h3>Route Reflectors</h3>
+            <p>Dual dedicated RRs with BFD fall-over and additional-paths.</p>
+            <code>RR resiliency</code>
+          </div>
+
+          <div class="concept-mini-card">
+            <h3>Forwarding</h3>
+            <p>100% SR-MPLS label stack after LDP removal.</p>
+            <code>No LDP</code>
+          </div>
+
+          <div class="concept-mini-card">
+            <h3>Customers</h3>
+            <p>Customer services live inside VRF CCIE-SP.</p>
+            <code>MPLS L3VPN</code>
+          </div>
+
+          <div class="concept-mini-card">
+            <h3>Internet Edge</h3>
+            <p>Dedicated IOS XR router acting as the INTERNET gateway.</p>
+            <code>XR edge</code>
+          </div>
+
+          <div class="concept-mini-card">
+            <h3>Services</h3>
+            <p>MPLS L3VPN today, with future SR-TE capabilities.</p>
+            <code>L3VPN + SR-TE</code>
+          </div>
+
+          <div class="concept-mini-card">
+            <h3>Production Mindset</h3>
+            <p>Every migration teaches something new when you work in an ISP.</p>
+            <code>Lab mirrors reality</code>
+          </div>
+        </div>
+
+        <p>
+          Working in an ISP means every migration teaches something new. This lab reinforced
+          many of the decisions I face daily in production.
+        </p>
+      </section>
+
+      <!-- IGP migration: explains the IS-IS design and the temporary LDP dependency. -->
+      <section class="article-card">
+        <h2>IGP Migration: OSPF to IS-IS</h2>
+        <p>
+          I began by converting the backbone from OSPF to IS-IS. The design follows a classic
+          SP approach:
+        </p>
+
+        <div class="command-list">
+          <code>P routers: L2-only</code>
+          <code>PEs: L1-L2</code>
+          <code>metric-style wide</code>
+          <code>IPv6 via multi-topology</code>
+          <code>segment-routing mpls</code>
+          <code>microloop avoidance segment-routing</code>
+        </div>
+
+        <div class="note-callout">
+          The outage lesson: during migration, my VRF lost connectivity. The root cause was
+          simple and painful: I forgot to temporarily keep LDP autoconfig under IS-IS before
+          SR forwarding fully took over.
+        </div>
+
+        <div class="cli-block">
+          <div class="cli-header">
+            <span>Temporary dependency during migration</span>
+          </div>
+          <pre><code>conf t
+router isis CCIE-SP
+ mpls ldp autoconfig</code></pre>
+        </div>
+
+        <p>
+          Before SR forwarding takes over, LDP must still signal labels. A simple but
+          powerful reminder.
+        </p>
+      </section>
+
+      <!-- SR-MPLS deployment: documents the validation points before LDP removal. -->
+      <section class="article-card">
+        <h2>Enabling Segment Routing MPLS</h2>
+        <p>
+          Once IS-IS stabilized, I activated SR-MPLS everywhere. Each router advertised:
+        </p>
+
+        <div class="concept-grid mental-model-grid">
+          <div class="concept-mini-card">
+            <h3>SRGB</h3>
+            <p>Global segment space used for prefix-SIDs.</p>
+            <code>16000-23999</code>
+          </div>
+
+          <div class="concept-mini-card">
+            <h3>SRLB</h3>
+            <p>Local segment space used for local and adjacency behavior.</p>
+            <code>15000-15999</code>
+          </div>
+
+          <div class="concept-mini-card">
+            <h3>Prefix-SID</h3>
+            <p>Stable label tied to loopback reachability.</p>
+            <code>Loopback -> SID</code>
+          </div>
+
+          <div class="concept-mini-card">
+            <h3>Adjacency SID</h3>
+            <p>Explicit link-level segment used for traffic engineering paths.</p>
+            <code>Link -> SID</code>
+          </div>
+        </div>
+
+        <p>Validation included:</p>
+
+        <div class="cli-block">
+          <div class="cli-header">
+            <span>Validation commands</span>
+          </div>
+          <pre><code>show isis segment-routing
+show isis database verbose
+show mpls forwarding-table</code></pre>
+        </div>
+
+        <figure class="article-image">
+          <img
+            src="img/ospf-isis-sr-mpls-migration/show-isis-segment-routing.png"
+            alt="show isis segment-routing output validating SRGB, SRLB, and SR app registration"
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption>
+            <code>show isis segment-routing</code> confirms SR is registered and the SRGB/SRLB
+            values are active in the IS-IS process.
+          </figcaption>
+        </figure>
+
+        <figure class="article-image">
+          <img
+            src="img/ospf-isis-sr-mpls-migration/show-isis-database-verbose.png"
+            alt="show isis database verbose output showing SR capabilities, SRGB, SRLB, adjacency SIDs, and prefix-SID"
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption>
+            <code>show isis database verbose</code> exposes the SR capabilities, SRGB/SRLB,
+            adjacency SIDs, and prefix-SID information inside the IS-IS database.
+          </figcaption>
+        </figure>
+
+        <figure class="article-image">
+          <img
+            src="img/ospf-isis-sr-mpls-migration/show-mpls-forwarding-table.png"
+            alt="show mpls forwarding-table output validating SR labels and adjacency labels"
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption>
+            <code>show mpls forwarding-table</code> validates that the label forwarding plane
+            is populated with SR and adjacency labels before removing LDP.
+          </figcaption>
+        </figure>
+      </section>
+
+      <!-- LDP removal: captures the cleanup stage after SR forwarding was verified. -->
+      <section class="article-card">
+        <h2>Decommissioning LDP</h2>
+        <p>
+          With SR forwarding verified, I removed LDP:
+        </p>
+
+        <div class="cli-block">
+          <div class="cli-header">
+            <span>LDP cleanup</span>
+          </div>
+          <pre><code>no mpls ldp autoconfig
+no mpls ldp router-id Loopback600
+no mpls ip propagate-ttl forwarded
+no mpls ldp label allocate ...</code></pre>
+        </div>
+
+        <p>
+          Result: a clean LFIB with only SR and adjacency labels.
+        </p>
+      </section>
+
+      <!-- RR design: highlights the route reflector changes and the dedicated RR view. -->
+      <section class="article-card">
+        <h2>Modernizing Route Reflector Design</h2>
+        <p>
+          My RRs (RR-Main and RR-Shadow) were upgraded with:
+        </p>
+
+        <div class="concept-grid mental-model-grid">
+          <div class="concept-mini-card">
+            <h3>BFD Fall-Over</h3>
+            <p>Faster failure detection for BGP sessions toward clients and peer RRs.</p>
+            <code>fall-over bfd</code>
+          </div>
+
+          <div class="concept-mini-card">
+            <h3>Add-Paths</h3>
+            <p>Allows the RR to advertise more path visibility when the design needs it.</p>
+            <code>additional-paths</code>
+          </div>
+
+          <div class="concept-mini-card">
+            <h3>Diverse-Path Backup</h3>
+            <p>Backup path advertisement improves control-plane resiliency.</p>
+            <code>diverse-path</code>
+          </div>
+
+          <div class="concept-mini-card">
+            <h3>Cluster-ID Redesign</h3>
+            <p>A cleaner RR cluster makes troubleshooting and path behavior easier.</p>
+            <code>cluster-id cleanup</code>
+          </div>
+
+          <div class="concept-mini-card">
+            <h3>RR Prefix-SID</h3>
+            <p>RR loopbacks also participate in the SR control plane.</p>
+            <code>SR for RR loopbacks</code>
+          </div>
+        </div>
+
+        <p>
+          This creates real RR resiliency similar to production ISPs.
+        </p>
+
+        <h3>RR Main</h3>
+
+        <figure class="article-image">
+          <img
+            src="img/ospf-isis-sr-mpls-migration/rr-main-p12-bgp-config.png"
+            alt="P12 RR Main BGP route reflector configuration with BFD fall-over and VPNv4 route reflector clients"
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption>
+            RR Main: P12-RR running BGP 100 with BFD fall-over, route-reflector clients,
+            and VPNv4 signaling.
+          </figcaption>
+        </figure>
+
+        <figure class="article-image">
+          <img
+            src="img/ospf-isis-sr-mpls-migration/rr-main-p12-topology.png"
+            alt="P12 RR Main topology detail with IPv4 and IPv6 loopbacks"
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption>
+            P12-RR topology detail with loopback addressing and dual-stack IS-IS reachability.
+          </figcaption>
+        </figure>
+
+        <h3>RR Shadow</h3>
+
+        <figure class="article-image">
+          <img
+            src="img/ospf-isis-sr-mpls-migration/rr-shadow-p11-bgp-config.png"
+            alt="P11 RR Shadow BGP route reflector configuration with additional paths and diverse-path backup"
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption>
+            RR Shadow: P11-RR using additional paths and advertise diverse-path backup
+            to improve backup path visibility.
+          </figcaption>
+        </figure>
+
+        <figure class="article-image">
+          <img
+            src="img/ospf-isis-sr-mpls-migration/rr-shadow-p11-topology.png"
+            alt="P11 RR Shadow topology detail with IPv4 and IPv6 loopbacks"
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption>
+            P11-RR topology detail with loopback addressing and backbone connectivity.
+          </figcaption>
+        </figure>
+      </section>
+
+      <!-- NAT redesign: explains the move from legacy GNAT to an ISP-style public pool. -->
+      <section class="article-card">
+        <h2>Replacing Legacy NAT with an ISP-Style Public Pool</h2>
+        <p>
+          Originally the PE used a basic GNAT model. I redesigned it to match a real ISP approach:
+        </p>
+
+        <div class="concept-grid mental-model-grid">
+          <div class="concept-mini-card">
+            <h3>VRF-Aware NAT</h3>
+            <p>NAT decisions are tied to the customer VRF, not just the global table.</p>
+            <code>VRF CCIE-SP</code>
+          </div>
+
+          <div class="concept-mini-card">
+            <h3>Public Pool</h3>
+            <p>The PE uses an ISP-style public range for translation.</p>
+            <code>Pool -> Internet</code>
+          </div>
+
+          <div class="concept-mini-card">
+            <h3>Route Resolution</h3>
+            <p>The VRF and global routing tables must agree on return reachability.</p>
+            <code>VRF -> Global</code>
+          </div>
+
+          <div class="concept-mini-card">
+            <h3>XR Internet Edge</h3>
+            <p>The Internet router only needs clean static routes back to the customer side.</p>
+            <code>Return path matters</code>
+          </div>
+        </div>
+
+        <h3>Final NAT on PE-3</h3>
+        <figure class="article-image">
+          <img
+            src="img/ospf-isis-sr-mpls-migration/pe3-final-nat-config.png"
+            alt="Final PE-3 NAT configuration with VRF-aware NAT, public pool, route resolution, and CGNAT ACL"
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption>
+            Final NAT on PE-3: VRF-aware NAT using a dedicated public pool, route resolution,
+            and customer prefixes matched through the CGNAT ACL.
+          </figcaption>
+        </figure>
+
+        <figure class="article-image">
+          <img
+            src="img/ospf-isis-sr-mpls-migration/xr-internet-static-routes.png"
+            alt="IOS XR Internet router static routes back to customer VRF subnets and BGP policy"
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption>
+            The XR Internet router then only needed static routes back to the VRF subnet.
+          </figcaption>
+        </figure>
+
+        <figure class="article-image">
+          <img
+            src="img/ospf-isis-sr-mpls-migration/internet-pe3-topology.png"
+            alt="Topology view showing INTERNET router in AS65050 connected to PE-3 with NAT public pool"
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption>
+            Internet edge view: PE-3 translates the customer VRF toward the dedicated
+            INTERNET router using the public NAT pool.
+          </figcaption>
+        </figure>
+
+        <figure class="article-image">
+          <img
+            src="img/ospf-isis-sr-mpls-migration/customer-vrf-internet-ping.png"
+            alt="Customer VRF ping test to 8.8.8.8 and 1.1.1.1 with 100 percent success"
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption>
+            The result: Customer VRF now reaches the Internet flawlessly.
+          </figcaption>
+        </figure>
+
+        <p>
+          Final result: customer VRF traffic reached the Internet cleanly, and the design
+          looked closer to what I would expect in a production SP environment.
+        </p>
+      </section>
+
+      <!-- SR-TE preparation: connects the completed SR migration to the next lab phases. -->
+      <section class="article-card">
+        <h2>Phase 6: Preparing for SR-TE and PCE</h2>
+        <p>
+          Before this migration, I used MPLS-TE FRR and RSVP-TE for protection. Now that
+          the domain runs SR-MPLS, the next natural step is to move toward SR-TE and PCE.
+          This is where the lab starts becoming a design platform, not just a feature test.
+        </p>
+
+        <ul>
+          <li>Deploy SR-TE policies.</li>
+          <li>Advertise topology into BGP-LS.</li>
+          <li>Activate external PCE and PCC behavior.</li>
+          <li>Use Binding SIDs for policy abstraction.</li>
+          <li>Use TI-LFA for sub-50ms convergence.</li>
+          <li>Replace legacy RSVP-TE FRR with a modern SR-TE architecture.</li>
+        </ul>
+      </section>
+
+      <!-- Key takeaways: closes the technical story with the lessons learned. -->
+      <section class="article-card key-takeaways">
+        <h2>Key Takeaways</h2>
+        <ul>
+          <li>IGP migrations are multi-stage events, not a single command change.</li>
+          <li>SR-MPLS must be validated in the forwarding table before removing LDP.</li>
+          <li>VRF reachability can fail from a control-plane dependency that looks small.</li>
+          <li>RR design matters because the control plane needs resiliency too.</li>
+          <li>VRF-aware NAT is cleaner when the return path is designed intentionally.</li>
+          <li>SR-TE and PCE make more sense once the SR foundation is stable.</li>
+        </ul>
+      </section>
+
+      <!-- References: RFCs used during the lab and review process. -->
+      <section class="article-card">
+        <h2>RFCs Referenced During the Lab</h2>
+        <ul>
+          <li><a href="https://datatracker.ietf.org/doc/html/rfc3031" target="_blank" rel="noopener noreferrer">RFC 3031 - Multiprotocol Label Switching Architecture</a></li>
+          <li><a href="https://datatracker.ietf.org/doc/html/rfc5305" target="_blank" rel="noopener noreferrer">RFC 5305 - IS-IS Extensions for Traffic Engineering</a></li>
+          <li><a href="https://datatracker.ietf.org/doc/html/rfc5307" target="_blank" rel="noopener noreferrer">RFC 5307 - IS-IS Extensions in Support of GMPLS</a></li>
+          <li><a href="https://datatracker.ietf.org/doc/html/rfc8402" target="_blank" rel="noopener noreferrer">RFC 8402 - Segment Routing Architecture</a></li>
+          <li><a href="https://datatracker.ietf.org/doc/html/rfc8667" target="_blank" rel="noopener noreferrer">RFC 8667 - IS-IS Extensions for Segment Routing</a></li>
+          <li><a href="https://datatracker.ietf.org/doc/html/rfc7911" target="_blank" rel="noopener noreferrer">RFC 7911 - Advertisement of Multiple Paths in BGP</a></li>
+          <li><a href="https://www.rfc-editor.org/rfc/rfc5880.html" target="_blank" rel="noopener noreferrer">RFC 5880 - Bidirectional Forwarding Detection</a></li>
+          <li><a href="https://www.rfc-editor.org/rfc/rfc2328.html" target="_blank" rel="noopener noreferrer">RFC 2328 - OSPF Version 2</a></li>
+        </ul>
+      </section>
+
+      <!-- Final quote: keeps the article grounded in the real lab lesson. -->
+      <blockquote class="article-quote">
+        The biggest lesson was not just that SR-MPLS works. It was seeing how IGP design,
+        label distribution, RR resiliency, NAT, and future traffic engineering all depend
+        on sequencing. In SP networks, the order of operations is part of the design.
+      </blockquote>
+
+      <!-- Comments section: enables readers to leave feedback through Giscus. -->
+      <section class="article-comments">
+        <h2>Comments & Discussion</h2>
+        <p>
+          If this lab helped you, or if you have feedback, questions, or another way to
+          approach OSPF to IS-IS migration, SR-MPLS rollout, RR resiliency, or SR-TE
+          preparation, feel free to leave a comment below.
+        </p>
+
+        <script src="https://giscus.app/client.js"
+                data-repo="dfonquet/TechVortexHub"
+                data-repo-id="R_kgDOKHmmXQ"
+                data-category="General"
+                data-category-id="DIC_kwDOKHmmXc4DAjYp"
+                data-mapping="pathname"
+                data-strict="0"
+                data-reactions-enabled="1"
+                data-emit-metadata="0"
+                data-input-position="bottom"
+                data-theme="noborder_dark"
+                data-lang="en"
+                crossorigin="anonymous"
+                async>
+        </script>
+      </section>
+
+    </article>
+  </div>
+
+  <!-- Image lightbox: opens article images in a larger preview overlay. -->
+  <div class="image-lightbox" id="imageLightbox" aria-hidden="true">
+    <button class="lightbox-close" type="button" aria-label="Close image preview">&times;</button>
+    <img class="lightbox-image" src="" alt="" />
+    <p class="lightbox-caption"></p>
+  </div>
+
+  <!-- Back to top: helps readers return quickly to the beginning of long articles. -->
+  <button class="back-to-top" type="button" aria-label="Back to top">Top</button>
+
+  <!-- Article interactions: controls image preview and back-to-top behavior. -->
+  <script src="article.js"></script>
+</body>
+</html>
