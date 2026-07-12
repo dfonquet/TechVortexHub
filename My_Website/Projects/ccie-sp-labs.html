@@ -17,7 +17,7 @@
     rel="stylesheet"
   />
 
-  <link rel="stylesheet" href="ccie-sp-labs.css?v=20260711b" />
+  <link rel="stylesheet" href="ccie-sp-labs.css?v=20260712e" />
 </head>
 
 <body>
@@ -53,6 +53,10 @@
             Service Provider lab focused on IS-IS, SR-MPLS, L3VPN, MP-BGP, PCE,
             TI-LFA, BFD, Internet VRFs, multicast ASM, and operational troubleshooting.
           </p>
+          <p class="living-lab-note">
+            This is a living lab. I keep updating the topology, notes, and device
+            configurations as I test new scenarios, so future versions may evolve.
+          </p>
         </div>
 
         <div class="lab-actions">
@@ -74,32 +78,48 @@
           <article class="lab-pill">
             <h3>Control Plane</h3>
             <p>IS-IS, MP-BGP, RR, PCE.</p>
-            <code>routing core</code>
+            <span class="lab-rfc">
+              <a href="https://www.rfc-editor.org/rfc/rfc1195.html" target="_blank" rel="noopener noreferrer">RFC 1195</a> /
+              <a href="https://www.rfc-editor.org/rfc/rfc5308.html" target="_blank" rel="noopener noreferrer">5308</a> /
+              <a href="https://www.rfc-editor.org/rfc/rfc4760.html" target="_blank" rel="noopener noreferrer">4760</a> /
+              <a href="https://www.rfc-editor.org/rfc/rfc4456.html" target="_blank" rel="noopener noreferrer">4456</a> /
+              <a href="https://www.rfc-editor.org/rfc/rfc5440.html" target="_blank" rel="noopener noreferrer">5440</a>
+            </span>
           </article>
           <article class="lab-pill">
             <h3>Transport</h3>
             <p>SR-MPLS, TI-LFA, BFD.</p>
-            <code>underlay</code>
+            <span class="lab-rfc">
+              <a href="https://www.rfc-editor.org/rfc/rfc8402.html" target="_blank" rel="noopener noreferrer">RFC 8402</a> /
+              <a href="https://www.rfc-editor.org/rfc/rfc8660.html" target="_blank" rel="noopener noreferrer">8660</a> /
+              <a href="https://www.rfc-editor.org/rfc/rfc5880.html" target="_blank" rel="noopener noreferrer">5880</a>
+            </span>
           </article>
           <article class="lab-pill">
             <h3>Services</h3>
             <p>L3VPN and Internet VRFs.</p>
-            <code>vpnv4</code>
+            <span class="lab-rfc">
+              <a href="https://www.rfc-editor.org/rfc/rfc4364.html" target="_blank" rel="noopener noreferrer">RFC 4364</a> /
+              <a href="https://www.rfc-editor.org/rfc/rfc8950.html" target="_blank" rel="noopener noreferrer">8950</a>
+            </span>
           </article>
           <article class="lab-pill">
             <h3>Multicast</h3>
             <p>ASM, RP discovery, RPF.</p>
-            <code>mroute</code>
+            <span class="lab-rfc">
+              <a href="https://www.rfc-editor.org/rfc/rfc4601.html" target="_blank" rel="noopener noreferrer">RFC 4601</a> /
+              <a href="https://www.rfc-editor.org/rfc/rfc7761.html" target="_blank" rel="noopener noreferrer">7761</a> /
+              <a href="https://www.rfc-editor.org/rfc/rfc3376.html" target="_blank" rel="noopener noreferrer">3376</a>
+            </span>
           </article>
           <article class="lab-pill">
-            <h3>Customer Edge</h3>
-            <p>Source and receiver validation.</p>
-            <code>CE view</code>
-          </article>
-          <article class="lab-pill">
-            <h3>Ops Notes</h3>
-            <p>Show commands and checks.</p>
-            <code>verify</code>
+            <h3>MVPN / XR</h3>
+            <p>Multicast VPN model and IOS XR configuration references.</p>
+            <span class="lab-rfc">
+              <a href="https://www.rfc-editor.org/rfc/rfc6513.html" target="_blank" rel="noopener noreferrer">RFC 6513</a> /
+              <a href="https://www.rfc-editor.org/rfc/rfc6514.html" target="_blank" rel="noopener noreferrer">6514</a> /
+              <a href="https://www.cisco.com/c/en/us/support/docs/ip/multicast/200512-Configure-mVPN-Profiles-within-Cisco-IOS.html" target="_blank" rel="noopener noreferrer">Cisco XR docs</a>
+            </span>
           </article>
         </div>
       </section>
@@ -114,7 +134,7 @@
           <span>Feature notes</span>
         </div>
         <div>
-          <strong>8</strong>
+          <strong>12+</strong>
           <span>Core topics</span>
         </div>
         <div>
@@ -187,7 +207,8 @@
           </div>
           <h2>Technology Notes</h2>
           <p>
-            Focused notes and configuration references grouped by feature.
+            My own focused notes from lab work, grouped by feature so I can quickly
+            revisit specific behaviors, commands, and validation checks.
           </p>
 
           <div class="file-list">
@@ -244,20 +265,69 @@
           </div>
         </article>
 
-        <article class="lab-panel">
+        <article class="lab-panel topic-panel">
           <div class="panel-top">
             <span class="status">Scope</span>
           </div>
           <h2>Lab Topics</h2>
-          <div class="tags">
-            <span>IS-IS</span>
-            <span>SR-MPLS</span>
-            <span>L3VPN</span>
-            <span>MP-BGP</span>
-            <span>PCE</span>
-            <span>TI-LFA</span>
-            <span>BFD</span>
-            <span>Multicast ASM</span>
+          <p>
+            The lab is grouped by the way I troubleshoot and evolve SP networks:
+            control plane first, transport next, then services, multicast, and MVPN behavior.
+          </p>
+
+          <div class="topic-map">
+            <article class="topic-group">
+              <span class="topic-kicker">01</span>
+              <h3>Routing Core</h3>
+              <div class="tags">
+                <span>IS-IS L1/L2</span>
+                <span>MP-BGP</span>
+                <span>RR Design</span>
+                <span>BFD</span>
+              </div>
+              <p class="topic-ref">
+                <a href="https://www.rfc-editor.org/rfc/rfc1195.html" target="_blank" rel="noopener noreferrer">IS-IS RFC 1195</a>
+                <a href="https://www.rfc-editor.org/rfc/rfc5308.html" target="_blank" rel="noopener noreferrer">IPv6 RFC 5308</a>
+              </p>
+            </article>
+
+            <article class="topic-group">
+              <span class="topic-kicker">02</span>
+              <h3>Transport</h3>
+              <div class="tags">
+                <span>SR-MPLS</span>
+                <span>Prefix-SID</span>
+                <span>TI-LFA</span>
+                <span>PCE</span>
+              </div>
+            </article>
+
+            <article class="topic-group">
+              <span class="topic-kicker">03</span>
+              <h3>Services</h3>
+              <div class="tags">
+                <span>L3VPN</span>
+                <span>Internet VRF</span>
+                <span>NAT Pool</span>
+                <span>Route Targets</span>
+              </div>
+            </article>
+
+            <article class="topic-group">
+              <span class="topic-kicker">04</span>
+              <h3>Multicast / MVPN</h3>
+              <div class="tags">
+                <span>PIM-SM</span>
+                <span>ASM</span>
+                <span>MVPN</span>
+                <span>XR Config</span>
+              </div>
+              <p class="topic-ref">
+                <a href="https://www.rfc-editor.org/rfc/rfc4601.html" target="_blank" rel="noopener noreferrer">PIM-SM RFC 4601</a>
+                <a href="https://www.rfc-editor.org/rfc/rfc6513.html" target="_blank" rel="noopener noreferrer">MVPN RFC 6513</a>
+                <a href="https://www.rfc-editor.org/rfc/rfc6514.html" target="_blank" rel="noopener noreferrer">BGP MVPN RFC 6514</a>
+              </p>
+            </article>
           </div>
         </article>
       </section>
