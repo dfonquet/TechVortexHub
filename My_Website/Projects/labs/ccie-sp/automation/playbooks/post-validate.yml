@@ -1,0 +1,39 @@
+---
+- name: Collect post-change IOS XR evidence
+  hosts: iosxr
+  gather_facts: false
+  vars:
+    automation_dir: "{{ playbook_dir }}/.."
+    change_id: CRQ-CCIE-SP-0001
+    evidence_dir: "{{ automation_dir }}/evidence/{{ change_id }}"
+  tasks:
+    - name: Create evidence directory
+      ansible.builtin.file:
+        path: "{{ evidence_dir }}"
+        state: directory
+        mode: "0755"
+      delegate_to: localhost
+      run_once: true
+
+    - name: Collect BGP, ISIS, and VPN evidence
+      cisco.iosxr.iosxr_command:
+        commands:
+          - show bgp vpnv4 unicast summary
+          - show bgp vpnv6 unicast summary
+          - show isis neighbors
+          - show route vrf all summary
+      register: evidence
+
+    - name: Write device evidence file
+      ansible.builtin.copy:
+        dest: "{{ evidence_dir }}/{{ inventory_hostname }}.txt"
+        mode: "0644"
+        content: |
+          # {{ inventory_hostname }} post-validation evidence
+
+          {% for output in evidence.stdout %}
+          {{ output }}
+
+          ---
+          {% endfor %}
+      delegate_to: localhost

@@ -1,0 +1,37 @@
+name: CCIE SP Lab CI
+
+"on":
+  pull_request:
+    paths:
+      - "My_Website/Projects/labs/ccie-sp/**"
+  push:
+    branches:
+      - main
+    paths:
+      - "My_Website/Projects/labs/ccie-sp/**"
+  workflow_dispatch:
+
+jobs:
+  offline-vision:
+    name: Offline Vision
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build lab facts
+        run: python My_Website/Projects/labs/ccie-sp/automation/scripts/build_lab_facts.py
+
+      - name: Validate lab facts
+        run: python My_Website/Projects/labs/ccie-sp/automation/scripts/validate_lab_facts.py
+
+      - name: Upload generated topology
+        uses: actions/upload-artifact@v4
+        with:
+          name: ccie-sp-lab-vision
+          path: My_Website/Projects/labs/ccie-sp/automation/generated/

@@ -1,0 +1,22 @@
+---
+- name: Render intended IOS XR change
+  hosts: localhost
+  gather_facts: false
+  vars:
+    automation_dir: "{{ playbook_dir }}/.."
+    change_file: "{{ automation_dir }}/change-data/customers/cust-new-vrf.yml"
+  tasks:
+    - name: Validate change data
+      ansible.builtin.command:
+        cmd: "python {{ automation_dir }}/scripts/validate_change_data.py --change-file {{ change_file }}"
+      changed_when: false
+
+    - name: Render configs
+      ansible.builtin.command:
+        cmd: "python {{ automation_dir }}/scripts/render_change.py --change-file {{ change_file }}"
+      changed_when: true
+
+    - name: Validate rendered configs
+      ansible.builtin.command:
+        cmd: "python {{ automation_dir }}/scripts/validate_rendered_config.py --rendered-dir {{ automation_dir }}/rendered"
+      changed_when: false

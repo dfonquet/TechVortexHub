@@ -1,0 +1,27 @@
+---
+- name: Deploy rendered IOS XR configs to production after approval
+  hosts: iosxr
+  gather_facts: false
+  serial: 1
+  vars:
+    automation_dir: "{{ playbook_dir }}/.."
+    change_id: CRQ-CCIE-SP-0001
+    rendered_config: "{{ automation_dir }}/rendered/{{ change_id }}/{{ inventory_hostname }}.cfg"
+  tasks:
+    - name: Require explicit production approval variable
+      ansible.builtin.assert:
+        that:
+          - approve_production | default(false) | bool
+        fail_msg: "Set -e approve_production=true only after manual approval."
+
+    - name: Check rendered config exists for this device
+      ansible.builtin.stat:
+        path: "{{ rendered_config }}"
+      register: rendered_config_file
+      delegate_to: localhost
+
+    - name: Deploy config to production
+      cisco.iosxr.iosxr_config:
+        src: "{{ rendered_config }}"
+        commit: true
+      when: rendered_config_file.stat.exists

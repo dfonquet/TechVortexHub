@@ -1,0 +1,99 @@
+! {{ change.id }} - L3VPN service {{ service.vrf_name }} on {{ device.hostname }}
+vrf {{ service.vrf_name }}
+{% if service.address_families.ipv4 %}
+ address-family ipv4 unicast
+  import route-target
+{% for rt in service.route_targets.import %}
+   {{ rt }}
+{% endfor %}
+  !
+  export route-target
+{% for rt in service.route_targets.export %}
+   {{ rt }}
+{% endfor %}
+  !
+ !
+{% endif %}
+{% if service.address_families.ipv6 %}
+ address-family ipv6 unicast
+  import route-target
+{% for rt in service.route_targets.import %}
+   {{ rt }}
+{% endfor %}
+  !
+  export route-target
+{% for rt in service.route_targets.export %}
+   {{ rt }}
+{% endfor %}
+  !
+ !
+{% endif %}
+!
+interface {{ device.customer_interface.name }}
+ description {{ device.customer_interface.description }}
+ vrf {{ service.vrf_name }}
+{% if device.customer_interface.ipv4 %}
+ ipv4 address {{ device.customer_interface.ipv4 }}
+{% endif %}
+{% if device.customer_interface.ipv6 %}
+ ipv6 address {{ device.customer_interface.ipv6 }}
+{% endif %}
+ no shutdown
+!
+route-policy {{ device.vrf.route_policy }}
+  pass
+end-policy
+!
+router bgp {{ provider.asn }}
+ bgp router-id {{ device.loopback_ipv4 }}
+ bgp log neighbor changes detail
+ address-family vpnv4 unicast
+ !
+ address-family vpnv6 unicast
+ !
+{% for rr in provider.rr_neighbors %}
+ neighbor {{ rr }}
+  remote-as {{ provider.asn }}
+  update-source {{ provider.loopback_interface }}
+  address-family vpnv4 unicast
+  !
+  address-family vpnv6 unicast
+  !
+ !
+{% endfor %}
+ vrf {{ service.vrf_name }}
+  rd {{ device.vrf.rd }}
+{% if service.address_families.ipv4 %}
+  address-family ipv4 unicast
+  !
+{% endif %}
+{% if service.address_families.ipv6 %}
+  address-family ipv6 unicast
+  !
+{% endif %}
+{% if device.ce_bgp.ipv4_neighbor %}
+  neighbor {{ device.ce_bgp.ipv4_neighbor }}
+   remote-as {{ device.ce_bgp.asn }}
+   address-family ipv4 unicast
+    route-policy {{ device.vrf.route_policy }} in
+    route-policy {{ device.vrf.route_policy }} out
+{% if device.ce_bgp.as_override %}
+    as-override
+{% endif %}
+   !
+  !
+{% endif %}
+{% if device.ce_bgp.ipv6_neighbor %}
+  neighbor {{ device.ce_bgp.ipv6_neighbor }}
+   remote-as {{ device.ce_bgp.asn }}
+   address-family ipv6 unicast
+    route-policy {{ device.vrf.route_policy }} in
+    route-policy {{ device.vrf.route_policy }} out
+{% if device.ce_bgp.as_override %}
+    as-override
+{% endif %}
+   !
+  !
+{% endif %}
+ !
+!

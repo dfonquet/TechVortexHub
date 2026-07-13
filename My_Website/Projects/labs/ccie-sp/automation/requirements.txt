@@ -1,0 +1,7 @@
+Jinja2>=3.1.0
+PyYAML>=6.0.0
+ansible-core>=2.16,<2.18
+ansible-lint>=24.0.0
+yamllint>=1.35.0
+pyats>=24.0
+genie>=24.0

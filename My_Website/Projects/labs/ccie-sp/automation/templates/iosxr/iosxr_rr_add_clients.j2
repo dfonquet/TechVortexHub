@@ -1,0 +1,21 @@
+! {{ change.id }} - Add PE route-reflector clients on {{ device.hostname }}
+router bgp {{ provider.asn }}
+ bgp router-id {{ device.loopback_ipv4 }}
+ bgp log neighbor changes detail
+ address-family vpnv4 unicast
+ !
+ address-family vpnv6 unicast
+ !
+{% for pe in pe_devices %}
+ neighbor {{ pe.loopback_ipv4 }}
+  remote-as {{ provider.asn }}
+  update-source {{ provider.loopback_interface }}
+  address-family vpnv4 unicast
+   route-reflector-client
+  !
+  address-family vpnv6 unicast
+   route-reflector-client
+  !
+ !
+{% endfor %}
+!

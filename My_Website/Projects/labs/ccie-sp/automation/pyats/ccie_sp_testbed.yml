@@ -1,0 +1,19 @@
+---
+testbed:
+  name: ccie-sp-local
+
+devices:
+  PE-1:
+    os: iosxr
+    type: router
+    connections:
+      cli:
+        protocol: ssh
+        ip: TODO_MGMT_IP
+  PE-2:
+    os: iosxr
+    type: router
+    connections:
+      cli:
+        protocol: ssh
+        ip: TODO_MGMT_IP

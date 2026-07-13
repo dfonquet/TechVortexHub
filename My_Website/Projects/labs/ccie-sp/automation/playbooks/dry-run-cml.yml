@@ -1,0 +1,22 @@
+---
+- name: Dry-run rendered IOS XR configs against CML or EVE-NG lab
+  hosts: iosxr
+  gather_facts: false
+  vars:
+    automation_dir: "{{ playbook_dir }}/.."
+    change_id: CRQ-CCIE-SP-0001
+    rendered_config: "{{ automation_dir }}/rendered/{{ change_id }}/{{ inventory_hostname }}.cfg"
+  tasks:
+    - name: Check rendered config exists for this device
+      ansible.builtin.stat:
+        path: "{{ rendered_config }}"
+      register: rendered_config_file
+      delegate_to: localhost
+
+    - name: Dry-run config with diff
+      cisco.iosxr.iosxr_config:
+        src: "{{ rendered_config }}"
+        commit: false
+      check_mode: true
+      diff: true
+      when: rendered_config_file.stat.exists

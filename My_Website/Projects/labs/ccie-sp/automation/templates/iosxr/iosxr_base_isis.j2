@@ -1,0 +1,28 @@
+! {{ change.id }} - IOS XR ISIS/SR base standard for {{ device.hostname }}
+router isis {{ provider.isis_process }}
+ is-type level-2-only
+ net {{ device.isis_net }}
+ distribute link-state
+ address-family ipv4 unicast
+  metric-style wide
+  advertise passive-only
+  mpls traffic-eng level-2-only
+  mpls traffic-eng router-id {{ provider.loopback_interface }}
+  segment-routing mpls sr-prefer
+ !
+ address-family ipv6 unicast
+  metric-style wide
+  advertise passive-only
+  single-topology
+  segment-routing mpls
+ !
+ interface {{ provider.loopback_interface }}
+  passive
+  address-family ipv4 unicast
+   prefix-sid index {{ device.pe_id | default(device.node_id) }}
+  !
+  address-family ipv6 unicast
+   prefix-sid index {{ device.pe_id | default(device.node_id) }}
+  !
+ !
+!

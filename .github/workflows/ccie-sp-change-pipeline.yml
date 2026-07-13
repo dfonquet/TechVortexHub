@@ -1,0 +1,153 @@
+name: CCIE SP Change Pipeline
+
+"on":
+  pull_request:
+    paths:
+      - "My_Website/Projects/labs/ccie-sp/automation/**"
+  workflow_dispatch:
+    inputs:
+      change_file:
+        description: Change YAML file
+        required: true
+        default: My_Website/Projects/labs/ccie-sp/automation/change-data/customers/cust-new-vrf.yml
+      run_cml:
+        description: Run CML/EVE-NG live dry-run/deploy stages
+        required: true
+        default: false
+        type: boolean
+      run_production:
+        description: Run production deploy after environment approval
+        required: true
+        default: false
+        type: boolean
+
+env:
+  AUTOMATION_DIR: My_Website/Projects/labs/ccie-sp/automation
+  CHANGE_FILE: ${{ github.event.inputs.change_file || 'My_Website/Projects/labs/ccie-sp/automation/change-data/customers/cust-new-vrf.yml' }}
+
+jobs:
+  validate-and-render:
+    name: Validate YAML and Render
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: python -m pip install -r "$AUTOMATION_DIR/requirements.txt"
+
+      - name: Validate YAML
+        run: python "$AUTOMATION_DIR/scripts/validate_change_data.py" --change-file "$CHANGE_FILE"
+
+      - name: Render IOS XR configs
+        run: python "$AUTOMATION_DIR/scripts/render_change.py" --change-file "$CHANGE_FILE"
+
+      - name: Validate rendered configs
+        run: python "$AUTOMATION_DIR/scripts/validate_rendered_config.py" --rendered-dir "$AUTOMATION_DIR/rendered"
+
+      - name: Upload rendered configs
+        uses: actions/upload-artifact@v4
+        with:
+          name: rendered-iosxr-change
+          path: ${{ env.AUTOMATION_DIR }}/rendered/
+
+  cml-dry-run:
+    name: CML/EVE-NG Dry-run
+    needs: validate-and-render
+    if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.run_cml == 'true' }}
+    runs-on:
+      - self-hosted
+      - linux
+      - netlab
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          python -m pip install -r "$AUTOMATION_DIR/requirements.txt"
+          python -m pip install -r "$AUTOMATION_DIR/requirements-pyats.txt"
+          ansible-galaxy collection install -r "$AUTOMATION_DIR/requirements.yml"
+
+      - name: Render configs on runner
+        run: python "$AUTOMATION_DIR/scripts/render_change.py" --change-file "$CHANGE_FILE"
+
+      - name: Ansible dry-run
+        run: ansible-playbook -i "$AUTOMATION_DIR/inventories/local/hosts.yml" "$AUTOMATION_DIR/playbooks/dry-run-cml.yml" --check --diff
+
+  cml-deploy-and-pyats:
+    name: CML/EVE-NG Deploy and pyATS
+    needs: cml-dry-run
+    if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.run_cml == 'true' }}
+    runs-on:
+      - self-hosted
+      - linux
+      - netlab
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          python -m pip install -r "$AUTOMATION_DIR/requirements.txt"
+          ansible-galaxy collection install -r "$AUTOMATION_DIR/requirements.yml"
+
+      - name: Render configs on runner
+        run: python "$AUTOMATION_DIR/scripts/render_change.py" --change-file "$CHANGE_FILE"
+
+      - name: Deploy to CML/EVE-NG
+        run: ansible-playbook -i "$AUTOMATION_DIR/inventories/local/hosts.yml" "$AUTOMATION_DIR/playbooks/deploy-cml.yml"
+
+      - name: pyATS validation
+        run: pyats run easypy --testscript "$AUTOMATION_DIR/pyats/validate_sp_services.py" --testbed-file "$AUTOMATION_DIR/pyats/ccie_sp_testbed.yml"
+
+      - name: Collect evidence
+        if: always()
+        run: ansible-playbook -i "$AUTOMATION_DIR/inventories/local/hosts.yml" "$AUTOMATION_DIR/playbooks/post-validate.yml"
+
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cml-evidence
+          path: ${{ env.AUTOMATION_DIR }}/evidence/
+
+  production-deploy:
+    name: Production Deploy
+    needs: cml-deploy-and-pyats
+    if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.run_production == 'true' }}
+    runs-on:
+      - self-hosted
+      - linux
+      - netlab
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          python -m pip install -r "$AUTOMATION_DIR/requirements.txt"
+          ansible-galaxy collection install -r "$AUTOMATION_DIR/requirements.yml"
+
+      - name: Render configs on runner
+        run: python "$AUTOMATION_DIR/scripts/render_change.py" --change-file "$CHANGE_FILE"
+
+      - name: Deploy to production
+        run: ansible-playbook -i "$AUTOMATION_DIR/inventories/local/hosts.yml" "$AUTOMATION_DIR/playbooks/deploy-production.yml" -e approve_production=true
+
+      - name: Post-validation
+        if: always()
+        run: ansible-playbook -i "$AUTOMATION_DIR/inventories/local/hosts.yml" "$AUTOMATION_DIR/playbooks/post-validate.yml"
+
+      - name: Upload CRQ evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-crq-evidence
+          path: ${{ env.AUTOMATION_DIR }}/evidence/

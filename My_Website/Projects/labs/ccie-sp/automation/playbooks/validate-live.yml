@@ -1,0 +1,17 @@
+---
+- name: Validate live IOS XR lab access
+  hosts: iosxr
+  gather_facts: false
+  tasks:
+    - name: Read hostname and version
+      cisco.iosxr.iosxr_command:
+        commands:
+          - show running-config hostname
+          - show version
+      register: live_check
+
+    - name: Show device response summary
+      ansible.builtin.debug:
+        msg:
+          device: "{{ inventory_hostname }}"
+          hostname_output: "{{ live_check.stdout[0] | default('') }}"

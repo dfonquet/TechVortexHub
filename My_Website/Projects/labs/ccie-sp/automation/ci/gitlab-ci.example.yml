@@ -1,0 +1,79 @@
+stages:
+  - validate_yaml
+  - validate_ansible
+  - dry_run
+  - deploy_cml
+  - pyats_validate
+  - approve
+  - deploy_production
+  - post_validate
+  - evidence
+
+variables:
+  AUTOMATION_DIR: "My_Website/Projects/labs/ccie-sp/automation"
+  CHANGE_FILE: "My_Website/Projects/labs/ccie-sp/automation/change-data/customers/cust-new-vrf.yml"
+
+validate_yaml:
+  stage: validate_yaml
+  image: python:3.12
+  script:
+    - python -m pip install -r "$AUTOMATION_DIR/requirements.txt"
+    - python "$AUTOMATION_DIR/scripts/validate_change_data.py" --change-file "$CHANGE_FILE"
+    - python "$AUTOMATION_DIR/scripts/render_change.py" --change-file "$CHANGE_FILE"
+    - python "$AUTOMATION_DIR/scripts/validate_rendered_config.py" --rendered-dir "$AUTOMATION_DIR/rendered"
+  artifacts:
+    paths:
+      - "$AUTOMATION_DIR/rendered/"
+
+validate_ansible:
+  stage: validate_ansible
+  image: python:3.12
+  script:
+    - python -m pip install -r "$AUTOMATION_DIR/requirements.txt"
+    - ansible-galaxy collection install -r "$AUTOMATION_DIR/requirements.yml"
+    - ansible-playbook --syntax-check "$AUTOMATION_DIR/playbooks/render-change.yml"
+
+dry_run_cml:
+  stage: dry_run
+  tags:
+    - netlab
+  script:
+    - python -m pip install -r "$AUTOMATION_DIR/requirements.txt"
+    - ansible-galaxy collection install -r "$AUTOMATION_DIR/requirements.yml"
+    - python "$AUTOMATION_DIR/scripts/render_change.py" --change-file "$CHANGE_FILE"
+    - ansible-playbook -i "$AUTOMATION_DIR/inventories/local/hosts.yml" "$AUTOMATION_DIR/playbooks/dry-run-cml.yml" --check --diff
+
+deploy_cml:
+  stage: deploy_cml
+  tags:
+    - netlab
+  when: manual
+  script:
+    - ansible-playbook -i "$AUTOMATION_DIR/inventories/local/hosts.yml" "$AUTOMATION_DIR/playbooks/deploy-cml.yml"
+
+pyats_validate:
+  stage: pyats_validate
+  tags:
+    - netlab
+  script:
+    - python -m pip install -r "$AUTOMATION_DIR/requirements-pyats.txt"
+    - pyats run easypy --testscript "$AUTOMATION_DIR/pyats/validate_sp_services.py" --testbed-file "$AUTOMATION_DIR/pyats/ccie_sp_testbed.yml"
+
+deploy_production:
+  stage: deploy_production
+  tags:
+    - netlab
+  when: manual
+  script:
+    - ansible-playbook -i "$AUTOMATION_DIR/inventories/local/hosts.yml" "$AUTOMATION_DIR/playbooks/deploy-production.yml" -e approve_production=true
+
+post_validate:
+  stage: post_validate
+  tags:
+    - netlab
+  script:
+    - ansible-playbook -i "$AUTOMATION_DIR/inventories/local/hosts.yml" "$AUTOMATION_DIR/playbooks/post-validate.yml"
+  artifacts:
+    when: always
+    paths:
+      - "$AUTOMATION_DIR/evidence/"

@@ -1,0 +1,87 @@
+---
+change:
+  id: CRQ-CCIE-SP-0001
+  description: Add new L3VPN customer VRF to selected PE routers
+  owner: netops
+  environment: cml
+
+service:
+  type: l3vpn
+  customer_name: CUST-X
+  vrf_name: CUST-X
+  address_families:
+    ipv4: true
+    ipv6: true
+  route_targets:
+    import:
+      - "105.105.105.105:500"
+      - "106.106.106.106:500"
+    export:
+      - "105.105.105.105:500"
+
+provider:
+  asn: 500
+  isis_process: 500-SP
+  isis_area: "0001"
+  loopback_interface: Loopback600
+  rr_neighbors:
+    - 11.11.11.11
+    - 12.12.12.12
+
+pe_devices:
+  - hostname: PE-1
+    pe_id: 101
+    loopback_ipv4: 101.101.101.101
+    role: pe
+    render_templates:
+      - iosxr_pe_vrf.j2
+      - iosxr_base_isis.j2
+    vrf:
+      rd: "500:105"
+      route_policy: BGP-PASS
+    customer_interface:
+      name: GigabitEthernet0/0/0/2
+      description: VRF-CUST-X-CE1
+      ipv4: 192.0.2.5/30
+      ipv6: 2001:db8:ce:105::5/64
+    ce_bgp:
+      asn: 65105
+      ipv4_neighbor: 192.0.2.6
+      ipv6_neighbor: 2001:db8:ce:105::6
+      as_override: true
+
+  - hostname: PE-2
+    pe_id: 102
+    loopback_ipv4: 102.102.102.102
+    role: pe
+    render_templates:
+      - iosxr_pe_vrf.j2
+      - iosxr_base_isis.j2
+    vrf:
+      rd: "500:106"
+      route_policy: BGP-PASS
+    customer_interface:
+      name: GigabitEthernet0/0/0/2
+      description: VRF-CUST-X-CE2
+      ipv4: 192.0.2.9/30
+      ipv6: 2001:db8:ce:106::9/64
+    ce_bgp:
+      asn: 65106
+      ipv4_neighbor: 192.0.2.10
+      ipv6_neighbor: 2001:db8:ce:106::10
+      as_override: true
+
+route_reflectors:
+  - hostname: P11-RR-SHADOW
+    loopback_ipv4: 11.11.11.11
+    render_templates:
+      - iosxr_rr_add_clients.j2
+  - hostname: P12-RR-PRIMARY
+    loopback_ipv4: 12.12.12.12
+    render_templates:
+      - iosxr_rr_add_clients.j2
+
+validation:
+  expected_vpnv4_prefixes_min: 1
+  expected_vpnv6_prefixes_min: 1
+  expected_isis_neighbors_min: 1
