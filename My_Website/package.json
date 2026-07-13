@@ -1,0 +1,5 @@
+{
+  "scripts": {
+    "update-lab-metrics": "node scripts/update-lab-metrics.js"
+  }
+}
