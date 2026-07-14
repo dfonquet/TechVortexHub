@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="author" content="Daniel Fonque" />
+  <meta
+    name="description"
+    content="Building NetLab-Core, an Ubuntu 26.04 LTS Golden Image for EVE-NG, CCIE SP labs, and network automation workflows using VMware Workstation, qemu-img, Ansible, pyATS, Git, and Python."
+  />
+  <title>Building NetLab-Core: Ubuntu Golden Image for EVE-NG</title>
+  <link rel="stylesheet" href="styles.css?v=20260711g" />
+</head>
+
+<body>
+  <!-- Private visitor analytics via Web-Stat. -->
+  <span id="wts2217668" class="web-stat-hidden" aria-hidden="true"></span>
+  <script src="../web-stat.js?v=20260710b"></script>
+  <noscript>
+    <img class="web-stat-hidden" src="https://app.ardalio.com/7/4/2217668.png" alt="" />
+  </noscript>
+
+  <div class="article-page">
+    <nav class="top-nav">
+      <a href="../daftiel.html">Home</a>
+      <a href="../Projects/projects.html">Projects</a>
+      <a href="blog.html">Blog</a>
+    </nav>
+
+    <article class="article-shell">
+      <header class="article-hero">
+        <p class="eyebrow">Network Automation</p>
+        <h1>Building NetLab-Core: Ubuntu Golden Image for EVE-NG</h1>
+        <p class="article-subtitle">
+          A reusable Ubuntu 26.04 LTS automation server built in VMware Workstation,
+          converted to QCOW2, and imported into EVE-NG for CCIE Service Provider labs.
+        </p>
+        <div class="article-meta">
+          <span>Daniel Fonque Torres</span>
+          <span>July 14, 2026</span>
+          <span>CCIE-SP / NetDevOps Lab</span>
+        </div>
+      </header>
+
+      <section class="article-card">
+        <h2>Why I Built This Image</h2>
+        <p>
+          The goal was to create a reusable <strong>NetOps Core</strong> server for my
+          EVE-NG Service Provider lab. Instead of reinstalling Ubuntu every time I need
+          an automation host, this image becomes the baseline node for CCIE SP,
+          Cisco NSO, Cisco 350-901 AUTOCOR, API testing, Ansible, pyATS, and future
+          infrastructure services.
+        </p>
+        <p>
+          The final artifact lives in EVE-NG as a QCOW2 disk named
+          <code>virtioa.qcow2</code>. The staging path used during the build was:
+        </p>
+        <div class="cli-block">
+          <div class="cli-header">
+            <span>Image staging path</span>
+            <button class="copy-command" type="button" data-copy="C:\EVE\EVE-BACKLAB\qemu\linux-netlab-core">Copy</button>
+          </div>
+          <pre><code>C:\EVE\EVE-BACKLAB\qemu\linux-netlab-core</code></pre>
+        </div>
+      </section>
+
+      <section class="article-card">
+        <h2>Target Architecture</h2>
+        <p>
+          NetLab-Core is designed as the central automation node that sits next to
+          Cisco XR and Cisco XE routers inside EVE-NG. From this single server I can
+          run automation, validation, AAA services, Docker workloads, and Python-based
+          APIs against the lab topology.
+        </p>
+        <div class="cli-block">
+          <div class="cli-header">
+            <span>Logical role</span>
+            <button class="copy-command" type="button" data-copy="Cisco XR / Cisco XE -> netlab-core -> Ansible / pyATS / Docker / FreeRADIUS / TACACS+ / Terraform">Copy</button>
+          </div>
+          <pre><code>              Cisco XR
+                   |
+              Cisco XE
+                   |
+             netlab-core
+                   |
+     +-------------+--------------+
+     |             |              |
+  Ansible     FreeRADIUS      Docker
+     |             |              |
+ Terraform     TACACS+       Python APIs</code></pre>
+        </div>
+      </section>
+
+      <section class="article-card">
+        <h2>What I Want to Build This Week</h2>
+        <p>
+          I do not want this server to be only "Ubuntu with Python". The idea is to
+          turn it into a real NetOps platform where Python, Ansible, pyATS, templates,
+          parsers, and network devices are connected as one workflow.
+        </p>
+        <div class="cli-block">
+          <div class="cli-header">
+            <span>NetOps platform vision</span>
+            <button class="copy-command" type="button" data-copy="NetLab-Core -> Python / Ansible / pyATS -> Netmiko / Scrapli / Jinja2 / Genie -> IOS-XR / IOS-XE / JunOS / Nokia">Copy</button>
+          </div>
+          <pre><code>                 NetLab-Core
+                       |
+      +----------------+----------------+
+      |                |                |
+   Python          Ansible          pyATS
+      |                |                |
+      +------+         |         +------+
+      |      |         |         |
+   Netmiko Scrapli   Jinja2    Genie
+      |
+      |
+   IOS-XR
+   IOS-XE
+   JunOS
+   Nokia</code></pre>
+        </div>
+        <p>
+          The current CCIE SP lab is Cisco-focused, but the platform design leaves room
+          for future multi-vendor validation and automation practice.
+        </p>
+      </section>
+
+      <section class="article-card">
+        <h2>Versions and Build Context</h2>
+        <ul>
+          <li><strong>Guest OS:</strong> Ubuntu Server 26.04 LTS.</li>
+          <li><strong>Kernel observed:</strong> 7.0.0-27-generic.</li>
+          <li><strong>Hypervisor used for preparation:</strong> VMware Workstation 25H2.</li>
+          <li><strong>Initial VM resources:</strong> 2 vCPU, 4096 MB RAM, 40 GB virtual disk, NAT networking.</li>
+          <li><strong>EVE-NG host:</strong> 192.168.1.100.</li>
+          <li><strong>EVE-NG QEMU runtime observed:</strong> qemu-system-x86_64 6.0.0 for the node.</li>
+          <li><strong>Final EVE disk:</strong> <code>/opt/unetlab/addons/qemu/linux-netlab-core/virtioa.qcow2</code>.</li>
+        </ul>
+      </section>
+
+      <section class="article-card">
+        <h2>Current Build Status</h2>
+        <p>
+          At this stage, the server already has the foundation required for a serious
+          NetOps workflow.
+        </p>
+        <ul>
+          <li>Ubuntu 26.04 LTS - done.</li>
+          <li>Git - done.</li>
+          <li>Python 3.14 - done.</li>
+          <li>venv - done.</li>
+          <li>pip - done.</li>
+          <li>Ansible - done.</li>
+          <li>pyATS - done.</li>
+          <li>Genie - done.</li>
+          <li>GitHub project cloned - done.</li>
+        </ul>
+      </section>
+
+      <section class="article-card">
+        <h2>1. Prepare Ubuntu in VMware</h2>
+        <p>
+          I started with a clean Ubuntu Server VM in VMware Workstation. This allowed me
+          to build and validate the image comfortably before importing it into EVE-NG.
+          VMware was used as the build environment; EVE-NG is the final runtime.
+        </p>
+        <div class="cli-block">
+          <div class="cli-header">
+            <span>Initial update workflow</span>
+            <button class="copy-command" type="button" data-copy="sudo apt update&#10;sudo apt upgrade -y&#10;sudo reboot&#10;sudo apt full-upgrade -y&#10;sudo apt autoremove -y&#10;sudo apt autoclean">Copy</button>
+          </div>
+          <pre><code>sudo apt update
+sudo apt upgrade -y
+sudo reboot
+
+sudo apt full-upgrade -y
+sudo apt autoremove -y
+sudo apt autoclean</code></pre>
+        </div>
+        <p>
+          After the update, I validated the OS, kernel, disk layout, and memory. This is
+          the point where the VM stopped being a fresh install and started becoming a
+          controlled lab appliance.
+        </p>
+      </section>
+
+      <figure class="article-image">
+        <img src="img/netlab-core/02-ubuntu-26-04-health-check.png" alt="Ubuntu 26.04 LTS health check showing kernel, disk, and memory" loading="lazy" decoding="async" />
+        <figcaption>Ubuntu 26.04 LTS validation after upgrade: kernel, disk, and memory baseline.</figcaption>
+      </figure>
+
+      <section class="article-card">
+        <h2>2. Install Core NetOps Tooling</h2>
+        <p>
+          The base image includes tools that are useful from day one in a network
+          automation lab. They support troubleshooting, API testing, packet capture,
+          terminal workflows, and day-to-day Linux operations.
+        </p>
+        <div class="cli-block">
+          <div class="cli-header">
+            <span>Base tools</span>
+            <button class="copy-command" type="button" data-copy="sudo apt install -y vim curl wget htop tmux net-tools dnsutils iputils-ping tcpdump jq unzip zip">Copy</button>
+          </div>
+          <pre><code>sudo apt install -y \
+vim \
+curl \
+wget \
+htop \
+tmux \
+net-tools \
+dnsutils \
+iputils-ping \
+tcpdump \
+jq \
+unzip \
+zip</code></pre>
+        </div>
+        <ul>
+          <li><strong>curl and jq</strong> support REST API testing and JSON inspection.</li>
+          <li><strong>tcpdump, ping, mtr, and net-tools</strong> support network troubleshooting.</li>
+          <li><strong>tmux</strong> keeps long-running sessions alive.</li>
+          <li><strong>vim, unzip, zip, and htop</strong> are everyday operational tools that belong on the server from day one.</li>
+        </ul>
+      </section>
+
+      <section class="article-card">
+        <h2>Golden Image Package Plan</h2>
+        <p>
+          The long-term goal is to keep this image as a reusable automation appliance.
+          The first release focuses on the foundation; future snapshots can add heavier
+          services without rebuilding the operating system from zero.
+        </p>
+        <div class="concept-grid">
+          <div class="concept-mini-card">
+            <h3>Base System</h3>
+            <p>Python 3, pip, Git, curl, vim, htop, net-tools, tcpdump, iperf3, mtr, jq, unzip, and zip.</p>
+          </div>
+          <div class="concept-mini-card">
+            <h3>Automation</h3>
+            <p>Ansible, pyATS, Genie, Jinja2, PyYAML, Requests, Scapy, and project-specific Python libraries.</p>
+          </div>
+          <div class="concept-mini-card">
+            <h3>Routing Services</h3>
+            <p>FRRouting planned for BGP, OSPF, and RIP protocol experiments inside the lab.</p>
+          </div>
+          <div class="concept-mini-card">
+            <h3>Optional Platform</h3>
+            <p>Docker as the base for NetBox, monitoring tools, API services, AAA components, and future lab utilities.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="article-card">
+        <h2>3. Create the NetOps Workspace</h2>
+        <p>
+          The working directory inside the server is intentionally simple:
+          <code>/home/daniel/netops</code>. This keeps automation repositories,
+          lab notes, generated artifacts, and validation tools under one predictable
+          workspace.
+        </p>
+        <div class="cli-block">
+          <div class="cli-header">
+            <span>Workspace</span>
+            <button class="copy-command" type="button" data-copy="mkdir -p ~/netops&#10;cd ~/netops&#10;pwd">Copy</button>
+          </div>
+          <pre><code>mkdir -p ~/netops
+cd ~/netops
+pwd</code></pre>
+        </div>
+      </section>
+
+      <figure class="article-image">
+        <img src="img/netlab-core/03-netops-workspace.png" alt="Creating the netops workspace under home directory" loading="lazy" decoding="async" />
+        <figcaption>The NetOps workspace created under <code>/home/daniel/netops</code>.</figcaption>
+      </figure>
+
+      <section class="article-card">
+        <h2>4. Configure Git</h2>
+        <p>
+          Git was configured before cloning the automation repository. This makes the
+          VM ready for commits, documentation updates, branches, and future CI/CD work.
+        </p>
+        <div class="cli-block">
+          <div class="cli-header">
+            <span>Git identity</span>
+            <button class="copy-command" type="button" data-copy="git config --global user.name &quot;Daniel Fonque&quot;&#10;git config --global user.email &quot;danielfonque@gmail.com&quot;&#10;git config --global init.defaultBranch main&#10;git config --global core.editor vim&#10;git config --global pull.rebase false&#10;git config --list">Copy</button>
+          </div>
+          <pre><code>git config --global user.name "Daniel Fonque"
+git config --global user.email "danielfonque@gmail.com"
+git config --global init.defaultBranch main
+git config --global core.editor vim
+git config --global pull.rebase false
+git config --list</code></pre>
+        </div>
+      </section>
+
+      <section class="article-card">
+        <h2>Server Documentation</h2>
+        <p>
+          A server like this should be self-documented. Many engineers build systems,
+          but fewer document why the system exists, what is installed, and how it should
+          be used later. The file <code>SERVER_INFO.md</code> becomes the first internal
+          design note for NetLab-Core.
+        </p>
+        <div class="cli-block">
+          <div class="cli-header">
+            <span>Create documentation file</span>
+            <button class="copy-command" type="button" data-copy="cd ~&#10;mkdir -p Documentation&#10;cd Documentation&#10;touch SERVER_INFO.md&#10;nano SERVER_INFO.md">Copy</button>
+          </div>
+          <pre><code>cd ~
+mkdir -p Documentation
+cd Documentation
+touch SERVER_INFO.md
+nano SERVER_INFO.md</code></pre>
+        </div>
+        <div class="cli-block">
+          <div class="cli-header">
+            <span>SERVER_INFO.md baseline</span>
+            <button class="copy-command" type="button" data-copy="# NetLab-Core&#10;&#10;## Hostname&#10;netlab-core&#10;&#10;## Operating System&#10;Ubuntu Server 26.04 LTS&#10;&#10;## Hypervisor&#10;VMware Workstation Pro&#10;&#10;## Purpose&#10;Central Automation Server for CCIE Service Provider, Cisco NSO, Cisco AUTOCOR, Ansible, pyATS, Python Automation, REST APIs, Terraform, Docker, FreeRADIUS, TACACS+, and Future Monitoring Stack.">Copy</button>
+          </div>
+          <pre><code># NetLab-Core
+
+## Hostname
+netlab-core
+
+## Operating System
+Ubuntu Server 26.04 LTS
+
+## Hypervisor
+VMware Workstation Pro
+
+## Purpose
+
+Central Automation Server for:
+
+- CCIE Service Provider
+- Cisco NSO
+- Cisco AUTOCOR
+- Ansible
+- pyATS
+- Python Automation
+- REST APIs
+- Terraform
+- Docker
+- FreeRADIUS
+- TACACS+
+- Future Monitoring Stack
+
+## Installed
+
+- Git
+- Python 3.14
+- pip
+- venv
+- Ansible Core
+- pyATS
+- Genie
+- Jinja2
+- PyYAML
+- Requests
+- curl
+- jq
+- tcpdump
+- tmux
+- htop
+
+## Git Repository
+
+CCIE-SP-NetOps-Automation</code></pre>
+        </div>
+        <figure class="article-image">
+          <img src="img/netlab-core/05-server-info-md.png" alt="SERVER_INFO.md opened in nano with NetLab-Core documentation" loading="lazy" decoding="async" />
+          <figcaption>Documenting NetLab-Core from day one: hostname, OS, hypervisor, purpose, and installed software.</figcaption>
+        </figure>
+        <p>
+          This is the small detail that makes the server feel intentional. Six months
+          later, this file explains what was installed, why Ubuntu 26.04 was chosen,
+          what the server is for, and which repository belongs to the lab. It turns a
+          personal build into something closer to an engineering platform.
+        </p>
+      </section>
+
+      <section class="article-card">
+        <h2>One-Afternoon Progress Summary</h2>
+        <p>
+          In one build session, the VM moved from a clean Ubuntu install to a real
+          NetOps Server.
+        </p>
+        <ul>
+          <li>Ubuntu Server 26.04 LTS.</li>
+          <li>Initial recovery snapshot.</li>
+          <li>DNS working.</li>
+          <li>Git configured.</li>
+          <li>Python 3.14.</li>
+          <li>Virtual Environment (venv).</li>
+          <li>pip upgraded.</li>
+          <li>GitHub project cloned.</li>
+          <li>Project dependencies installed.</li>
+          <li>pyATS installed.</li>
+          <li>Genie installed.</li>
+          <li>Ansible installed.</li>
+          <li>Basic Linux tools installed.</li>
+        </ul>
+        <p>
+          At this point it was no longer a fresh Ubuntu server. It had become the first
+          version of the NetLab-Core automation platform.
+        </p>
+      </section>
+
+      <section class="article-card">
+        <h2>5. Deploy the Automation Repository</h2>
+        <p>
+          The automation repository was cloned into the NetOps workspace. The structure
+          is intentionally separated by function: change data, templates, playbooks,
+          pyATS validation, rendered configuration, generated facts, and evidence.
+        </p>
+        <p>
+          The workflow follows a clean engineering model:
+          <strong>data -> render -> dry-run -> deploy -> validate -> evidence</strong>.
+        </p>
+      </section>
+
+      <figure class="article-image">
+        <img src="img/netlab-core/04-automation-repository-tree.png" alt="CCIE SP NetOps Automation repository tree with playbooks, pyATS, templates, and evidence folders" loading="lazy" decoding="async" />
+        <figcaption>Repository layout for CCIE-SP-NetOps-Automation.</figcaption>
+      </figure>
+
+      <section class="article-card">
+        <h2>6. Python Virtual Environment</h2>
+        <p>
+          I used a Python virtual environment so that project dependencies do not pollute
+          the global operating system. This matters in a long-lived lab appliance because
+          different automation projects may require different versions of libraries.
+        </p>
+        <div class="cli-block">
+          <div class="cli-header">
+            <span>Python environment</span>
+            <button class="copy-command" type="button" data-copy="python3 -m venv .venv&#10;source .venv/bin/activate&#10;python -m pip install --upgrade pip&#10;pip install -r automation/requirements.txt&#10;python -c &quot;import yaml, requests, pyats; print('Dependencies OK')&quot;">Copy</button>
+          </div>
+          <pre><code>python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install -r automation/requirements.txt
+
+python -c "import yaml, requests, pyats; print('Dependencies OK')"</code></pre>
+        </div>
+        <p>
+          During the build, Python packages that compile native extensions required
+          <code>build-essential</code> and <code>python3-dev</code>. That became a useful
+          reminder: when <code>pip</code> fails while building wheels, the issue is often
+          a missing compiler or missing Python development headers.
+        </p>
+      </section>
+
+      <section class="article-card">
+        <h2>7. Installed Automation Stack</h2>
+        <div class="concept-grid">
+          <div class="concept-mini-card">
+            <h3>Ansible</h3>
+            <p>Used for repeatable configuration workflows, rendering, deployment, and validation tasks.</p>
+          </div>
+          <div class="concept-mini-card">
+            <h3>pyATS and Genie</h3>
+            <p>Used to validate network state, parse CLI output, and build test-driven lab checks.</p>
+          </div>
+          <div class="concept-mini-card">
+            <h3>Python APIs</h3>
+            <p>Used for REST calls, structured data workflows, and custom automation scripts.</p>
+          </div>
+          <div class="concept-mini-card">
+            <h3>Future Services</h3>
+            <p>Docker, FreeRADIUS, TACACS+, Terraform, NetBox, Grafana, and Prometheus.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="article-card">
+        <h2>8. Convert the VMware Disk for EVE-NG</h2>
+        <p>
+          The VMware VM was built as the development source, then exported as an
+          independent VMDK so the original VMware VM and snapshots remained untouched.
+          The resulting image was staged in:
+        </p>
+        <div class="cli-block">
+          <div class="cli-header">
+            <span>Windows staging folder</span>
+            <button class="copy-command" type="button" data-copy="C:\EVE\EVE-BACKLAB\qemu\linux-netlab-core\NetLab-Core.vmdk">Copy</button>
+          </div>
+          <pre><code>C:\EVE\EVE-BACKLAB\qemu\linux-netlab-core\NetLab-Core.vmdk</code></pre>
+        </div>
+        <p>
+          After copying the VMDK to EVE-NG, it was converted to QCOW2 using
+          <code>qemu-img</code>.
+        </p>
+        <div class="cli-block">
+          <div class="cli-header">
+            <span>EVE-NG conversion</span>
+            <button class="copy-command" type="button" data-copy="cd /opt/unetlab/addons/qemu/linux-netlab-core&#10;qemu-img convert -f vmdk -O qcow2 NetLab-Core.vmdk virtioa.qcow2&#10;/opt/unetlab/wrappers/unl_wrapper -a fixpermissions">Copy</button>
+          </div>
+          <pre><code>cd /opt/unetlab/addons/qemu/linux-netlab-core
+qemu-img convert -f vmdk -O qcow2 NetLab-Core.vmdk virtioa.qcow2
+/opt/unetlab/wrappers/unl_wrapper -a fixpermissions</code></pre>
+        </div>
+      </section>
+
+      <section class="article-card">
+        <h2>9. EVE-NG Node Settings</h2>
+        <ul>
+          <li><strong>Image folder:</strong> <code>linux-netlab-core</code>.</li>
+          <li><strong>Disk filename:</strong> <code>virtioa.qcow2</code>.</li>
+          <li><strong>Console:</strong> VNC.</li>
+          <li><strong>CPU:</strong> 2 vCPU.</li>
+          <li><strong>RAM:</strong> 4096 MB recommended for automation tooling.</li>
+          <li><strong>NIC:</strong> virtio-net-pci.</li>
+          <li><strong>Boot order:</strong> disk first, <code>-boot order=c</code>.</li>
+        </ul>
+        <p>
+          The imported node became <strong>NetLab-Core-01</strong> in the CCIE SP lab.
+          Once the QCOW2 image booted, the original workspace and repository were still
+          present, which confirmed that the migration preserved the build state.
+        </p>
+      </section>
+
+      <section class="article-card">
+        <h2>EVE-NG: The Fun Part</h2>
+        <p>
+          This is where the project starts to feel alive. NetLab-Core is not meant to
+          appear in EVE-NG as just another node named <em>Ubuntu</em>. The idea is for it
+          to appear as <strong>NetLab-Core</strong>, or even
+          <strong>NetOps Automation Server</strong>, because its role is different from
+          a normal test VM.
+        </p>
+        <div class="cli-block">
+          <div class="cli-header">
+            <span>EVE-NG control point</span>
+            <button class="copy-command" type="button" data-copy="EVE-NG -> IOS-XR -> IOS-XE -> NetLab-Core -> Ansible / pyATS / Python / Git">Copy</button>
+          </div>
+          <pre><code>               EVE-NG
+
+        IOS-XR
+           |
+        IOS-XE
+           |
+       NetLab-Core
+           |
+      Ansible
+      pyATS
+      Python
+      Git</code></pre>
+        </div>
+        <p>
+          From this server I can run playbooks, validations, backups, REST API tests,
+          and configuration generation from inside the lab itself. The automation host
+          lives next to the routers it manages, which makes the lab feel much closer to
+          a real operations environment.
+        </p>
+        <div class="cli-block">
+          <div class="cli-header">
+            <span>Lab mental model</span>
+            <button class="copy-command" type="button" data-copy="ISP topology with NetLab-Core as the automation brain">Copy</button>
+          </div>
+          <pre><code>                ISP
+
+          P1---------P2
+          |           |
+         PE1---------PE2
+          |           |
+        XR CE      XE CE
+
+             |
+             |
+      NetLab-Core</code></pre>
+        </div>
+        <p>
+          That node becomes the brain of the lab. It configures routers, validates state,
+          compares configurations, generates templates, runs pre-change and post-change
+          checks, and queries APIs. It is not just a PC connected to the topology; it is
+          the operational control point for the whole environment.
+        </p>
+      </section>
+
+      <section class="article-card">
+        <h2>Simple EVE-NG Import Fix</h2>
+        <p>
+          After moving the converted QCOW2 image into EVE-NG, the disk itself was valid,
+          but the first node start did not behave correctly. The wrapper reported that
+          the QEMU child process was no longer running. In simple terms, the image was
+          good, but the EVE-NG node runtime was prepared incorrectly.
+        </p>
+        <p>
+          The clean fix was to regenerate the node runtime, force the node to boot from
+          disk, and repair permissions again.
+        </p>
+        <div class="cli-block">
+          <div class="cli-header">
+            <span>EVE-NG node recovery</span>
+            <button class="copy-command" type="button" data-copy="/opt/unetlab/wrappers/unl_wrapper -a fixpermissions&#10;/opt/unetlab/wrappers/unl_wrapper -a wipe -T 0 -F /opt/unetlab/labs/CCIE-SP-LB.unl -D 3&#10;/opt/unetlab/wrappers/unl_wrapper -a start -T 0 -F /opt/unetlab/labs/CCIE-SP-LB.unl -D 3">Copy</button>
+          </div>
+          <pre><code>/opt/unetlab/wrappers/unl_wrapper -a fixpermissions
+/opt/unetlab/wrappers/unl_wrapper -a wipe -T 0 -F /opt/unetlab/labs/CCIE-SP-LB.unl -D 3
+/opt/unetlab/wrappers/unl_wrapper -a start -T 0 -F /opt/unetlab/labs/CCIE-SP-LB.unl -D 3</code></pre>
+        </div>
+        <p>
+          After that, <strong>NetLab-Core-01</strong> booted correctly inside EVE-NG and
+          the original <code>/home/daniel/netops</code> workspace was still present.
+        </p>
+      </section>
+
+      <section class="article-card key-takeaways">
+        <h2>Key Takeaways</h2>
+        <ul>
+          <li>A Golden Image saves time when the same automation server is needed across many EVE-NG labs.</li>
+          <li>VMware is useful for preparing the server, but QCOW2 is the clean runtime format for EVE-NG.</li>
+          <li>Keeping the VMware VM as a development source protects the original snapshots and build history.</li>
+          <li>The server should be documented from day one with files such as <code>SERVER_INFO.md</code>.</li>
+          <li>A good NetOps lab is not only routers and protocols; it also needs repeatable tooling, validation, evidence, and recovery points.</li>
+        </ul>
+      </section>
+
+      <section class="article-card">
+        <h2>Roadmap</h2>
+        <p>
+          The current image already covers the core automation foundation. The next
+          phase is to grow it into a complete Network Automation Platform.
+        </p>
+        <ul>
+          <li>Docker and Docker Compose.</li>
+          <li>FRRouting for routing experiments and protocol testing.</li>
+          <li>FreeRADIUS and TACACS+ for AAA labs.</li>
+          <li>Terraform for infrastructure workflows.</li>
+          <li>NetBox as source of truth.</li>
+          <li>Grafana, Prometheus, and future telemetry integrations.</li>
+          <li>VS Code Server for browser-based development inside the lab.</li>
+        </ul>
+      </section>
+
+      <blockquote class="article-quote">
+        NetLab-Core is not just an Ubuntu VM. It is the automation control plane for the
+        lab: the place where configuration intent, validation, evidence, and future
+        infrastructure services come together.
+      </blockquote>
+
+      <section class="article-comments">
+        <h2>Comments & Discussion</h2>
+        <p>
+          If you are building a similar EVE-NG automation node, feel free to leave a
+          comment with your image strategy, package set, or NetDevOps workflow.
+        </p>
+
+        <script src="https://giscus.app/client.js"
+                data-repo="dfonquet/TechVortexHub"
+                data-repo-id="R_kgDOKHmmXQ"
+                data-category="General"
+                data-category-id="DIC_kwDOKHmmXc4DAjYp"
+                data-mapping="pathname"
+                data-strict="0"
+                data-reactions-enabled="1"
+                data-emit-metadata="0"
+                data-input-position="bottom"
+                data-theme="noborder_dark"
+                data-lang="en"
+                crossorigin="anonymous"
+                async>
+        </script>
+      </section>
+    </article>
+  </div>
+
+  <div class="image-lightbox" id="imageLightbox" aria-hidden="true">
+    <button class="lightbox-close" type="button" aria-label="Close image preview">&times;</button>
+    <img class="lightbox-image" src="" alt="" />
+    <p class="lightbox-caption"></p>
+  </div>
+
+  <button class="back-to-top" type="button" aria-label="Back to top">Top</button>
+  <script src="article.js"></script>
+</body>
+</html>
