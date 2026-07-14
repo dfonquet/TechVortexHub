@@ -57,11 +57,28 @@
         </p>
         <div class="cli-block">
           <div class="cli-header">
-            <span>Image staging path</span>
+            <span>Windows path - image staging</span>
             <button class="copy-command" type="button" data-copy="C:\EVE\EVE-BACKLAB\qemu\linux-netlab-core">Copy</button>
           </div>
           <pre><code>C:\EVE\EVE-BACKLAB\qemu\linux-netlab-core</code></pre>
         </div>
+      </section>
+
+      <section class="article-card">
+        <h2>Before You Start</h2>
+        <p>
+          This build is reproducible, but it needs a few basic pieces in place before
+          starting. Treat this section as the minimum baseline for building your own
+          EVE-NG automation host.
+        </p>
+        <ul>
+          <li><strong>Hypervisor:</strong> VMware Workstation or an equivalent virtualization platform.</li>
+          <li><strong>Installer:</strong> Ubuntu Server ISO. This build used Ubuntu Server 26.04 LTS.</li>
+          <li><strong>EVE-NG access:</strong> root or administrative access to copy images into <code>/opt/unetlab/addons/qemu</code>.</li>
+          <li><strong>Image conversion tools:</strong> <code>qemu-img</code> available on the EVE-NG host.</li>
+          <li><strong>Recommended VM resources:</strong> 2 vCPU, 4 GB RAM, and a 40 GB virtual disk.</li>
+          <li><strong>Network mode:</strong> NAT or bridged networking during preparation, depending on the lab environment.</li>
+        </ul>
       </section>
 
       <section class="article-card">
@@ -139,22 +156,26 @@
       </section>
 
       <section class="article-card">
-        <h2>Current Build Status</h2>
+        <h2>Build Scope</h2>
         <p>
-          At this stage, the server already has the foundation required for a serious
-          NetOps workflow.
+          It is important to separate what was built, what is already installed, and
+          what belongs to the next phase. That keeps the article clear for anyone who
+          wants to reproduce the same Golden Image.
         </p>
-        <ul>
-          <li>Ubuntu 26.04 LTS - done.</li>
-          <li>Git - done.</li>
-          <li>Python 3.14 - done.</li>
-          <li>venv - done.</li>
-          <li>pip - done.</li>
-          <li>Ansible - done.</li>
-          <li>pyATS - done.</li>
-          <li>Genie - done.</li>
-          <li>GitHub project cloned - done.</li>
-        </ul>
+        <div class="concept-grid">
+          <div class="concept-mini-card">
+            <h3>What I Built</h3>
+            <p>A reusable Ubuntu 26.04 LTS Golden Image for EVE-NG, prepared first in VMware and imported as <code>virtioa.qcow2</code>.</p>
+          </div>
+          <div class="concept-mini-card">
+            <h3>Already Installed</h3>
+            <p>Git, Python 3.14, venv, pip, Ansible, pyATS, Genie, Linux tools, and the CCIE-SP-NetOps-Automation repository.</p>
+          </div>
+          <div class="concept-mini-card">
+            <h3>Planned Next</h3>
+            <p>Docker, FRRouting, FreeRADIUS, TACACS+, Terraform, NetBox, Grafana, Prometheus, and VS Code Server.</p>
+          </div>
+        </div>
       </section>
 
       <section class="article-card">
@@ -166,7 +187,7 @@
         </p>
         <div class="cli-block">
           <div class="cli-header">
-            <span>Initial update workflow</span>
+            <span>Bash - initial update workflow</span>
             <button class="copy-command" type="button" data-copy="sudo apt update&#10;sudo apt upgrade -y&#10;sudo reboot&#10;sudo apt full-upgrade -y&#10;sudo apt autoremove -y&#10;sudo apt autoclean">Copy</button>
           </div>
           <pre><code>sudo apt update
@@ -198,7 +219,7 @@ sudo apt autoclean</code></pre>
         </p>
         <div class="cli-block">
           <div class="cli-header">
-            <span>Base tools</span>
+            <span>Bash - base tools</span>
             <button class="copy-command" type="button" data-copy="sudo apt install -y vim curl wget htop tmux net-tools dnsutils iputils-ping tcpdump jq unzip zip">Copy</button>
           </div>
           <pre><code>sudo apt install -y \
@@ -260,7 +281,7 @@ zip</code></pre>
         </p>
         <div class="cli-block">
           <div class="cli-header">
-            <span>Workspace</span>
+            <span>Bash - workspace</span>
             <button class="copy-command" type="button" data-copy="mkdir -p ~/netops&#10;cd ~/netops&#10;pwd">Copy</button>
           </div>
           <pre><code>mkdir -p ~/netops
@@ -282,7 +303,7 @@ pwd</code></pre>
         </p>
         <div class="cli-block">
           <div class="cli-header">
-            <span>Git identity</span>
+            <span>Bash - Git identity</span>
             <button class="copy-command" type="button" data-copy="git config --global user.name &quot;Daniel Fonque&quot;&#10;git config --global user.email &quot;danielfonque@gmail.com&quot;&#10;git config --global init.defaultBranch main&#10;git config --global core.editor vim&#10;git config --global pull.rebase false&#10;git config --list">Copy</button>
           </div>
           <pre><code>git config --global user.name "Daniel Fonque"
@@ -304,7 +325,7 @@ git config --list</code></pre>
         </p>
         <div class="cli-block">
           <div class="cli-header">
-            <span>Create documentation file</span>
+            <span>Bash - create documentation file</span>
             <button class="copy-command" type="button" data-copy="cd ~&#10;mkdir -p Documentation&#10;cd Documentation&#10;touch SERVER_INFO.md&#10;nano SERVER_INFO.md">Copy</button>
           </div>
           <pre><code>cd ~
@@ -410,10 +431,27 @@ CCIE-SP-NetOps-Automation</code></pre>
       <section class="article-card">
         <h2>5. Deploy the Automation Repository</h2>
         <p>
-          The automation repository was cloned into the NetOps workspace. The structure
-          is intentionally separated by function: change data, templates, playbooks,
-          pyATS validation, rendered configuration, generated facts, and evidence.
+          The automation repository was not a generic sample project. It was my own
+          CCIE SP automation repository, built specifically to support the lab work I am
+          preparing and documenting:
+          <a href="https://github.com/dfonquet/CCIE-SP-NetOps-Automation" target="_blank" rel="noopener noreferrer">dfonquet/CCIE-SP-NetOps-Automation</a>.
         </p>
+        <p>
+          I cloned it into the NetOps workspace so NetLab-Core could become the place
+          where the lab is automated, validated, documented, and improved over time.
+          The structure is intentionally separated by function: change data, templates,
+          playbooks, pyATS validation, rendered configuration, generated facts, and
+          evidence.
+        </p>
+        <div class="cli-block">
+          <div class="cli-header">
+            <span>Bash - clone automation repository</span>
+            <button class="copy-command" type="button" data-copy="cd ~/netops&#10;git clone https://github.com/dfonquet/CCIE-SP-NetOps-Automation.git&#10;cd CCIE-SP-NetOps-Automation">Copy</button>
+          </div>
+          <pre><code>cd ~/netops
+git clone https://github.com/dfonquet/CCIE-SP-NetOps-Automation.git
+cd CCIE-SP-NetOps-Automation</code></pre>
+        </div>
         <p>
           The workflow follows a clean engineering model:
           <strong>data -> render -> dry-run -> deploy -> validate -> evidence</strong>.
@@ -434,7 +472,7 @@ CCIE-SP-NetOps-Automation</code></pre>
         </p>
         <div class="cli-block">
           <div class="cli-header">
-            <span>Python environment</span>
+            <span>Bash - Python environment</span>
             <button class="copy-command" type="button" data-copy="python3 -m venv .venv&#10;source .venv/bin/activate&#10;python -m pip install --upgrade pip&#10;pip install -r automation/requirements.txt&#10;python -c &quot;import yaml, requests, pyats; print('Dependencies OK')&quot;">Copy</button>
           </div>
           <pre><code>python3 -m venv .venv
@@ -483,7 +521,7 @@ python -c "import yaml, requests, pyats; print('Dependencies OK')"</code></pre>
         </p>
         <div class="cli-block">
           <div class="cli-header">
-            <span>Windows staging folder</span>
+            <span>Windows path - staged VMDK</span>
             <button class="copy-command" type="button" data-copy="C:\EVE\EVE-BACKLAB\qemu\linux-netlab-core\NetLab-Core.vmdk">Copy</button>
           </div>
           <pre><code>C:\EVE\EVE-BACKLAB\qemu\linux-netlab-core\NetLab-Core.vmdk</code></pre>
@@ -494,7 +532,7 @@ python -c "import yaml, requests, pyats; print('Dependencies OK')"</code></pre>
         </p>
         <div class="cli-block">
           <div class="cli-header">
-            <span>EVE-NG conversion</span>
+            <span>Bash - EVE-NG conversion</span>
             <button class="copy-command" type="button" data-copy="cd /opt/unetlab/addons/qemu/linux-netlab-core&#10;qemu-img convert -f vmdk -O qcow2 NetLab-Core.vmdk virtioa.qcow2&#10;/opt/unetlab/wrappers/unl_wrapper -a fixpermissions">Copy</button>
           </div>
           <pre><code>cd /opt/unetlab/addons/qemu/linux-netlab-core
@@ -593,7 +631,7 @@ qemu-img convert -f vmdk -O qcow2 NetLab-Core.vmdk virtioa.qcow2
         </p>
         <div class="cli-block">
           <div class="cli-header">
-            <span>EVE-NG node recovery</span>
+            <span>Bash - EVE-NG node recovery</span>
             <button class="copy-command" type="button" data-copy="/opt/unetlab/wrappers/unl_wrapper -a fixpermissions&#10;/opt/unetlab/wrappers/unl_wrapper -a wipe -T 0 -F /opt/unetlab/labs/CCIE-SP-LB.unl -D 3&#10;/opt/unetlab/wrappers/unl_wrapper -a start -T 0 -F /opt/unetlab/labs/CCIE-SP-LB.unl -D 3">Copy</button>
           </div>
           <pre><code>/opt/unetlab/wrappers/unl_wrapper -a fixpermissions
@@ -632,6 +670,21 @@ qemu-img convert -f vmdk -O qcow2 NetLab-Core.vmdk virtioa.qcow2
           <li>Grafana, Prometheus, and future telemetry integrations.</li>
           <li>VS Code Server for browser-based development inside the lab.</li>
         </ul>
+      </section>
+
+      <section class="article-card">
+        <h2>Who This Is For</h2>
+        <p>
+          This guide is for network engineers building an EVE-NG automation host for
+          CCIE Service Provider practice, repeatable lab operations, Ansible workflows,
+          pyATS validation, Python tooling, and future NetDevOps services.
+        </p>
+        <p>
+          It is especially useful if you want a lab server that can grow with you:
+          starting as a clean automation node, then becoming a central platform for
+          configuration generation, testing, validation, AAA, source-of-truth systems,
+          telemetry, and operational evidence.
+        </p>
       </section>
 
       <blockquote class="article-quote">
