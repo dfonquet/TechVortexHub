@@ -1,6 +1,6 @@
 <div align="center">
 
-# ⚡ TechVortexHub
+#  TechVortexHub
 
 [![Static Site](https://img.shields.io/badge/site-static-0f172a?style=for-the-badge)](https://dfonquet.github.io/TechVortexHub/My_Website/daftiel.html)
 [![HTML](https://img.shields.io/badge/HTML-54.2%25-e34f26?style=for-the-badge&logo=html5&logoColor=white)](https://github.com/dfonquet/TechVortexHub)
@@ -30,13 +30,13 @@ It brings together my personal website, technical blog posts, project pages, and
 
 ---
 
-## 🌐 Live Site
+##  Live Site
 
 > **GitHub Pages:** [dfonquet.github.io/TechVortexHub](https://dfonquet.github.io/TechVortexHub/My_Website/daftiel.html)
 
 ---
 
-## 📂 Repository Structure
+##  Repository Structure
 
 ```
 TechVortexHub/
@@ -59,15 +59,15 @@ TechVortexHub/
 
 ---
 
-## 🗂️ Main Sections
+##  Main Sections
 
-### 🏠 Home
+###  Home
 Landing page introducing my profile, technical focus, credential highlights, and navigation to all site sections.
 
-### 📋 Projects
+###  Projects
 Technical project pages, lab summaries, and implementation-focused content related to Service Provider technologies — including MPLS topologies, VPN designs, and SR-TE scenarios.
 
-### 📝 Blog
+###  Blog
 Technical articles and study notes covering:
 
 | Topic | Description |
@@ -79,12 +79,12 @@ Technical articles and study notes covering:
 | Segment Routing | SR-MPLS, SR-TE with PCE, TI-LFA |
 | Network Automation | Infrastructure scripting and CI/CD for network configs |
 
-### 🏅 Certifications
+###  Certifications
 Certification milestones, progress tracking, and credential-related content supporting the overall technical profile.
 
 ---
 
-## 🛠️ Technical Focus
+##  Technical Focus
 
 ```
 Service Provider Architecture    MPLS & L3VPN
@@ -96,7 +96,7 @@ Lab-Based Protocol Validation    EVPN / VPWS / L2VPN
 
 ---
 
-## ⚙️ Technologies Used
+##  Technologies Used
 
 | Category | Stack |
 |----------|-------|
@@ -108,7 +108,7 @@ Lab-Based Protocol Validation    EVPN / VPWS / L2VPN
 
 ---
 
-## 🎯 Current Focus
+##  Current Focus
 
 - [ ] Improving visual consistency across all site sections
 - [ ] Publishing deeper technical notes for CCIE SP and JNCIE-SP topics
