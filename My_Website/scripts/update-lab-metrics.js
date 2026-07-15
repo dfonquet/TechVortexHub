@@ -14,15 +14,15 @@ function countFiles(directory, extension = ".txt") {
     .length;
 }
 
-function countTopicChips(html) {
-  const topicPanelMatch = html.match(/<article class="lab-panel topic-panel">[\s\S]*?<\/article>\s*<\/section>/);
+function countRfcLinks(html) {
+  const quickMapMatch = html.match(/<section class="quick-lab-map"[\s\S]*?<\/section>/);
 
-  if (!topicPanelMatch) {
-    throw new Error("Could not find the Lab Topics panel.");
+  if (!quickMapMatch) {
+    throw new Error("Could not find the Quick Lab Map section.");
   }
 
-  const chipMatches = topicPanelMatch[0].match(/<span>[^<]+<\/span>/g);
-  return chipMatches ? chipMatches.length : 0;
+  const rfcLinks = quickMapMatch[0].match(/https:\/\/www\.rfc-editor\.org\/rfc\/rfc\d+\.html/g);
+  return rfcLinks ? rfcLinks.length : 0;
 }
 
 function formatCurrentMonthYear() {
@@ -49,7 +49,7 @@ const html = fs.readFileSync(labPagePath, "utf8");
 const metrics = {
   "Config files": countFiles(fullConfigsPath),
   "Feature notes": countFiles(featureNotesPath),
-  "Core topics": countTopicChips(html),
+  "RFC links": countRfcLinks(html),
   "Last update": formatCurrentMonthYear(),
 };
 

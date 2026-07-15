@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -17,10 +17,16 @@
     rel="stylesheet"
   />
 
-  <link rel="stylesheet" href="ccie-sp-labs.css?v=20260712e" />
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+    crossorigin="anonymous"
+  />
+  <link rel="stylesheet" href="ccie-sp-labs.css?v=20260715f" />
 </head>
 
-<body>
+<body class="bootstrap-lab-page">
   <!-- Private visitor analytics via Web-Stat. -->
   <span id="wts2217668" class="web-stat-hidden" aria-hidden="true"></span>
   <script src="../web-stat.js?v=20260710b"></script>
@@ -60,7 +66,7 @@
         </div>
 
         <div class="lab-actions">
-          <a href="projects.html">Back to projects</a>
+          <a class="btn btn-sm bootstrap-lab-btn" href="projects.html">Back to projects</a>
         </div>
       </section>
 
@@ -134,8 +140,8 @@
           <span>Feature notes</span>
         </div>
         <div>
-          <strong>16</strong>
-          <span>Core topics</span>
+          <strong>15</strong>
+          <span>RFC links</span>
         </div>
         <div>
           <strong>Jul 2026</strong>
@@ -154,48 +160,80 @@
             as study artifacts and may evolve as the topology grows.
           </p>
 
-          <div class="config-groups">
-            <div class="config-group">
-              <h3>P Routers</h3>
-              <div class="file-grid">
-                <a href="labs/ccie-sp/full-configs/p1.txt" target="_blank" rel="noopener noreferrer">P1</a>
-                <a href="labs/ccie-sp/full-configs/p2.txt" target="_blank" rel="noopener noreferrer">P2</a>
-                <a href="labs/ccie-sp/full-configs/p3.txt" target="_blank" rel="noopener noreferrer">P3</a>
-                <a href="labs/ccie-sp/full-configs/p4.txt" target="_blank" rel="noopener noreferrer">P4</a>
-                <a href="labs/ccie-sp/full-configs/p5.txt" target="_blank" rel="noopener noreferrer">P5</a>
-                <a href="labs/ccie-sp/full-configs/p6.txt" target="_blank" rel="noopener noreferrer">P6</a>
-                <a href="labs/ccie-sp/full-configs/p7.txt" target="_blank" rel="noopener noreferrer">P7</a>
-                <a href="labs/ccie-sp/full-configs/p8.txt" target="_blank" rel="noopener noreferrer">P8</a>
-                <a href="labs/ccie-sp/full-configs/p9.txt" target="_blank" rel="noopener noreferrer">P9</a>
-                <a href="labs/ccie-sp/full-configs/p10.txt" target="_blank" rel="noopener noreferrer">P10</a>
+          <div class="accordion lab-accordion config-groups" id="fullConfigAccordion">
+            <div class="accordion-item config-group">
+              <h3 class="accordion-header" id="headingPRouters">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePRouters" aria-expanded="true" aria-controls="collapsePRouters">
+                  P Routers
+                </button>
+              </h3>
+              <div id="collapsePRouters" class="accordion-collapse collapse show" aria-labelledby="headingPRouters" data-bs-parent="#fullConfigAccordion">
+                <div class="accordion-body">
+                  <div class="file-grid">
+                    <a href="labs/ccie-sp/full-configs/p1.txt" target="_blank" rel="noopener noreferrer">P1</a>
+                    <a href="labs/ccie-sp/full-configs/p2.txt" target="_blank" rel="noopener noreferrer">P2</a>
+                    <a href="labs/ccie-sp/full-configs/p3.txt" target="_blank" rel="noopener noreferrer">P3</a>
+                    <a href="labs/ccie-sp/full-configs/p4.txt" target="_blank" rel="noopener noreferrer">P4</a>
+                    <a href="labs/ccie-sp/full-configs/p5.txt" target="_blank" rel="noopener noreferrer">P5</a>
+                    <a href="labs/ccie-sp/full-configs/p6.txt" target="_blank" rel="noopener noreferrer">P6</a>
+                    <a href="labs/ccie-sp/full-configs/p7.txt" target="_blank" rel="noopener noreferrer">P7</a>
+                    <a href="labs/ccie-sp/full-configs/p8.txt" target="_blank" rel="noopener noreferrer">P8</a>
+                    <a href="labs/ccie-sp/full-configs/p9.txt" target="_blank" rel="noopener noreferrer">P9</a>
+                    <a href="labs/ccie-sp/full-configs/p10.txt" target="_blank" rel="noopener noreferrer">P10</a>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div class="config-group">
-              <h3>PE Routers</h3>
-              <div class="file-grid">
-                <a href="labs/ccie-sp/full-configs/pe-1.txt" target="_blank" rel="noopener noreferrer">PE-1</a>
-                <a href="labs/ccie-sp/full-configs/pe-2.txt" target="_blank" rel="noopener noreferrer">PE-2</a>
-                <a href="labs/ccie-sp/full-configs/pe-3.txt" target="_blank" rel="noopener noreferrer">PE-3</a>
-                <a href="labs/ccie-sp/full-configs/p3-4.txt" target="_blank" rel="noopener noreferrer">PE-4</a>
+            <div class="accordion-item config-group">
+              <h3 class="accordion-header" id="headingPERouters">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePERouters" aria-expanded="false" aria-controls="collapsePERouters">
+                  PE Routers
+                </button>
+              </h3>
+              <div id="collapsePERouters" class="accordion-collapse collapse" aria-labelledby="headingPERouters" data-bs-parent="#fullConfigAccordion">
+                <div class="accordion-body">
+                  <div class="file-grid">
+                    <a href="labs/ccie-sp/full-configs/pe-1.txt" target="_blank" rel="noopener noreferrer">PE-1</a>
+                    <a href="labs/ccie-sp/full-configs/pe-2.txt" target="_blank" rel="noopener noreferrer">PE-2</a>
+                    <a href="labs/ccie-sp/full-configs/pe-3.txt" target="_blank" rel="noopener noreferrer">PE-3</a>
+                    <a href="labs/ccie-sp/full-configs/p3-4.txt" target="_blank" rel="noopener noreferrer">PE-4</a>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div class="config-group">
-              <h3>RR / PCE</h3>
-              <div class="file-grid">
-                <a href="labs/ccie-sp/full-configs/p11-rr-shadown.txt" target="_blank" rel="noopener noreferrer">P11 RR Shadow</a>
-                <a href="labs/ccie-sp/full-configs/p12-rr-primary.txt" target="_blank" rel="noopener noreferrer">P12 RR Primary</a>
-                <a href="labs/ccie-sp/full-configs/p23-pce.txt" target="_blank" rel="noopener noreferrer">P23 PCE</a>
+            <div class="accordion-item config-group">
+              <h3 class="accordion-header" id="headingRrPce">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRrPce" aria-expanded="false" aria-controls="collapseRrPce">
+                  RR / PCE
+                </button>
+              </h3>
+              <div id="collapseRrPce" class="accordion-collapse collapse" aria-labelledby="headingRrPce" data-bs-parent="#fullConfigAccordion">
+                <div class="accordion-body">
+                  <div class="file-grid">
+                    <a href="labs/ccie-sp/full-configs/p11-rr-shadown.txt" target="_blank" rel="noopener noreferrer">P11 RR Shadow</a>
+                    <a href="labs/ccie-sp/full-configs/p12-rr-primary.txt" target="_blank" rel="noopener noreferrer">P12 RR Primary</a>
+                    <a href="labs/ccie-sp/full-configs/p23-pce.txt" target="_blank" rel="noopener noreferrer">P23 PCE</a>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div class="config-group">
-              <h3>Customer Edge</h3>
-              <div class="file-grid">
-                <a href="labs/ccie-sp/full-configs/cust-b1-source.txt" target="_blank" rel="noopener noreferrer">CUST B1 Source</a>
-                <a href="labs/ccie-sp/full-configs/cust-b2-receiver.txt" target="_blank" rel="noopener noreferrer">CUST B2 Receiver</a>
-                <a href="labs/ccie-sp/full-configs/cust-d2-receiver-1.txt" target="_blank" rel="noopener noreferrer">CUST D2 Receiver</a>
+            <div class="accordion-item config-group">
+              <h3 class="accordion-header" id="headingCustomerEdge">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCustomerEdge" aria-expanded="false" aria-controls="collapseCustomerEdge">
+                  Customer Edge
+                </button>
+              </h3>
+              <div id="collapseCustomerEdge" class="accordion-collapse collapse" aria-labelledby="headingCustomerEdge" data-bs-parent="#fullConfigAccordion">
+                <div class="accordion-body">
+                  <div class="file-grid">
+                    <a href="labs/ccie-sp/full-configs/cust-b1-source.txt" target="_blank" rel="noopener noreferrer">CUST B1 Source</a>
+                    <a href="labs/ccie-sp/full-configs/cust-b2-receiver.txt" target="_blank" rel="noopener noreferrer">CUST B2 Receiver</a>
+                    <a href="labs/ccie-sp/full-configs/cust-d2-receiver-1.txt" target="_blank" rel="noopener noreferrer">CUST D2 Receiver</a>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -243,8 +281,8 @@
           </div>
 
           <div class="artifact-actions">
-            <a class="card-link" href="labs/ccie-sp/eve-ng/CCIE-SP-LAB.zip" download>Download EVE-NG ZIP</a>
-            <a class="card-link" href="labs/ccie-sp/eve-ng/README.txt" target="_blank" rel="noopener noreferrer">Read artifact notes</a>
+            <button class="card-link btn btn-sm bootstrap-lab-btn" type="button" data-bs-toggle="modal" data-bs-target="#eveNgDownloadModal">Download EVE-NG ZIP</button>
+            <a class="card-link btn btn-sm bootstrap-lab-btn" href="labs/ccie-sp/eve-ng/README.txt" target="_blank" rel="noopener noreferrer">Read artifact notes</a>
           </div>
         </article>
 
@@ -259,77 +297,12 @@
           </p>
 
           <div class="card-link-list">
-            <a class="card-link" href="../Blog/ccie-sp-ospf-isis-sr-mpls-migration.html">Open SR-MPLS migration lab</a>
-            <a class="card-link" href="../Blog/ccie-sp-multicast-asm.html">Open multicast article</a>
-            <a class="card-link" href="../Blog/route-target-rd-l3vpn.html">Open RD/RT note</a>
+            <a class="card-link btn btn-sm bootstrap-lab-btn" href="../Blog/ccie-sp-ospf-isis-sr-mpls-migration.html">Open SR-MPLS migration lab</a>
+            <a class="card-link btn btn-sm bootstrap-lab-btn" href="../Blog/ccie-sp-multicast-asm.html">Open multicast article</a>
+            <a class="card-link btn btn-sm bootstrap-lab-btn" href="../Blog/route-target-rd-l3vpn.html">Open RD/RT note</a>
           </div>
         </article>
 
-        <article class="lab-panel topic-panel">
-          <div class="panel-top">
-            <span class="status">Scope</span>
-          </div>
-          <h2>Lab Topics</h2>
-          <p>
-            The lab is grouped by the way I troubleshoot and evolve SP networks:
-            control plane first, transport next, then services, multicast, and MVPN behavior.
-          </p>
-
-          <div class="topic-map">
-            <article class="topic-group">
-              <span class="topic-kicker">01</span>
-              <h3>Routing Core</h3>
-              <div class="tags">
-                <span>IS-IS L1/L2</span>
-                <span>MP-BGP</span>
-                <span>RR Design</span>
-                <span>BFD</span>
-              </div>
-              <p class="topic-ref">
-                <a href="https://www.rfc-editor.org/rfc/rfc1195.html" target="_blank" rel="noopener noreferrer">IS-IS RFC 1195</a>
-                <a href="https://www.rfc-editor.org/rfc/rfc5308.html" target="_blank" rel="noopener noreferrer">IPv6 RFC 5308</a>
-              </p>
-            </article>
-
-            <article class="topic-group">
-              <span class="topic-kicker">02</span>
-              <h3>Transport</h3>
-              <div class="tags">
-                <span>SR-MPLS</span>
-                <span>Prefix-SID</span>
-                <span>TI-LFA</span>
-                <span>PCE</span>
-              </div>
-            </article>
-
-            <article class="topic-group">
-              <span class="topic-kicker">03</span>
-              <h3>Services</h3>
-              <div class="tags">
-                <span>L3VPN</span>
-                <span>Internet VRF</span>
-                <span>NAT Pool</span>
-                <span>Route Targets</span>
-              </div>
-            </article>
-
-            <article class="topic-group">
-              <span class="topic-kicker">04</span>
-              <h3>Multicast / MVPN</h3>
-              <div class="tags">
-                <span>PIM-SM</span>
-                <span>ASM</span>
-                <span>MVPN</span>
-                <span>XR Config</span>
-              </div>
-              <p class="topic-ref">
-                <a href="https://www.rfc-editor.org/rfc/rfc4601.html" target="_blank" rel="noopener noreferrer">PIM-SM RFC 4601</a>
-                <a href="https://www.rfc-editor.org/rfc/rfc6513.html" target="_blank" rel="noopener noreferrer">MVPN RFC 6513</a>
-                <a href="https://www.rfc-editor.org/rfc/rfc6514.html" target="_blank" rel="noopener noreferrer">BGP MVPN RFC 6514</a>
-              </p>
-            </article>
-          </div>
-        </article>
       </section>
     </main>
 
@@ -337,5 +310,39 @@
       <p>&copy; 2026 Daniel Fonque</p>
     </footer>
   </div>
+
+  <div class="modal fade lab-modal" id="eveNgDownloadModal" tabindex="-1" aria-labelledby="eveNgDownloadModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div>
+            <span class="status">Lab Artifact</span>
+            <h2 class="modal-title" id="eveNgDownloadModalLabel">Download CCIE-SP EVE-NG Lab</h2>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>
+            This package contains the EVE-NG topology export for study and documentation.
+            Vendor software images are not included.
+          </p>
+          <ul>
+            <li>Use your own legally obtained IOS, IOS XR, or vendor images.</li>
+            <li>The topology may evolve as the living lab changes.</li>
+            <li>Read the artifact notes if you want the import context first.</li>
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-sm bootstrap-lab-btn modal-secondary" data-bs-dismiss="modal">Cancel</button>
+          <a class="btn btn-sm bootstrap-lab-btn" href="labs/ccie-sp/eve-ng/CCIE-SP-LAB.zip" download>Download ZIP</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"
+  ></script>
 </body>
 </html>
