@@ -3,10 +3,14 @@
 #  TechVortexHub
 
 [![Static Site](https://img.shields.io/badge/site-static-0f172a?style=for-the-badge)](https://dfonquet.github.io/TechVortexHub/My_Website/daftiel.html)
-[![HTML](https://img.shields.io/badge/HTML-54.2%25-e34f26?style=for-the-badge&logo=html5&logoColor=white)](https://github.com/dfonquet/TechVortexHub)
-[![CSS](https://img.shields.io/badge/CSS-29.2%25-1572b6?style=for-the-badge&logo=css3&logoColor=white)](https://github.com/dfonquet/TechVortexHub)
-[![JavaScript](https://img.shields.io/badge/JavaScript-4.5%25-f7df1e?style=for-the-badge&logo=javascript&logoColor=000)](https://github.com/dfonquet/TechVortexHub)
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Deployed-22c55e?style=for-the-badge&logo=github)](https://dfonquet.github.io/TechVortexHub/My_Website/daftiel.html)
+
+[![HTML](https://img.shields.io/badge/HTML-54.2%25-e34f26?style=for-the-badge&logo=html5&logoColor=white)](https://github.com/dfonquet/TechVortexHub/search?l=html)
+[![CSS](https://img.shields.io/badge/CSS-29.2%25-1572b6?style=for-the-badge&logo=css3&logoColor=white)](https://github.com/dfonquet/TechVortexHub/search?l=css)
+[![Python](https://img.shields.io/badge/Python-10.3%25-3776ab?style=for-the-badge&logo=python&logoColor=white)](https://github.com/dfonquet/TechVortexHub/search?l=python)
+[![JavaScript](https://img.shields.io/badge/JavaScript-4.5%25-f7df1e?style=for-the-badge&logo=javascript&logoColor=000)](https://github.com/dfonquet/TechVortexHub/search?l=javascript)
+[![Jinja](https://img.shields.io/badge/Jinja-1.5%25-b41717?style=for-the-badge&logo=jinja&logoColor=white)](https://github.com/dfonquet/TechVortexHub/search?l=jinja)
+[![PowerShell](https://img.shields.io/badge/PowerShell-0.3%25-5391fe?style=for-the-badge&logo=powershell&logoColor=white)](https://github.com/dfonquet/TechVortexHub/search?l=powershell)
 
 **Personal technical hub for Service Provider networking labs, blog posts, and certification study notes.**
 
@@ -22,11 +26,11 @@
 
 It brings together my personal website, technical blog posts, project pages, and certification-focused content covering topics such as:
 
-- **CCIE & JNCIE SP** preparation notes and lab walkthroughs
+- **CCIE SP, JNCIE-SP, and CCDE** preparation notes and lab walkthroughs
 - **MPLS, L3VPN, MP-BGP** architecture and design
 - **Multicast ASM** — PIM, IGMP, RP design
 - **Segment Routing (SR/SR-TE)** with PCE
-- **Network automation** fundamentals and lab tooling
+- **Network automation** fundamentals, templating, and lab tooling
 
 ---
 
@@ -90,32 +94,37 @@ Certification milestones, progress tracking, and credential-related content supp
 Service Provider Architecture    MPLS & L3VPN
 MP-BGP                           Multicast ASM (PIM-SM/SSM)
 Segment Routing (SR/SR-TE)       BFD & TI-LFA Fast Reroute
-Routing Design (IS-IS, OSPF)     Network Automation
+Routing Design (IS-IS, OSPF)     Network Automation & CI/CD
 Lab-Based Protocol Validation    EVPN / VPWS / L2VPN
+Network Design Patterns          Automation, Templating & Tooling
 ```
 
 ---
 
 ##  Technologies Used
 
+
 | Category | Stack |
 |----------|-------|
 | Front-end | HTML5, CSS3, JavaScript |
+| Automation | Python, PowerShell |
+| Templating | Jinja |
 | Diagrams | Mermaid.js |
 | Comments | Giscus (GitHub Discussions) |
-| Deployment | GitHub Pages + GitHub Actions |
+| Deployment | GitHub Pages, GitHub Actions |
 | Lab Platform | EVE-NG, Cisco XR/IOS, Juniper Junos |
+| Workflow | Static site structure, CI/CD, technical documentation |
 
 ---
 
 ##  Current Focus
 
-- [ ] Improving visual consistency across all site sections
-- [ ] Publishing deeper technical notes for CCIE SP and JNCIE-SP topics
+- [ ] Improving visual consistency, navigation flow, and overall site design
+- [ ] Publishing deeper technical notes for CCIE SP, JNCIE-SP, and CCDE topics
 - [ ] Organizing lab artifacts, references, and downloadable topology files
-- [ ] Expanding SR-TE / PCE content with real lab configs
-- [ ] Keeping front-end clean and maintainable as content grows
-
+- [ ] Expanding SR-TE, multicast, and routing design content with real lab configs
+- [ ] Strengthening network automation, templating, and CI/CD-oriented content
+- [ ] Keeping the front-end clean, scalable, and maintainable as the platform grows
 ---
 
 ## 👤 Author
