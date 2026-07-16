@@ -44,7 +44,9 @@ body {
   font-family: var(--font-body);
   color: var(--color-text);
   background:
-    linear-gradient(rgba(10, 14, 26, 0.76), rgba(10, 14, 26, 0.90)),
+    radial-gradient(circle at 18% 12%, rgba(29, 155, 240, 0.14), transparent 28%),
+    radial-gradient(circle at 82% 10%, rgba(124, 111, 220, 0.14), transparent 30%),
+    linear-gradient(rgba(10, 14, 26, 0.80), rgba(10, 14, 26, 0.94)),
     url("../img/DATA_8.jpg") center / cover fixed;
 }
 
@@ -121,6 +123,15 @@ button:focus-visible {
 .hero {
   text-align: center;
   margin-bottom: 38px;
+}
+
+.hero .status {
+  margin: 0 auto 18px;
+  padding: 6px 11px;
+  border-color: rgba(29, 155, 240, 0.22);
+  background: rgba(29, 155, 240, 0.08);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 .eyebrow {

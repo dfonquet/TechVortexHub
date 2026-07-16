@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="author" content="Daniel Fonque" />
+  <meta
+    name="description"
+    content="Network automation lab using GitLab CI/CD, Ansible, CSV as source of truth, and Cisco IOS routers to deploy interface configuration changes through a pipeline."
+  />
+  <title>Building a GitLab CI Pipeline for Network Configuration | Daniel Fonque</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+    crossorigin="anonymous"
+  />
+  <link rel="stylesheet" href="gitlab-ci-network-configuration.css?v=20260716c" />
+</head>
+
+<body class="automation-article">
+  <!-- Private visitor analytics via Web-Stat. -->
+  <span id="wts2217668" class="web-stat-hidden" aria-hidden="true"></span>
+  <script src="../web-stat.js?v=20260710b"></script>
+  <noscript>
+    <img class="web-stat-hidden" src="https://app.ardalio.com/7/4/2217668.png" alt="" />
+  </noscript>
+
+  <div class="page-shell">
+    <nav class="top-nav" aria-label="Main navigation">
+      <a href="../daftiel.html">Home</a>
+      <a href="../Projects/projects.html">Projects</a>
+      <a href="blog.html">Blog</a>
+    </nav>
+
+    <article class="article-shell">
+      <header class="article-hero">
+        <span class="status">Network Automation</span>
+        <h1>Building a GitLab CI Pipeline for <span>Network Configuration</span></h1>
+        <p class="article-subtitle">
+          A Cisco U style automation lab where a CSV source of truth, GitLab CI/CD,
+          and Ansible turned a manual router change into a repeatable pipeline.
+        </p>
+        <div class="article-meta">
+          <span>Daniel Fonque Torres</span>
+          <span>July 16, 2026</span>
+          <span>AUTOCOR / NetDevOps Lab</span>
+        </div>
+      </header>
+
+      <figure class="article-cover">
+        <img src="img/gitlab-ci-network-config/01-gitlab-home.png" alt="GitLab lab environment opened from the Cisco U jump host" loading="eager" decoding="async" />
+        <figcaption>GitLab was the control point for the lab: repository, pipeline, runner, and deployment evidence.</figcaption>
+      </figure>
+
+      <section class="article-card intro-card">
+        <h2>What This Lab Was About</h2>
+        <p>
+          The goal was simple: take a network change that would normally be executed
+          manually with Ansible and move it into a GitLab CI/CD workflow.
+        </p>
+        <p>
+          Before the lab, the workflow was manual: log into the jump host, move into
+          the right directory, run <code>ansible-playbook</code>, and validate the routers.
+          After the lab, the workflow became versioned and event-driven: update the CSV,
+          commit, push, let GitLab start the pipeline, and let the runner execute Ansible.
+        </p>
+        <div class="flow-strip" aria-label="Automation flow">
+          <span>CSV change</span>
+          <span>Commit</span>
+          <span>Push</span>
+          <span>Pipeline</span>
+          <span>Ansible</span>
+          <span>Routers</span>
+          <span>Validation</span>
+        </div>
+      </section>
+
+      <section class="article-card">
+        <h2>Repository Structure</h2>
+        <p>
+          The project was intentionally small. That made it perfect for understanding
+          the moving pieces of a network automation pipeline without hiding the logic
+          behind a large framework.
+        </p>
+        <div class="code-panel">
+          <div class="code-title">Repository files</div>
+          <pre><code>iac-interface/
+|-- interfaces.csv
+|-- inventory.yml
+|-- manage_interfaces.yml
+`-- .gitlab-ci.yml</code></pre>
+        </div>
+        <div class="row g-3">
+          <div class="col-lg-6">
+            <figure class="article-image">
+              <img src="img/gitlab-ci-network-config/02-inventory-yml.png" alt="GitLab inventory.yml with Cisco IOS hosts and Ansible connection variables" loading="lazy" decoding="async" />
+              <figcaption><code>inventory.yml</code> defined R1, R2, R3 and the Ansible network connection settings for the lab.</figcaption>
+            </figure>
+          </div>
+          <div class="col-lg-6">
+            <figure class="article-image">
+              <img src="img/gitlab-ci-network-config/03-interfaces-csv.png" alt="GitLab interfaces.csv preview with device, interface, description, and IP address columns" loading="lazy" decoding="async" />
+              <figcaption><code>interfaces.csv</code> acted as the source of truth for interface descriptions and IP addressing.</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section class="article-card">
+        <h2>Source of Truth Model</h2>
+        <p>
+          In this lab, <code>interfaces.csv</code> was the desired state. Each row mapped
+          a device, an interface, a description, and an IP address. Ansible read the CSV,
+          filtered rows by <code>inventory_hostname</code>, and applied only the data that
+          belonged to each router.
+        </p>
+        <div class="code-panel">
+          <div class="code-title">CSV intent example</div>
+          <pre><code>device,interface,description,ip_address
+R1,GigabitEthernet3,ENGINEERING,172.16.20.1/24
+R2,GigabitEthernet3,ENGINEERING,172.16.20.2/24
+R3,GigabitEthernet3,ENGINEERING,172.16.20.3/24</code></pre>
+        </div>
+        <div class="note-panel">
+          <strong>Lab note:</strong> The inventory used simple lab credentials. In a
+          production workflow, those values should be moved into protected CI/CD
+          variables, a vault, or another secrets-management system.
+        </div>
+      </section>
+
+      <section class="article-card">
+        <h2>The GitLab CI Pipeline</h2>
+        <p>
+          The pipeline used a single deploy stage. The runner started a Python 3.12
+          container, installed Ansible and Paramiko, printed the Ansible version, and
+          executed the playbook against the inventory.
+        </p>
+        <figure class="article-image">
+          <img src="img/gitlab-ci-network-config/05-gitlab-ci-yml.png" alt=".gitlab-ci.yml file defining a Python image, deploy stage, Ansible install, and ansible-playbook command" loading="lazy" decoding="async" />
+          <figcaption>The CI file turned the repository into an executable network automation workflow.</figcaption>
+        </figure>
+        <div class="code-panel">
+          <div class="code-title">.gitlab-ci.yml</div>
+          <pre><code>image: python:3.12
+
+stages:
+  - deploy
+
+variables:
+  ANSIBLE_HOST_KEY_CHECKING: "False"
+
+before_script:
+  - pip install --no-cache-dir ansible paramiko
+  - ansible --version
+
+deploy_interfaces:
+  stage: deploy
+  script:
+    - ansible-playbook -i inventory.yml manage_interfaces.yml</code></pre>
+        </div>
+      </section>
+
+      <section class="article-card">
+        <h2>Commit, Push, Pipeline</h2>
+        <p>
+          After creating the pipeline definition, the next step was to push it into
+          GitLab. The first attempt reminded me of a small but useful lesson: Git cannot
+          add a file that has not actually been saved yet.
+        </p>
+        <figure class="article-image">
+          <img src="img/gitlab-ci-network-config/04-git-commit-push.png" alt="Terminal showing git add, commit, and push for the GitLab CI pipeline definition" loading="lazy" decoding="async" />
+          <figcaption>The pipeline became active only after the CI file was committed and pushed to the repository.</figcaption>
+        </figure>
+        <p>
+          Later, changing the ENGINEERING subnet in <code>interfaces.csv</code> and pushing
+          the commit triggered the real deployment workflow automatically.
+        </p>
+      </section>
+
+      <section class="article-card">
+        <h2>Pipeline Execution</h2>
+        <p>
+          GitLab created the pipeline, assigned the job to the runner, started a Docker
+          executor with <code>python:3.12</code>, pulled the repository, installed the
+          dependencies, and ran the Ansible playbook.
+        </p>
+        <figure class="article-image">
+          <img src="img/gitlab-ci-network-config/06-pipeline-job-passed.png" alt="GitLab job log showing deploy_interfaces passed after running Ansible in a Python container" loading="lazy" decoding="async" />
+          <figcaption>The <code>deploy_interfaces</code> job passed and produced the operational evidence for the change.</figcaption>
+        </figure>
+        <div class="result-grid">
+          <div>
+            <span class="result-number">3</span>
+            <p>Routers updated</p>
+          </div>
+          <div>
+            <span class="result-number">0</span>
+            <p>Unreachable devices</p>
+          </div>
+          <div>
+            <span class="result-number">0</span>
+            <p>Failed tasks</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="article-card">
+        <h2>What Changed on the Routers</h2>
+        <p>
+          The original ENGINEERING subnet was <code>192.168.20.0/24</code>. The source of
+          truth changed it to <code>172.16.20.0/24</code>. Ansible detected that the
+          running state did not match the CSV and changed GigabitEthernet3 on R1, R2,
+          and R3.
+        </p>
+        <div class="code-panel">
+          <div class="code-title">Expected final state</div>
+          <pre><code>R1 GigabitEthernet3 172.16.20.1/24
+R2 GigabitEthernet3 172.16.20.2/24
+R3 GigabitEthernet3 172.16.20.3/24</code></pre>
+        </div>
+        <figure class="article-image">
+          <img src="img/gitlab-ci-network-config/07-router-validation.png" alt="CLI validation showing show ip interface brief output for R1, R2, and R3 after the pipeline" loading="lazy" decoding="async" />
+          <figcaption>Manual validation confirmed that the source of truth and the real router state matched after the pipeline.</figcaption>
+        </figure>
+      </section>
+
+      <section class="article-card">
+        <h2>Pipeline Summary</h2>
+        <p>
+          The final GitLab view showed the pipeline as passed. That is the main idea of
+          this lab: a network change became a versioned, repeatable, and traceable
+          workflow.
+        </p>
+        <figure class="article-image">
+          <img src="img/gitlab-ci-network-config/08-pipeline-summary.png" alt="GitLab pipeline summary showing the deploy stage passed for the ENGINEERING subnet update" loading="lazy" decoding="async" />
+          <figcaption>The GitLab pipeline view became the evidence that the deployment job completed successfully.</figcaption>
+        </figure>
+      </section>
+
+      <section class="article-card">
+        <h2>Bootstrap Mental Model</h2>
+        <p>
+          For AUTOCOR-style study, I would summarize the pipeline like this:
+        </p>
+        <div class="accordion lab-accordion" id="automationAccordion">
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="intentHeading">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#intentCollapse" aria-expanded="true" aria-controls="intentCollapse">
+                1. Intent lives in the repository
+              </button>
+            </h3>
+            <div id="intentCollapse" class="accordion-collapse collapse show" aria-labelledby="intentHeading" data-bs-parent="#automationAccordion">
+              <div class="accordion-body">
+                <code>interfaces.csv</code>, <code>inventory.yml</code>, and <code>manage_interfaces.yml</code> define what should happen.
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="pipelineHeading">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#pipelineCollapse" aria-expanded="false" aria-controls="pipelineCollapse">
+                2. Git push starts the automation
+              </button>
+            </h3>
+            <div id="pipelineCollapse" class="accordion-collapse collapse" aria-labelledby="pipelineHeading" data-bs-parent="#automationAccordion">
+              <div class="accordion-body">
+                GitLab receives the commit, creates a pipeline, and assigns the job to a runner.
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="runnerHeading">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#runnerCollapse" aria-expanded="false" aria-controls="runnerCollapse">
+                3. The runner executes Ansible
+              </button>
+            </h3>
+            <div id="runnerCollapse" class="accordion-collapse collapse" aria-labelledby="runnerHeading" data-bs-parent="#automationAccordion">
+              <div class="accordion-body">
+                The runner launches a container, installs dependencies, and runs <code>ansible-playbook</code>.
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="evidenceHeading">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#evidenceCollapse" aria-expanded="false" aria-controls="evidenceCollapse">
+                4. Evidence closes the loop
+              </button>
+            </h3>
+            <div id="evidenceCollapse" class="accordion-collapse collapse" aria-labelledby="evidenceHeading" data-bs-parent="#automationAccordion">
+              <div class="accordion-body">
+                Job logs, recap output, and manual router validation show whether the intended state was reached.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="article-card">
+        <h2>What I Would Improve for Production</h2>
+        <p>
+          This was a lab pipeline, not a production design. For production, I would not
+          go directly from push to deploy. A safer workflow would add more gates.
+        </p>
+        <div class="flow-strip production-flow">
+          <span>Validate</span>
+          <span>Lint</span>
+          <span>Syntax check</span>
+          <span>Dry run</span>
+          <span>Diff</span>
+          <span>Approval</span>
+          <span>Deploy</span>
+          <span>Post-check</span>
+        </div>
+        <ul class="improvement-list">
+          <li>Move credentials into protected variables or a secrets system.</li>
+          <li>Pin dependency versions instead of installing latest packages every run.</li>
+          <li>Add branch rules and manual approval before deployment.</li>
+          <li>Generate artifacts with command output, diffs, and post-validation evidence.</li>
+          <li>Add rollback logic for failed deployments.</li>
+        </ul>
+      </section>
+
+      <blockquote class="article-quote">
+        The important lesson is not only that Ansible changed an IP address. The real
+        lesson is that a network change can be treated as code: versioned, reviewed,
+        executed by a runner, and validated with evidence.
+      </blockquote>
+
+      <section class="article-comments">
+        <h2>Comments & Discussion</h2>
+        <p>
+          If you are studying AUTOCOR or building NetDevOps workflows, feel free to
+          share how you would extend this pipeline with validation, approvals, or
+          rollback logic.
+        </p>
+
+        <script src="https://giscus.app/client.js"
+                data-repo="dfonquet/TechVortexHub"
+                data-repo-id="R_kgDOKHmmXQ"
+                data-category="General"
+                data-category-id="DIC_kwDOKHmmXc4DAjYp"
+                data-mapping="pathname"
+                data-strict="0"
+                data-reactions-enabled="1"
+                data-emit-metadata="0"
+                data-input-position="bottom"
+                data-theme="noborder_dark"
+                data-lang="en"
+                crossorigin="anonymous"
+                async>
+        </script>
+      </section>
+    </article>
+  </div>
+
+  <button class="back-to-top" type="button" aria-label="Back to top">Top</button>
+
+  <script src="article.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"
+  ></script>
+</body>
+</html>
