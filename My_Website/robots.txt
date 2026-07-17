@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dfonquet.github.io/TechVortexHub/My_Website/sitemap.xml

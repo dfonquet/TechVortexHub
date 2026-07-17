@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="author" content="Daniel Fonque" />
+  <meta
+    name="description"
+    content="SHORT_DESCRIPTION_FOR_SEARCH_ENGINES"
+  />
+  <title>ARTICLE_TITLE | Daniel Fonque</title>
+  <link rel="canonical" href="https://dfonquet.github.io/TechVortexHub/My_Website/Blog/ARTICLE_SLUG.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="ARTICLE_TITLE" />
+  <meta property="og:description" content="SHORT_DESCRIPTION_FOR_SOCIAL_PREVIEW" />
+  <meta property="og:url" content="https://dfonquet.github.io/TechVortexHub/My_Website/Blog/ARTICLE_SLUG.html" />
+  <meta property="og:image" content="https://dfonquet.github.io/TechVortexHub/My_Website/Blog/img/ARTICLE_FOLDER/COVER_IMAGE.png" />
+  <meta property="article:author" content="Daniel Fonque Torres" />
+  <meta property="article:published_time" content="YYYY-MM-DD" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ARTICLE_TITLE" />
+  <meta name="twitter:description" content="SHORT_DESCRIPTION_FOR_SOCIAL_PREVIEW" />
+  <meta name="twitter:image" content="https://dfonquet.github.io/TechVortexHub/My_Website/Blog/img/ARTICLE_FOLDER/COVER_IMAGE.png" />
+  <link rel="stylesheet" href="styles.css?v=YYYYMMDD" />
+</head>
+
+<body>
+  <span id="wts2217668" class="web-stat-hidden" aria-hidden="true"></span>
+  <script src="../web-stat.js?v=20260710b"></script>
+  <noscript>
+    <img class="web-stat-hidden" src="https://app.ardalio.com/7/4/2217668.png" alt="" />
+  </noscript>
+
+  <div class="article-page">
+    <nav class="top-nav" aria-label="Main navigation">
+      <a href="../daftiel.html">Home</a>
+      <a href="../Projects/projects.html">Projects</a>
+      <a href="blog.html">Blog</a>
+    </nav>
+
+    <article class="article-shell">
+      <header class="article-hero">
+        <span class="status">ARTICLE_CATEGORY</span>
+        <h1>ARTICLE_TITLE <span>HIGHLIGHT</span></h1>
+        <p class="article-subtitle">
+          ONE_SENTENCE_SUMMARY_FOR_THE_READER.
+        </p>
+        <div class="article-meta">
+          <span>Daniel Fonque Torres</span>
+          <span>Month Day, Year</span>
+          <span>ARTICLE_STATUS_OR_TRACK</span>
+        </div>
+      </header>
+
+      <figure class="article-cover">
+        <img src="img/ARTICLE_FOLDER/COVER_IMAGE.png" alt="DESCRIPTIVE_IMAGE_ALT" loading="eager" decoding="async" />
+        <figcaption>SHORT_CAPTION_WITH_CONTEXT.</figcaption>
+      </figure>
+
+      <section class="article-card">
+        <h2>Quick Mental Model</h2>
+        <p>
+          Explain the core idea in your own words before the evidence-heavy sections.
+        </p>
+      </section>
+
+      <section class="article-card">
+        <h2>Lab Walkthrough</h2>
+        <p>
+          Document the workflow, important commands, validation points, and lessons learned.
+        </p>
+      </section>
+
+      <blockquote class="article-quote">
+        Keep one strong personal takeaway here. This is usually the sentence people remember.
+      </blockquote>
+
+      <nav class="article-neighbor-nav" aria-label="Related articles">
+        <a href="PREVIOUS_ARTICLE.html">
+          <span>Previous Note</span>
+          <strong>PREVIOUS_ARTICLE_TITLE</strong>
+        </a>
+        <a href="NEXT_ARTICLE.html">
+          <span>Next Note</span>
+          <strong>NEXT_ARTICLE_TITLE</strong>
+        </a>
+      </nav>
+
+      <section class="article-comments">
+        <h2>Comments & Discussion</h2>
+        <p>
+          If this note helped you, or if you have feedback, feel free to leave a comment below.
+        </p>
+
+        <script src="https://giscus.app/client.js"
+                data-repo="dfonquet/TechVortexHub"
+                data-repo-id="R_kgDOKHmmXQ"
+                data-category="General"
+                data-category-id="DIC_kwDOKHmmXc4DAjYp"
+                data-mapping="pathname"
+                data-strict="0"
+                data-reactions-enabled="1"
+                data-emit-metadata="0"
+                data-input-position="bottom"
+                data-theme="noborder_dark"
+                data-lang="en"
+                crossorigin="anonymous"
+                async>
+        </script>
+      </section>
+    </article>
+  </div>
+
+  <button class="back-to-top" type="button" aria-label="Back to top">Top</button>
+  <script src="article.js"></script>
+</body>
+</html>

@@ -9,7 +9,22 @@
     content="CCIE-SP lab note covering OSPF to IS-IS migration, SR-MPLS deployment, LDP removal, route reflector resiliency, VRF-aware NAT, and SR-TE/PCE preparation."
   />
   <title>CCIE-SP Lab: OSPF to IS-IS, SR-MPLS, RR Design, NAT, and SR-TE Groundwork</title>
-  <link rel="stylesheet" href="styles.css?v=20260716c" />
+  <link rel="canonical" href="https://dfonquet.github.io/TechVortexHub/My_Website/Blog/ccie-sp-ospf-isis-sr-mpls-migration.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CCIE-SP Lab: OSPF to IS-IS, SR-MPLS, RR Design, NAT, and SR-TE Groundwork" />
+  <meta property="og:description" content="CCIE-SP lab note covering OSPF to IS-IS migration, SR-MPLS deployment, LDP removal, route reflector resiliency, VRF-aware NAT, and SR-TE/PCE preparation." />
+  <meta property="og:url" content="https://dfonquet.github.io/TechVortexHub/My_Website/Blog/ccie-sp-ospf-isis-sr-mpls-migration.html" />
+  <meta property="og:image" content="https://dfonquet.github.io/TechVortexHub/My_Website/Blog/img/ospf-isis-sr-mpls-migration/ccie-sp-isp-backbone-lab.png" />
+  <meta property="article:author" content="Daniel Fonque Torres" />
+  <meta property="article:published_time" content="2026-07-11" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="CCIE-SP Lab: OSPF to IS-IS, SR-MPLS, RR Design, NAT, and SR-TE Groundwork" />
+  <meta name="twitter:description" content="A realistic Service Provider migration lab covering IGP migration, SR-MPLS, RR resiliency, NAT modernization, and SR-TE/PCE groundwork." />
+  <meta name="twitter:image" content="https://dfonquet.github.io/TechVortexHub/My_Website/Blog/img/ospf-isis-sr-mpls-migration/ccie-sp-isp-backbone-lab.png" />
+  <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"BlogPosting","headline":"CCIE-SP Lab: OSPF to IS-IS, SR-MPLS, RR Design, NAT, and SR-TE Groundwork","datePublished":"2026-07-11","author":{"@type":"Person","name":"Daniel Fonque Torres"},"image":"https://dfonquet.github.io/TechVortexHub/My_Website/Blog/img/ospf-isis-sr-mpls-migration/ccie-sp-isp-backbone-lab.png","url":"https://dfonquet.github.io/TechVortexHub/My_Website/Blog/ccie-sp-ospf-isis-sr-mpls-migration.html","description":"CCIE-SP lab note covering OSPF to IS-IS migration, SR-MPLS deployment, LDP removal, route reflector resiliency, VRF-aware NAT, and SR-TE/PCE preparation."}
+  </script>
+  <link rel="stylesheet" href="styles.css?v=20260717m" />
 </head>
 
 <body>
@@ -65,6 +80,20 @@
         </div>
       </header>
 
+      <section class="article-card article-toc" aria-label="Article contents">
+        <h2>On This Note</h2>
+        <div class="toc-list">
+          <a href="#lab-scope">Lab scope and objective</a>
+          <a href="#igp-migration">OSPF to IS-IS migration</a>
+          <a href="#segment-routing">SR-MPLS validation</a>
+          <a href="#ldp-removal">LDP decommissioning</a>
+          <a href="#route-reflectors">Route reflector design</a>
+          <a href="#nat-public-pool">ISP-style NAT</a>
+          <a href="#sr-te-pce">SR-TE and PCE groundwork</a>
+          <a href="#migration-takeaways">Key takeaways</a>
+        </div>
+      </section>
+
       <!-- Cover image: shows the full ISP lab topology used during the migration. -->
       <figure class="article-cover">
         <img
@@ -104,7 +133,7 @@
       </section>
 
       <!-- Lab scope: summarizes the topology roles before going into the migration phases. -->
-      <section class="article-card">
+      <section class="article-card" id="lab-scope">
         <h2>Lab Scope and Objective</h2>
         <p>
           Over the past days, I completed one of the most realistic Service Provider labs
@@ -181,7 +210,7 @@
       </section>
 
       <!-- IGP migration: explains the IS-IS design and the temporary LDP dependency. -->
-      <section class="article-card">
+      <section class="article-card" id="igp-migration">
         <h2>IGP Migration: OSPF to IS-IS</h2>
         <p>
           I began by converting the backbone from OSPF to IS-IS. The design follows a classic
@@ -219,7 +248,7 @@ router isis CCIE-SP
       </section>
 
       <!-- SR-MPLS deployment: documents the validation points before LDP removal. -->
-      <section class="article-card">
+      <section class="article-card" id="segment-routing">
         <h2>Enabling Segment Routing MPLS</h2>
         <p>
           Once IS-IS stabilized, I activated SR-MPLS everywhere. Each router advertised:
@@ -303,7 +332,7 @@ show mpls forwarding-table</code></pre>
       </section>
 
       <!-- LDP removal: captures the cleanup stage after SR forwarding was verified. -->
-      <section class="article-card">
+      <section class="article-card" id="ldp-removal">
         <h2>Decommissioning LDP</h2>
         <p>
           With SR forwarding verified, I removed LDP:
@@ -325,7 +354,7 @@ no mpls ldp label allocate ...</code></pre>
       </section>
 
       <!-- RR design: highlights the route reflector changes and the dedicated RR view. -->
-      <section class="article-card">
+      <section class="article-card" id="route-reflectors">
         <h2>Modernizing Route Reflector Design</h2>
         <p>
           My RRs (RR-Main and RR-Shadow) were upgraded with:
@@ -423,7 +452,7 @@ no mpls ldp label allocate ...</code></pre>
       </section>
 
       <!-- NAT redesign: explains the move from legacy GNAT to an ISP-style public pool. -->
-      <section class="article-card">
+      <section class="article-card" id="nat-public-pool">
         <h2>Replacing Legacy NAT with an ISP-Style Public Pool</h2>
         <p>
           Originally the PE used a basic GNAT model. I redesigned it to match a real ISP approach:
@@ -513,7 +542,7 @@ no mpls ldp label allocate ...</code></pre>
       </section>
 
       <!-- SR-TE preparation: connects the completed SR migration to the next lab phases. -->
-      <section class="article-card">
+      <section class="article-card" id="sr-te-pce">
         <h2>Phase 6: Preparing for SR-TE and PCE</h2>
         <p>
           Before this migration, I used MPLS-TE FRR and RSVP-TE for protection. Now that
@@ -532,7 +561,7 @@ no mpls ldp label allocate ...</code></pre>
       </section>
 
       <!-- Key takeaways: closes the technical story with the lessons learned. -->
-      <section class="article-card key-takeaways">
+      <section class="article-card key-takeaways" id="migration-takeaways">
         <h2>Key Takeaways</h2>
         <ul>
           <li>IGP migrations are multi-stage events, not a single command change.</li>
@@ -565,6 +594,17 @@ no mpls ldp label allocate ...</code></pre>
         label distribution, RR resiliency, NAT, and future traffic engineering all depend
         on sequencing. In SP networks, the order of operations is part of the design.
       </blockquote>
+
+      <nav class="article-neighbor-nav" aria-label="Related articles">
+        <a href="route-target-rd-l3vpn.html">
+          <span>Previous Note</span>
+          <strong>Route Distinguisher vs Route Target</strong>
+        </a>
+        <a href="netlab-core-eve-ng-golden-image.html">
+          <span>Next Build</span>
+          <strong>NetLab-Core Ubuntu Golden Image</strong>
+        </a>
+      </nav>
 
       <!-- Comments section: enables readers to leave feedback through Giscus. -->
       <section class="article-comments">

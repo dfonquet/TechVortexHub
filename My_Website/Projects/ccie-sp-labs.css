@@ -66,6 +66,18 @@ button:focus-visible {
   --bs-btn-padding-y: 0.58rem;
 }
 
+.bootstrap-lab-page .bootstrap-lab-btn {
+  --bs-btn-color: #051018;
+  --bs-btn-bg: rgba(103, 199, 238, 0.72);
+  --bs-btn-border-color: rgba(103, 199, 238, 0.72);
+  --bs-btn-hover-color: #051018;
+  --bs-btn-hover-bg: rgba(125, 211, 252, 0.84);
+  --bs-btn-hover-border-color: rgba(158, 221, 247, 0.86);
+  --bs-btn-active-color: #051018;
+  --bs-btn-active-bg: rgba(103, 199, 238, 0.80);
+  --bs-btn-active-border-color: rgba(158, 221, 247, 0.78);
+}
+
 .web-stat-hidden {
   position: absolute !important;
   width: 1px !important;
@@ -241,12 +253,10 @@ button:focus-visible {
   width: 100%;
   min-height: 42px;
   padding: 10px 15px;
-  border: 1px solid rgba(29, 155, 240, 0.50);
+  border: 1px solid rgba(103, 199, 238, 0.72);
   border-radius: 10px;
-  background:
-    linear-gradient(180deg, rgba(29, 155, 240, 0.30), rgba(29, 155, 240, 0.15)),
-    rgba(5, 10, 18, 0.56);
-  color: #e2f4ff;
+  background: rgba(103, 199, 238, 0.72);
+  color: #051018;
   font-weight: 800;
   font-size: 0.89rem;
   text-align: center;
@@ -255,7 +265,7 @@ button:focus-visible {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
     0 8px 18px rgba(0, 0, 0, 0.18),
-    0 0 18px rgba(29, 155, 240, 0.10);
+    0 0 18px rgba(56, 189, 248, 0.18);
   transition:
     transform var(--transition-fast),
     background-color var(--transition-fast),
@@ -267,15 +277,13 @@ button:focus-visible {
 .lab-actions a:hover,
 .card-link:hover {
   transform: translateY(-2px);
-  border-color: rgba(29, 155, 240, 0.82);
-  background:
-    linear-gradient(180deg, rgba(29, 155, 240, 0.42), rgba(29, 155, 240, 0.20)),
-    rgba(5, 10, 18, 0.64);
-  color: #ffffff;
+  border-color: rgba(158, 221, 247, 0.86);
+  background: rgba(125, 211, 252, 0.84);
+  color: #051018;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.10),
     0 10px 22px rgba(0, 0, 0, 0.22),
-    0 0 26px rgba(29, 155, 240, 0.18);
+    0 0 26px rgba(125, 211, 252, 0.26);
 }
 
 .lab-actions a:active,
@@ -318,6 +326,18 @@ button:focus-visible {
   color: var(--color-text);
   font-family: var(--font-display);
   font-size: 1.46rem;
+}
+
+.section-heading h2::after,
+.lab-panel h2::after {
+  content: "";
+  display: block;
+  width: 52px;
+  height: 2px;
+  margin-top: 9px;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(90deg, var(--color-primary), rgba(103, 199, 238, 0.72));
+  box-shadow: 0 0 14px rgba(124, 111, 220, 0.18);
 }
 
 .section-heading p {
@@ -657,10 +677,10 @@ button:focus-visible {
   content: "READ";
   flex: 0 0 auto;
   padding: 5px 9px;
-  border: 1px solid rgba(29, 155, 240, 0.36);
+  border: 1px solid rgba(5, 16, 24, 0.18);
   border-radius: var(--radius-pill);
-  background: rgba(29, 155, 240, 0.12);
-  color: #b7f7ff;
+  background: rgba(5, 16, 24, 0.10);
+  color: #051018;
   font-size: 0.68rem;
   font-weight: 900;
   letter-spacing: 0.04em;
@@ -671,6 +691,11 @@ button:focus-visible {
 
 .artifact-panel {
   position: relative;
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 0.72fr);
+  gap: 16px 28px;
+  align-items: center;
   overflow: hidden;
 }
 
@@ -690,8 +715,30 @@ button:focus-visible {
   z-index: 1;
 }
 
+.artifact-panel .panel-top,
+.artifact-panel h2,
+.artifact-panel p {
+  grid-column: 1;
+}
+
+.artifact-panel .panel-top {
+  justify-content: flex-start;
+  margin-bottom: 2px;
+}
+
+.artifact-panel h2 {
+  margin-bottom: 0;
+}
+
+.artifact-panel p {
+  max-width: 660px;
+  margin-bottom: 0;
+}
+
 .artifact-card {
   display: grid;
+  grid-column: 2;
+  grid-row: 1 / span 3;
   gap: 14px;
   padding: 18px;
   border: 1px solid rgba(29, 155, 240, 0.30);
@@ -748,8 +795,9 @@ button:focus-visible {
 
 .artifact-actions {
   display: grid;
+  grid-column: 2;
   gap: 10px;
-  margin-top: 14px;
+  margin-top: 0;
 }
 
 .artifact-actions .card-link {
@@ -763,10 +811,10 @@ button:focus-visible {
   content: "ZIP";
   flex: 0 0 auto;
   padding: 5px 9px;
-  border: 1px solid rgba(29, 155, 240, 0.34);
+  border: 1px solid rgba(5, 16, 24, 0.18);
   border-radius: var(--radius-pill);
-  background: rgba(29, 155, 240, 0.12);
-  color: #b7f7ff;
+  background: rgba(5, 16, 24, 0.10);
+  color: #051018;
   font-size: 0.68rem;
   font-weight: 900;
   letter-spacing: 0.04em;
@@ -868,6 +916,19 @@ button:focus-visible {
   .lab-summary {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .artifact-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .artifact-panel .panel-top,
+  .artifact-panel h2,
+  .artifact-panel p,
+  .artifact-card,
+  .artifact-actions {
+    grid-column: 1;
+    grid-row: auto;
   }
 
   .lab-actions {
