@@ -1,0 +1,148 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1700 920" role="img" aria-labelledby="title desc">
+  <title id="title">Asteria Building-to-Building Campus Connectivity</title>
+  <desc id="desc">Enterprise campus design using red WAN handoffs into Cisco C9300 StackWise, FortiGate 600 HA firewalls in an SD-WAN zone, Building 1 OM3 fiber rack, Building 2 C9500 StackWise Virtual core on floor 1, OM3 multimode fiber to Floor 5 OM3 fiber rack, C9300 access zones, and a local floor 1 C9300 extension stack.</desc>
+  <defs>
+    <linearGradient id="panel" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#07111f"/>
+      <stop offset="1" stop-color="#111827"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <style>
+      .bg{fill:#050a12}
+      .zone{fill:url(#panel);stroke:#26364f;stroke-width:2}
+      .title{fill:#f3f8ff;font:800 28px Inter,Arial,sans-serif}
+      .subtitle{fill:#67c7ee;font:700 15px Inter,Arial,sans-serif}
+      .zone-title{fill:#f3f8ff;font:800 19px Inter,Arial,sans-serif}
+      .label{fill:#d8e8f7;font:700 13px Inter,Arial,sans-serif}
+      .small{fill:#9fb2c7;font:650 11px Inter,Arial,sans-serif}
+      .node{fill:#0b1524;stroke:#39ff88;stroke-width:2;filter:url(#glow)}
+      .device{fill:#121f31;stroke:#7c6fdc;stroke-width:2}
+      .device-cyan{fill:#102033;stroke:#67c7ee;stroke-width:2}
+      .fw{fill:#1a1324;stroke:#f59e0b;stroke-width:2;filter:url(#glow)}
+      .isp{fill:#0e1726;stroke:#ef4444;stroke-width:2}
+      .wan-link{stroke:#ef4444;stroke-width:4;fill:none}
+      .fiber-primary{stroke:#39ff88;stroke-width:4;fill:none}
+      .fiber-secondary{stroke:#22c55e;stroke-width:4;fill:none}
+      .ha-link{stroke:#f59e0b;stroke-width:2.4;fill:none;stroke-dasharray:8 8}
+      .thin{stroke-width:2.4}
+      .dash{stroke-dasharray:8 8}
+    </style>
+  </defs>
+
+  <rect class="bg" width="1700" height="920" rx="18"/>
+  <text class="title" x="56" y="54">Asteria Operations Group</text>
+  <text class="subtitle" x="56" y="84">Enterprise building-to-building design using Cisco switching, FortiGate 600 HA, WAN handoffs, and OM3 fiber distribution</text>
+
+  <rect class="zone" x="58" y="130" width="400" height="500" rx="16"/>
+  <text class="zone-title" x="84" y="166">Building 1 - WAN</text>
+  <text class="small" x="84" y="190">WAN handoff, SD-WAN zone, FortiGate HA, C9300 aggregation, OM3 fiber rack</text>
+
+  <rect class="isp" x="88" y="230" width="90" height="48" rx="14"/>
+  <text class="label" x="112" y="259">ISP-A</text>
+  <rect class="isp" x="208" y="230" width="90" height="48" rx="14"/>
+  <text class="label" x="232" y="259">ISP-B</text>
+  <rect class="isp" x="328" y="230" width="90" height="48" rx="14"/>
+  <text class="label" x="352" y="259">ISP-C</text>
+
+  <ellipse cx="253" cy="325" rx="125" ry="26" fill="#111827" stroke="#67c7ee" stroke-width="2"/>
+  <text class="label" x="205" y="330">SD-WAN Zone</text>
+
+  <rect class="fw" x="112" y="376" width="120" height="54" rx="10"/>
+  <text class="label" x="136" y="399">FG-600</text>
+  <text class="small" x="144" y="418">HA-A</text>
+  <rect class="fw" x="278" y="376" width="120" height="54" rx="10"/>
+  <text class="label" x="302" y="399">FG-600</text>
+  <text class="small" x="310" y="418">HA-B</text>
+  <line x1="232" y1="403" x2="278" y2="403" class="ha-link"/>
+
+  <rect class="device-cyan" x="106" y="474" width="300" height="58" rx="10"/>
+  <text class="label" x="168" y="499">Cisco C9300 StackWise</text>
+  <text class="small" x="150" y="518">WAN aggregation / ISP handoff / FortiGate handoff</text>
+
+  <rect class="node" x="116" y="566" width="280" height="46" rx="10"/>
+  <text class="label" x="178" y="594">Building 1 OM3 Fiber Rack</text>
+
+  <path class="wan-link" d="M133 278 C142 350, 176 430, 218 474"/>
+  <path class="wan-link" d="M253 278 C253 350, 253 430, 253 474"/>
+  <path class="wan-link" d="M373 278 C360 350, 330 430, 288 474"/>
+  <path class="fiber-primary thin" d="M200 351 C190 360, 178 368, 172 376"/>
+  <path class="fiber-secondary thin" d="M306 351 C320 360, 332 368, 338 376"/>
+  <path class="fiber-primary" d="M172 430 C188 452, 218 466, 256 474"/>
+  <path class="fiber-secondary" d="M338 430 C322 452, 292 466, 256 474"/>
+  <path class="fiber-primary" d="M256 532 L256 566"/>
+
+  <rect class="zone" x="560" y="130" width="560" height="540" rx="16"/>
+  <text class="zone-title" x="588" y="166">Building 2 - Floor 1 Core</text>
+  <text class="small" x="588" y="190">C9500 StackWise Virtual core, OM3 handoff rack, and local C9300 extension</text>
+
+  <rect class="node" x="596" y="238" width="210" height="50" rx="10"/>
+  <text class="label" x="634" y="268">B1 OM3 Fiber Rack In</text>
+
+  <rect class="node" x="866" y="238" width="210" height="50" rx="10"/>
+  <text class="label" x="912" y="268">Floor 1 OM3 Fiber Rack</text>
+
+  <rect class="device" x="615" y="350" width="190" height="62" rx="10"/>
+  <text class="label" x="664" y="377">C9500-1</text>
+  <text class="small" x="650" y="397">StackWise Virtual</text>
+  <rect class="device" x="865" y="350" width="190" height="62" rx="10"/>
+  <text class="label" x="914" y="377">C9500-2</text>
+  <text class="small" x="900" y="397">StackWise Virtual</text>
+  <line x1="805" y1="381" x2="865" y2="381" class="fiber-secondary thin dash"/>
+
+  <rect class="device-cyan" x="700" y="520" width="285" height="58" rx="10"/>
+  <text class="label" x="800" y="543">Cisco C9300</text>
+  <text class="small" x="756" y="564">Extension - Floor 1 local / 4 switches</text>
+
+  <path class="fiber-primary" d="M396 589 C470 589, 500 265, 596 263"/>
+  <path class="fiber-primary" d="M701 288 C701 316, 704 334, 710 350"/>
+  <path class="fiber-secondary" d="M971 288 C970 316, 966 334, 960 350"/>
+  <path class="fiber-primary" d="M710 412 C738 464, 780 505, 842 520"/>
+  <path class="fiber-secondary" d="M960 412 C930 464, 896 505, 842 520"/>
+  <text class="small" x="735" y="500">C9500 to C9300 local extension</text>
+
+  <rect class="zone" x="1230" y="130" width="410" height="540" rx="16"/>
+  <text class="zone-title" x="1258" y="166">Building 2 - Floor 5 Access</text>
+  <text class="small" x="1258" y="190">OM3 fiber from Floor 1 rack into D1, D2, D3 C9300 zones</text>
+
+  <rect class="node" x="1335" y="238" width="210" height="50" rx="10"/>
+  <text class="label" x="1378" y="268">Floor 5 OM3 Fiber Rack</text>
+
+  <rect class="device-cyan" x="1270" y="335" width="330" height="76" rx="12"/>
+  <text class="label" x="1294" y="362">D1 Cisco C9300 Zone</text>
+  <text class="small" x="1294" y="383">8 switches total: Stack A 4 SW + Stack B 4 SW</text>
+  <text class="small" x="1294" y="399">Cisco C9300 access switching with StackWise groups</text>
+
+  <rect class="device-cyan" x="1270" y="450" width="330" height="76" rx="12"/>
+  <text class="label" x="1294" y="477">D2 Cisco C9300 Zone</text>
+  <text class="small" x="1294" y="498">8 switches total: Stack A 4 SW + Stack B 4 SW</text>
+  <text class="small" x="1294" y="514">Cisco C9300 access switching with StackWise groups</text>
+
+  <rect class="device-cyan" x="1270" y="565" width="330" height="76" rx="12"/>
+  <text class="label" x="1294" y="592">D3 Cisco C9300 Zone</text>
+  <text class="small" x="1294" y="613">8 switches total: Stack A 4 SW + Stack B 4 SW</text>
+  <text class="small" x="1294" y="629">Cisco C9300 access switching with StackWise groups</text>
+
+  <path class="fiber-primary" d="M1076 263 C1160 263, 1245 263, 1335 263"/>
+  <path class="fiber-primary" d="M1440 288 C1422 320, 1358 350, 1270 373"/>
+  <path class="fiber-secondary" d="M1440 288 C1426 404, 1358 470, 1270 488"/>
+  <path class="fiber-primary" d="M1440 288 C1434 500, 1358 588, 1270 603"/>
+
+  <rect x="58" y="725" width="650" height="112" rx="14" fill="#0b1524" stroke="#26364f"/>
+  <text class="label" x="84" y="756">Design intent</text>
+  <text class="small" x="84" y="782">Building 1 provides WAN handoff: red ISP service links into C9300, SD-WAN zone into FortiGate 600 HA.</text>
+  <text class="small" x="84" y="804">Building 2 uses C9500 StackWise Virtual, OM3 fiber racks, Floor 5 C9300 access zones, and one local C9300 extension.</text>
+
+  <rect x="850" y="725" width="670" height="112" rx="14" fill="#0b1524" stroke="#26364f"/>
+  <line x1="882" y1="762" x2="945" y2="762" class="wan-link"/>
+  <text class="small" x="960" y="766">WAN / ISP service handoff into Building 1 C9300</text>
+  <line x1="882" y1="798" x2="945" y2="798" class="fiber-primary"/>
+  <text class="small" x="960" y="802">OM3 multimode primary fiber path</text>
+  <line x1="882" y1="826" x2="945" y2="826" class="fiber-secondary"/>
+  <text class="small" x="960" y="830">OM3 multimode secondary / alternate fiber path</text>
+</svg>
