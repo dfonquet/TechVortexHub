@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="author" content="Daniel Fonque" />
+  <meta
+    name="description"
+    content="Junos troubleshooting field notes inspired by the Juniper Technical Champions program, covering baseline checks, logs, packet capture, Routing Engine health, OSPF, BGP, HA, and operational validation."
+  />
+  <title>Junos Troubleshooting Field Notes | Daniel Fonque</title>
+  <link rel="canonical" href="https://dfonquet.github.io/TechVortexHub/My_Website/Blog/junos-troubleshooting-field-notes.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Junos Troubleshooting Field Notes" />
+  <meta property="og:description" content="A practical Junos troubleshooting note inspired by the Juniper Technical Champions program." />
+  <meta property="og:url" content="https://dfonquet.github.io/TechVortexHub/My_Website/Blog/junos-troubleshooting-field-notes.html" />
+  <meta property="og:image" content="https://dfonquet.github.io/TechVortexHub/My_Website/img/DATA_8.jpg" />
+  <meta property="article:author" content="Daniel Fonque Torres" />
+  <meta property="article:published_time" content="2026-07-17" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Junos Troubleshooting Field Notes" />
+  <meta name="twitter:description" content="Baseline, logs, packet capture, RE health, routing, storage, and HA checks for Junos troubleshooting." />
+  <meta name="twitter:image" content="https://dfonquet.github.io/TechVortexHub/My_Website/img/DATA_8.jpg" />
+  <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"BlogPosting","headline":"Junos Troubleshooting Field Notes","datePublished":"2026-07-17","author":{"@type":"Person","name":"Daniel Fonque Torres"},"image":"https://dfonquet.github.io/TechVortexHub/My_Website/img/DATA_8.jpg","url":"https://dfonquet.github.io/TechVortexHub/My_Website/Blog/junos-troubleshooting-field-notes.html","description":"Junos troubleshooting field notes inspired by the Juniper Technical Champions program, covering baseline checks, logs, packet capture, Routing Engine health, OSPF, BGP, HA, and operational validation."}
+  </script>
+  <link rel="stylesheet" href="styles.css?v=20260717n" />
+</head>
+
+<body>
+  <span id="wts2217668" class="web-stat-hidden" aria-hidden="true"></span>
+  <script src="../web-stat.js?v=20260710b"></script>
+  <noscript>
+    <img class="web-stat-hidden" src="https://app.ardalio.com/7/4/2217668.png" alt="" />
+  </noscript>
+
+  <div class="article-page">
+    <nav class="top-nav">
+      <a href="../daftiel.html">Home</a>
+      <a href="../Projects/projects.html">Projects</a>
+      <a href="blog.html">Blog</a>
+    </nav>
+
+    <article class="article-shell">
+      <header class="article-hero compact-hero">
+        <span class="status">JNCIP-SP Study Note</span>
+
+        <h1>
+          Junos Troubleshooting <span>Field Notes</span>
+        </h1>
+
+        <div class="article-badges">
+          <span>Junos</span>
+          <span>JNCIP-SP</span>
+          <span>Operations</span>
+          <span>Troubleshooting</span>
+          <span>Juniper Technical Champions</span>
+        </div>
+
+        <div class="article-meta">
+          <span>Daniel Fonque Torres</span>
+          <span>July 17, 2026</span>
+          <span>Junos Operations</span>
+        </div>
+
+        <div class="hero-summary">
+          <p>
+            These notes come from a Junos troubleshooting module I worked through as part of
+            the <strong>Juniper Technical Champions</strong> program. I found this topic worth
+            documenting because troubleshooting is not a lab-only skill; it is part of the
+            daily work of keeping production networks stable, understandable, and recoverable.
+          </p>
+        </div>
+      </header>
+
+      <section class="article-card article-toc" aria-label="Article contents">
+        <h2>On This Note</h2>
+        <div class="toc-list">
+          <a href="#troubleshooting-mindset">Troubleshooting mindset</a>
+          <a href="#observe-first">Observe before changing</a>
+          <a href="#control-plane-health">Control plane health</a>
+          <a href="#storage-software-recovery">Storage and recovery</a>
+          <a href="#routing-checks">Routing checks</a>
+          <a href="#ha-validation">HA validation</a>
+          <a href="#platform-and-access">Platform and access</a>
+          <a href="#l2-and-edge">L2 and edge checks</a>
+          <a href="#command-map">Command map</a>
+          <a href="#juniper-references">Juniper references</a>
+        </div>
+      </section>
+
+      <section class="article-card" id="troubleshooting-mindset">
+        <h2>Troubleshooting Mindset</h2>
+        <p>
+          The biggest lesson is simple: before touching the network, understand what normal
+          looks like. A value is only useful when there is a baseline to compare it against:
+          usual traffic levels, expected neighbors, interface counters, route counts, CPU
+          behavior, latency, logs, and the latest approved change.
+        </p>
+        <p>
+          In production, troubleshooting also has to respect change control. Even when the fix
+          looks obvious, the process still matters: maintenance window, impact analysis,
+          implementation plan, rollback plan, pre-checks, post-checks, and approval. That
+          discipline is what separates quick guessing from professional operations.
+        </p>
+
+        <div class="concept-grid mental-model-grid">
+          <div class="concept-mini-card">
+            <h3>Baseline</h3>
+            <p>Know the normal state before deciding what is broken.</p>
+            <code>normal first</code>
+          </div>
+          <div class="concept-mini-card">
+            <h3>Scope</h3>
+            <p>Isolate whether the issue is physical, control plane, forwarding, or policy.</p>
+            <code>reduce noise</code>
+          </div>
+          <div class="concept-mini-card">
+            <h3>Validate</h3>
+            <p>Collect evidence before and after the change.</p>
+            <code>prove it</code>
+          </div>
+          <div class="concept-mini-card">
+            <h3>Rollback</h3>
+            <p>Have a path back before making the production change.</p>
+            <code>recover fast</code>
+          </div>
+        </div>
+      </section>
+
+      <section class="article-card" id="observe-first">
+        <h2>Observe Before Changing</h2>
+        <p>
+          Junos gives a strong operational toolkit for looking at the system before changing it.
+          Logs, uptime, packet capture, chassis events, and hardware inventory are usually the
+          first signals I want before assuming the protocol is the problem.
+        </p>
+
+        <div class="cli-block">
+          <div class="cli-header">Command Reference - logs, uptime, chassis, and inventory</div>
+          <pre><code>show system uptime
+show log messages | match ae0
+show log chassisd | match "FPC|PIC|PEM|fan|temperature"
+show chassis environment
+show chassis hardware
+show log inventory</code></pre>
+        </div>
+
+        <p>
+          For packet-level evidence, <code>monitor traffic</code> is powerful, but it should be
+          used carefully. Juniper explicitly warns that packet monitoring can affect scale and
+          performance, so I treat it like a focused diagnostic tool, not a permanent observer.
+        </p>
+
+        <div class="cli-block">
+          <div class="cli-header">Command Reference - packet observation</div>
+          <pre><code>monitor traffic interface ge-0/0/0 no-resolve detail
+monitor traffic interface ge-0/0/0 matching "port 179" no-resolve detail</code></pre>
+        </div>
+      </section>
+
+      <section class="article-card" id="control-plane-health">
+        <h2>Control Plane Health</h2>
+        <p>
+          When the Routing Engine is under pressure, protocol symptoms can look like routing
+          bugs even when the root cause is CPU, memory, daemon load, or churn. I normally start
+          with the RE view, then move into process-level visibility.
+        </p>
+
+        <div class="cli-block">
+          <div class="cli-header">Command Reference - RE and process health</div>
+          <pre><code>show chassis routing-engine
+show system processes summary
+show system processes extensive
+show system processes extensive | match rpd</code></pre>
+        </div>
+
+        <p>
+          For <code>rpd</code>, scheduler slips are a useful signal. A slip does not automatically
+          mean the daemon is broken; it means the routing process was too busy to run a task at
+          the expected time. That can happen during route churn, interface flaps, BGP updates,
+          complex policies, or reconvergence.
+        </p>
+
+        <p>
+          If a daemon crashes, core files are not something to ignore or delete blindly. They
+          preserve process or kernel state at the time of failure and should normally be
+          collected with support information before escalation to JTAC.
+        </p>
+        <p>
+          The core file can come from a user process, the Junos kernel, or an embedded host
+          component depending on the platform and failure type. That distinction matters when
+          deciding whether the issue is isolated to a daemon or related to a deeper system event.
+        </p>
+
+        <div class="cli-block">
+          <div class="cli-header">Command Reference - crash evidence and support bundle</div>
+          <pre><code>show system core-dumps
+request support information</code></pre>
+        </div>
+
+        <blockquote>
+          My note to myself: do not restart a process just because it looks busy. First understand
+          what made it busy.
+        </blockquote>
+      </section>
+
+      <section class="article-card" id="storage-software-recovery">
+        <h2>Storage, Software, and Recovery</h2>
+        <p>
+          Storage issues are not glamorous, but they can block upgrades, snapshots, and recovery
+          work. Before software maintenance, I like checking available space and cleaning only
+          what the platform identifies as safe to remove.
+        </p>
+
+        <div class="cli-block">
+          <div class="cli-header">Command Reference - storage review and cleanup</div>
+          <pre><code>show system storage
+request system storage cleanup dry-run
+request system storage cleanup</code></pre>
+        </div>
+
+        <p>
+          For software installation under tight space conditions, options such as
+          <code>no-copy</code> and <code>unlink</code> can reduce temporary storage requirements.
+          For recovery scenarios, snapshots and secondary boot media matter because they give
+          the device a known path back.
+        </p>
+
+        <div class="cli-block">
+          <div class="cli-header">Command Reference - software install and snapshot</div>
+          <pre><code>request system software add &lt;package&gt; no-copy unlink
+request system snapshot
+set system mirror-flash-on-disk</code></pre>
+        </div>
+      </section>
+
+      <section class="article-card" id="routing-checks">
+        <h2>Routing Checks: OSPF, BGP, and Reachability</h2>
+        <p>
+          Routing troubleshooting is easier when each layer is validated in order. For OSPF,
+          I check physical and data-link state, subnet consistency, area, authentication,
+          timers, network type, and MTU. A neighbor stuck in ExStart or Exchange immediately
+          makes me suspicious of MTU.
+        </p>
+
+        <div class="cli-block">
+          <div class="cli-header">Command Reference - OSPF validation</div>
+          <pre><code>show ospf neighbor detail
+show interfaces ge-0/0/0 extensive
+show ospf statistics</code></pre>
+        </div>
+
+        <p>
+          For EBGP over loopbacks, two items are easy to miss: the local address and multihop.
+          If the remote device is not available, a targeted capture can still show whether TCP
+          179 is arriving, which source address is used, and whether TTL or path reachability
+          may be involved.
+        </p>
+
+        <div class="cli-block">
+          <div class="cli-header">Command Reference - EBGP over loopbacks</div>
+          <pre><code>set protocols bgp group EBGP type external
+set protocols bgp group EBGP local-address 192.0.2.1
+set protocols bgp group EBGP multihop
+set protocols bgp group EBGP neighbor 192.0.2.2 peer-as 65002
+
+show bgp neighbor
+monitor traffic interface ge-0/0/0 matching "port 179" no-resolve detail</code></pre>
+        </div>
+      </section>
+
+      <section class="article-card" id="ha-validation">
+        <h2>High Availability Validation</h2>
+        <p>
+          HA in Junos is a set of different mechanisms, and mixing them up creates confusion.
+          GRES helps preserve forwarding and kernel state during Routing Engine switchover.
+          NSR replicates routing protocol state to the backup RE. Graceful Restart depends on
+          neighbor cooperation. ISSU is about software upgrade with reduced interruption.
+        </p>
+        <p>
+          BFD belongs in the same operational conversation, but it solves a different problem:
+          fast failure detection for protocols such as BGP, OSPF, IS-IS, RSVP, LDP, and static
+          routes. Also, when a BGP capability such as Graceful Restart is enabled after the
+          session is already established, the session normally needs to restart so capabilities
+          can be renegotiated in the BGP OPEN exchange.
+        </p>
+
+        <div class="cli-block">
+          <div class="cli-header">Command Reference - dual RE and switchover checks</div>
+          <pre><code>commit synchronize
+show chassis routing-engine
+show system switchover
+show task replication</code></pre>
+        </div>
+
+        <p>
+          One operational detail I like from this topic: <code>commit synchronize</code> is not
+          just a nice habit. On dual-RE systems, it helps keep candidate configuration activation
+          aligned across both Routing Engines and reduces surprises during failover work.
+        </p>
+      </section>
+
+      <section class="article-card" id="platform-and-access">
+        <h2>Platform, Access, and Control Plane Protection</h2>
+        <p>
+          The original material also touched SNMP, control plane protection, ARP, and interface
+          troubleshooting. I like keeping those in the same note because many incidents start
+          as "routing is broken" and end up being management access, ARP, MTU, or RE protection.
+        </p>
+
+        <p>
+          For monitoring, SNMPv3 is the safer operational choice because it supports
+          authentication, integrity, encryption, and user-based access control. Traps are
+          fire-and-forget notifications, while informs request confirmation from the NMS.
+        </p>
+
+        <p>
+          For Routing Engine protection, firewall filters applied as input filters on
+          <code>lo0</code> are a key part of Junos hardening. The filter should explicitly allow
+          expected control and management traffic such as BGP, OSPF or IS-IS, BFD, SSH from
+          management networks, SNMP from the NMS, NTP, and controlled ICMP. Everything else
+          should be handled intentionally, not accidentally.
+        </p>
+
+        <div class="cli-block">
+          <div class="cli-header">Command Reference - ARP, SNMP thinking, and RE protection</div>
+          <pre><code>show arp
+show ipv6 neighbors
+
+set interfaces lo0 unit 0 family inet filter input PROTECT-RE</code></pre>
+        </div>
+      </section>
+
+      <section class="article-card" id="l2-and-edge">
+        <h2>Interfaces, MTU, LACP, and Switching Checks</h2>
+        <p>
+          Physical and Layer 2 checks are easy to underestimate. Interface speed, duplex,
+          link mode, FEC, frame errors, flaps, MTU, encapsulation, and loopback state can all
+          explain symptoms that initially look like protocol problems.
+        </p>
+
+        <div class="cli-block">
+          <div class="cli-header">Command Reference - physical interface and MTU validation</div>
+          <pre><code>show interfaces ge-0/0/0 extensive
+show interfaces statistics ge-0/0/0 detail
+
+ping 192.0.2.1 size 1472 do-not-fragment</code></pre>
+        </div>
+
+        <p>
+          The loopback notes are a good reminder that physical Ethernet loopback is not the
+          same thing as the logical <code>lo0</code> interface. For transport and physical testing,
+          the hierarchy matters.
+        </p>
+
+        <div class="cli-block">
+          <div class="cli-header">Command Reference - interface loopback and LACP</div>
+          <pre><code>set interfaces &lt;interface-name&gt; clocking internal
+set interfaces &lt;interface-name&gt; ether-options loopback
+edit interfaces &lt;interface-name&gt; otn-options
+
+set interfaces ae0 aggregated-ether-options lacp active</code></pre>
+        </div>
+
+        <p>
+          For switching, the same-port filtering example is worth remembering: if a switch
+          receives a frame on the same port where the destination MAC is learned, it filters
+          the frame instead of forwarding it. For STP, root bridge election comes down to the
+          lowest Bridge ID: priority first, then MAC address.
+        </p>
+        <p>
+          LACP is another small detail with real impact: passive/passive does not initiate
+          negotiation. At least one side must be active for the aggregate to form.
+        </p>
+      </section>
+
+      <section class="article-card" id="command-map">
+        <h2>Quick Command Map</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Area</th>
+                <th>Commands</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Logs and events</td>
+                <td><code>show log messages</code>, <code>show log chassisd</code>, <code>show log inventory</code></td>
+              </tr>
+              <tr>
+                <td>Packet observation</td>
+                <td><code>monitor traffic interface ge-0/0/0 no-resolve detail</code></td>
+              </tr>
+              <tr>
+                <td>RE and process health</td>
+                <td><code>show chassis routing-engine</code>, <code>show system processes summary</code></td>
+              </tr>
+              <tr>
+                <td>Storage and recovery</td>
+                <td><code>show system storage</code>, <code>request system storage cleanup</code>, <code>request system snapshot</code></td>
+              </tr>
+              <tr>
+                <td>Routing</td>
+                <td><code>show ospf neighbor detail</code>, <code>show bgp neighbor</code>, <code>show interfaces extensive</code></td>
+              </tr>
+              <tr>
+                <td>High availability</td>
+                <td><code>commit synchronize</code>, <code>show system switchover</code>, <code>show task replication</code></td>
+              </tr>
+              <tr>
+                <td>RE protection and ARP</td>
+                <td><code>set interfaces lo0 unit 0 family inet filter input PROTECT-RE</code>, <code>show arp</code></td>
+              </tr>
+              <tr>
+                <td>Interfaces and MTU</td>
+                <td><code>show interfaces extensive</code>, <code>ping size 1472 do-not-fragment</code>, <code>set interfaces ae0 aggregated-ether-options lacp active</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="article-card">
+        <h2>Corrections I Want to Keep in Mind</h2>
+        <ul>
+          <li>For checking EBGP parameters without access to the peer, packet observation with <code>monitor traffic interface</code> is more useful than relying only on a syslog filter.</li>
+          <li>NSR requires GRES and saves routing information on the backup Routing Engine.</li>
+          <li><code>ksyncd</code> is the process involved in kernel state synchronization between Routing Engines with GRES.</li>
+          <li><code>show system uptime</code> gives time, boot, protocol start, and last configuration change context; it is not the same as <code>show version</code>.</li>
+          <li>In the hub/switch example, the destination host processes the frame and the switch filters it because the destination MAC is learned on the same ingress port.</li>
+        </ul>
+      </section>
+
+      <section class="article-card" id="juniper-references">
+        <h2>Juniper References</h2>
+        <ul>
+          <li><a href="https://www.juniper.net/documentation/us/en/software/junos/cli-reference/topics/ref/command/monitor-traffic.html" target="_blank" rel="noopener noreferrer">Juniper CLI Reference: monitor traffic</a></li>
+          <li><a href="https://www.juniper.net/documentation/us/en/software/junos/cli-reference/topics/ref/command/show-log.html" target="_blank" rel="noopener noreferrer">Juniper CLI Reference: show log</a></li>
+          <li><a href="https://www.juniper.net/documentation/us/en/software/junos/cli-reference/topics/ref/command/show-chassis-routing-engine.html" target="_blank" rel="noopener noreferrer">Juniper CLI Reference: show chassis routing-engine</a></li>
+          <li><a href="https://www.juniper.net/documentation/us/en/software/junos/cli-reference/topics/ref/command/request-system-storage-cleanup.html" target="_blank" rel="noopener noreferrer">Juniper CLI Reference: request system storage cleanup</a></li>
+          <li><a href="https://www.juniper.net/documentation/us/en/software/junos/cli-reference/topics/ref/command/commit.html" target="_blank" rel="noopener noreferrer">Juniper CLI Reference: commit synchronize</a></li>
+          <li><a href="https://www.juniper.net/documentation/us/en/software/junos/cli-reference/topics/ref/command/show-system-switchover.html" target="_blank" rel="noopener noreferrer">Juniper CLI Reference: show system switchover</a></li>
+        </ul>
+      </section>
+
+      <section class="article-card key-takeaways">
+        <h2>Key Takeaways</h2>
+        <ul>
+          <li>Start with the baseline before deciding what is abnormal.</li>
+          <li>Use change control even when the fix seems small.</li>
+          <li>Look at logs, RE health, and packet evidence before blaming the protocol.</li>
+          <li>GRES, NSR, Graceful Restart, and ISSU solve different HA problems.</li>
+          <li>Troubleshooting is strongest when every assumption is validated with evidence.</li>
+        </ul>
+      </section>
+
+      <blockquote>
+        This is why I wanted to keep these notes in my own archive: Junos troubleshooting is
+        not just a set of commands. It is a way of thinking through change, evidence, risk,
+        and recovery.
+      </blockquote>
+
+      <nav class="article-neighbor-nav" aria-label="Related articles">
+        <a href="archive.html#juniper-notes">
+          <span>More Junos Notes</span>
+          <strong>Open the Juniper archive section</strong>
+        </a>
+        <a href="blog.html">
+          <span>Back to Blog</span>
+          <strong>Technical Notes & Labs</strong>
+        </a>
+      </nav>
+
+      <section class="article-comments">
+        <h2>Comments & Discussion</h2>
+        <p>
+          Notes, corrections, or field experience around Junos troubleshooting are welcome.
+        </p>
+        <script src="https://giscus.app/client.js"
+          data-repo="dfonquet/TechVortexHub"
+          data-repo-id="R_kgDOPG0-QQ"
+          data-category="General"
+          data-category-id="DIC_kwDOPG0-Qc4Ct1I2"
+          data-mapping="pathname"
+          data-strict="0"
+          data-reactions-enabled="1"
+          data-emit-metadata="0"
+          data-input-position="top"
+          data-theme="transparent_dark"
+          data-lang="en"
+          crossorigin="anonymous"
+          async>
+        </script>
+      </section>
+    </article>
+
+    <button class="back-to-top" type="button" aria-label="Back to top">Top</button>
+  </div>
+
+  <script src="article.js?v=20260709a"></script>
+</body>
+</html>
