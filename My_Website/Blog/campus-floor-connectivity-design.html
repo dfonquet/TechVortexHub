@@ -116,9 +116,10 @@
       <section class="article-card" id="hardware-inventory">
         <h2>Hardware Inventory and Roles</h2>
         <p>
-          The design separates the network into access, distribution, intermediate aggregation,
-          WAN, firewall, access, core, fiber distribution, and extension roles. The model below keeps the original engineering intent while
-          documenting it as a reusable enterprise design reference.
+          This section is only the logical role view. It maps each layer to its platform and
+          operational responsibility without trying to behave like a procurement list or a cable
+          schedule. The goal is to make the architecture readable before getting into exact part
+          numbers.
         </p>
 
         <div class="table-wrap">
@@ -188,9 +189,9 @@
 
         <h3>Detailed Material Reference</h3>
         <p>
-          The following bill-of-materials style reference keeps the original sizing logic while
-          using anonymized building names. The intent was to document the real design thinking:
-          access switching, distribution switching, optics, licensing, and future uplink capacity.
+          This section is intentionally closer to a BOM/procurement view. It documents specific
+          part numbers, licensing families, optics, network modules, and future capacity items
+          without re-explaining the full architecture.
         </p>
 
         <div class="table-wrap">
@@ -256,8 +257,8 @@
         <h2>Switch Port and Uplink Plan</h2>
         <p>
           A design document should make it clear which ports are access-facing, which ports are
-          uplinks, and where aggregation happens. The exact port numbers can change during
-          implementation, but the role model should be stable.
+          uplinks, which links are handoffs, and where demarcation happens. This section is about
+          port roles and operational boundaries, not platform selection or optic inventory.
         </p>
 
         <div class="table-wrap">
@@ -320,9 +321,9 @@
 
         <h3>Specific Uplink and Optic Notes</h3>
         <p>
-          For the physical uplink plan, I would keep the 1G and future 10G optics documented
-          directly in the design notes. That avoids guessing during implementation and makes the
-          transition from design to procurement much cleaner.
+          This section stays focused on media, modules, and distance assumptions. I would keep
+          these optics documented directly in the design notes so implementation and procurement
+          do not have to infer the physical layer from the topology diagram.
         </p>
 
         <div class="table-wrap">
@@ -399,15 +400,13 @@
       <section class="article-card" id="options">
         <h2>Connectivity Options</h2>
         <p>
-          The design considered the cleanest way to move from Building 1 WAN handoff and SD-WAN
-          services into the campus core in Building 2. The preferred path uses an ISP/WAN service handoff
-          into the Building 1 Cisco C9300 StackWise block, FortiGate 600-series HA for firewall
-          and SD-WAN policy, then an OM3 fiber rack handoff toward Building 2 Floor 1.
+          This section is about alternatives and trade-offs, not the final topology. The main
+          decision was how much separation to keep between WAN handoff, firewall policy,
+          distribution, and building-to-building fiber.
         </p>
         <p>
-          From Building 2 Floor 1, the design splits into two internal distribution paths:
-          OM3 multimode fiber from the Floor 1 OM3 fiber rack toward the Floor 5 OM3 fiber rack, and a
-          local Floor 1 extension using a separate Cisco C9300 four-switch StackWise block.
+          The final flow is explained later in the proposed architecture. Here, the useful part is
+          showing why each option was attractive and what operational cost it introduced.
         </p>
 
         <div class="table-wrap">
@@ -421,19 +420,19 @@
             </thead>
             <tbody>
               <tr>
-                <td>Building 1 to Building 2 core handoff</td>
-                <td>Clear separation between WAN handoff, SD-WAN/firewall policy, and campus core/distribution.</td>
-                <td>Requires accurate fiber-rack documentation and validated inter-building path.</td>
+                <td>Direct WAN aggregation into campus distribution</td>
+                <td>Simple physical design and fewer intermediate devices.</td>
+                <td>Can blur the boundary between WAN services, firewall policy, and campus distribution.</td>
               </tr>
               <tr>
-                <td>Building 2 Floor 1 to Floor 5 access</td>
-                <td>OM3 multimode fiber keeps the Floor 5 access expansion clearly tied back to the C9500 core.</td>
-                <td>Requires clean separation of D1/D2/D3 zones and clear fiber labeling.</td>
+                <td>Dedicated WAN aggregation stack before firewall/distribution</td>
+                <td>Cleaner demarcation for ISP VLANs, Port-Channels, firewall zones, and troubleshooting.</td>
+                <td>Adds hardware and makes documentation discipline more important.</td>
               </tr>
               <tr>
-                <td>Building 2 Floor 1 local extension</td>
-                <td>Supports another Floor 1 area with a dedicated C9300 StackWise extension connected from the C9500 core.</td>
-                <td>Needs clear ownership between core uplinks, extension stack, and access VLANs.</td>
+                <td>Single OM3 run from Floor 1 to Floor 5 access rack</td>
+                <td>Clear and easy to document when the path is known and controlled.</td>
+                <td>Requires strong rack labeling and future planning if capacity grows.</td>
               </tr>
             </tbody>
           </table>
@@ -442,6 +441,11 @@
 
       <section class="article-card" id="architecture">
         <h2>Proposed Architecture</h2>
+        <p>
+          This is the final integrated view of the design. After separating roles, procurement
+          details, port demarcation, optics, and options, this section ties the actual traffic
+          and physical flow together.
+        </p>
         <p>
           The architecture starts in Building 1, where ISP/WAN service handoffs land on the Cisco
           C9300 StackWise block. The FortiGate 600-series HA pair connects to that aggregation
@@ -461,9 +465,9 @@
       <section class="article-card" id="media-plan">
         <h2>Transceiver and Media Plan</h2>
         <p>
-          The media plan is centered on inter-building fiber handoff and OM3 multimode fiber
-          inside Building 2. Exact optic selection should always be validated against distance,
-          fiber type, patching path, and the final switch modules installed in each platform.
+          This section is not a second BOM. It captures physical media assumptions: fiber type,
+          distance validation, patching path, and the module family that should be confirmed
+          before implementation.
         </p>
 
         <div class="table-wrap">
@@ -514,7 +518,7 @@
 
       <section class="article-card" id="resiliency">
         <h2>Resiliency Decisions</h2>
-        <ul>
+        <ul class="decision-list">
           <li>Use FortiGate 600-series HA inside the SD-WAN zone for firewall and policy control.</li>
           <li>Use Cisco C9300 StackWise in Building 1 for ISP, FortiGate, and fiber-rack aggregation.</li>
           <li>Use two Cisco C9500 switches in StackWise Virtual as the Building 2 Floor 1 core.</li>
@@ -532,15 +536,14 @@
           filtering, storm control, PortFast, and BPDU Guard. These are not flashy features,
           but they protect the network from common access-layer problems.
         </p>
-        <div class="cli-block">
-          <div class="cli-header">Design Controls - not production config</div>
-          <pre><code>802.1X for authenticated access
-VLAN segmentation for user, voice, management, cameras, and access systems
-Storm control for broadcast protection
-PortFast for endpoint access ports
-BPDU Guard to protect the spanning-tree edge
-ACLs for controlled inter-segment access</code></pre>
-        </div>
+        <ul class="decision-list">
+          <li>802.1X for authenticated access.</li>
+          <li>VLAN segmentation for user, voice, management, cameras, and access systems.</li>
+          <li>Storm control for broadcast protection.</li>
+          <li>PortFast for endpoint access ports.</li>
+          <li>BPDU Guard to protect the spanning-tree edge.</li>
+          <li>ACLs for controlled inter-segment access.</li>
+        </ul>
       </section>
 
       <section class="article-card" id="growth">
@@ -556,7 +559,7 @@ ACLs for controlled inter-segment access</code></pre>
 
       <section class="article-card key-takeaways" id="lessons">
         <h2>Lessons Learned</h2>
-        <ul>
+        <ul class="decision-list">
           <li>A good design is not just a diagram; it is a set of operational decisions.</li>
           <li>Fiber paths, rack locations, and power planning are part of network resiliency.</li>
           <li>Access-layer security should be designed from the beginning, not added later.</li>
@@ -587,7 +590,7 @@ ACLs for controlled inter-segment access</code></pre>
           clean separation between WAN and LAN roles.
         </p>
         <div class="cli-block">
-          <div class="cli-header">Example - WAN-side Port-Channel toward FortiGate</div>
+          <div class="cli-header"><span>Example</span><span>WAN-side Port-Channel toward FortiGate</span></div>
           <pre><code>interface range TenGigabitEthernet1/0/1-8
  description FortigateFW-601-E-to-WAN
  switchport mode trunk

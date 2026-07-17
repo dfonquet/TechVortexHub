@@ -821,6 +821,35 @@ footer {
   margin-bottom: 8px;
 }
 
+.article-card .decision-list {
+  display: grid;
+  gap: 10px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.article-card .decision-list li {
+  position: relative;
+  margin: 0;
+  padding: 12px 14px 12px 38px;
+  border: 1px solid rgba(29, 155, 240, 0.20);
+  border-radius: var(--radius-card);
+  background: rgba(29, 155, 240, 0.06);
+}
+
+.article-card .decision-list li::before {
+  content: "";
+  position: absolute;
+  top: 18px;
+  left: 16px;
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--color-accent);
+  box-shadow: 0 0 14px rgba(29, 155, 240, 0.48);
+}
+
 .article-card a {
   color: var(--color-accent);
   text-decoration: none;
@@ -909,6 +938,12 @@ footer {
   font-weight: 800;
 }
 
+.cli-header span:last-child {
+  color: var(--color-text-soft);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
 .copy-command {
   padding: 7px 12px;
   border: 1px solid rgba(29, 155, 240, 0.42);
@@ -935,6 +970,9 @@ footer {
   margin: 0;
   padding: 18px;
   overflow-x: auto;
+  background:
+    linear-gradient(90deg, rgba(57, 255, 136, 0.05), transparent 38%),
+    rgba(1, 6, 12, 0.72);
 }
 
 .cli-block code,
