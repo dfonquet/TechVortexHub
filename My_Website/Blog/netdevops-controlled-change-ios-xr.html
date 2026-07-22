@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="author" content="Daniel Fonque Torres" />
+  <meta name="description" content="A real L3VPN troubleshooting session transformed into a controlled, repeatable, and auditable NetDevOps change workflow with Ansible and Cisco IOS XR." />
+  <title>From Troubleshooting to Controlled Change | Cisco IOS XR NetDevOps</title>
+  <link rel="canonical" href="https://dfonquet.github.io/TechVortexHub/My_Website/Blog/netdevops-controlled-change-ios-xr.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="From Troubleshooting to Controlled Change: A NetDevOps Workflow for Cisco IOS XR" />
+  <meta property="og:description" content="Troubleshooting an L3VPN issue and executing the change through a controlled Ansible workflow in a CCIE Service Provider lab." />
+  <meta property="og:url" content="https://dfonquet.github.io/TechVortexHub/My_Website/Blog/netdevops-controlled-change-ios-xr.html" />
+  <meta property="og:image" content="https://dfonquet.github.io/TechVortexHub/My_Website/Blog/img/netdevops-controlled-change/cover.png" />
+  <meta property="article:author" content="Daniel Fonque Torres" />
+  <meta property="article:published_time" content="2026-07-18" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="From Troubleshooting to Controlled Change" />
+  <meta name="twitter:description" content="Building a controlled NetDevOps workflow for Cisco IOS XR in a CCIE Service Provider lab." />
+  <meta name="twitter:image" content="https://dfonquet.github.io/TechVortexHub/My_Website/Blog/img/netdevops-controlled-change/cover.png" />
+  <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"BlogPosting","headline":"From Troubleshooting to Controlled Change: Building a NetDevOps Workflow for Cisco IOS XR in My CCIE Service Provider Lab","datePublished":"2026-07-18","author":{"@type":"Person","name":"Daniel Fonque Torres"},"image":"https://dfonquet.github.io/TechVortexHub/My_Website/Blog/img/netdevops-controlled-change/cover.png","url":"https://dfonquet.github.io/TechVortexHub/My_Website/Blog/netdevops-controlled-change-ios-xr.html","description":"A real L3VPN troubleshooting session transformed into a controlled NetDevOps change workflow with Ansible and Cisco IOS XR."}
+  </script>
+  <link rel="stylesheet" href="styles.css?v=20260717n" />
+</head>
+
+<body>
+  <span id="wts2217668" class="web-stat-hidden" aria-hidden="true"></span>
+  <script src="../web-stat.js?v=20260710b"></script>
+  <noscript><img class="web-stat-hidden" src="https://app.ardalio.com/7/4/2217668.png" alt="" /></noscript>
+
+  <div class="article-page">
+    <nav class="top-nav" aria-label="Main navigation">
+      <a href="../daftiel.html">Home</a>
+      <a href="../Projects/projects.html">Projects</a>
+      <a href="blog.html">Blog</a>
+      <a href="archive.html">Archive</a>
+    </nav>
+
+    <article class="article-shell">
+      <header class="article-hero">
+        <span class="status">Network Automation</span>
+        <h1>From Troubleshooting to Controlled Change: <span>NetDevOps for Cisco IOS XR</span></h1>
+        <p class="article-subtitle">
+          A real L3VPN troubleshooting session where network engineering and NetDevOps meet:
+          validate the fault, render the intended change, dry-run it, deploy it, and verify the result.
+        </p>
+        <div class="article-meta">
+          <span>Daniel Fonque Torres</span>
+          <span>July 18, 2026</span>
+          <span>CCIE-SP / NetDevOps Lab</span>
+        </div>
+        <div class="article-badges">
+          <span>Cisco IOS XR</span><span>Ansible</span><span>L3VPN</span><span>NetDevOps</span>
+        </div>
+      </header>
+
+      <figure class="article-cover">
+        <img src="img/netdevops-controlled-change/cover.png" alt="CCIE SP lab architecture and NetDevOps controlled-change workflow for Cisco IOS XR" />
+        <figcaption>
+          Lab overview — EVE-NG Service Provider backbone, dedicated Management VRF,
+          Ubuntu NetOps server, Ansible workflow, Git-based change control, and operational validation.
+        </figcaption>
+      </figure>
+
+      <section class="article-card article-toc" aria-label="Article contents">
+        <h2>On This Note</h2>
+        <div class="toc-list">
+          <a href="#introduction">Introduction</a>
+          <a href="#lab">The lab</a>
+          <a href="#repository">Repository architecture</a>
+          <a href="#inventory">Automation inventory</a>
+          <a href="#netdevops-workflow">NetDevOps workflow</a>
+          <a href="#problem">The L3VPN problem</a>
+          <a href="#root-cause">Finding the root cause</a>
+          <a href="#controlled-change">Controlled change</a>
+          <a href="#troubleshooting">Automation troubleshooting</a>
+          <a href="#deployment">Deployment and validation</a>
+          <a href="#lessons">Lessons learned</a>
+        </div>
+      </section>
+
+      <section class="article-card" id="introduction">
+        <h2>Introduction</h2>
+        <p>
+          One of the biggest temptations when troubleshooting a network is to log directly into
+          the affected router: SSH to the device, enter configuration mode, fix the problem,
+          commit, and move on. It is quick, effective, and sometimes necessary.
+        </p>
+        <p>
+          However, that approach completely bypasses every automation workflow we spend weeks—or
+          even months—building. While preparing my CCIE Service Provider lab, I found a simple
+          L3VPN issue that I could have fixed manually in less than two minutes. Instead, I stopped
+          and asked a different question.
+        </p>
+        <blockquote>
+          <strong>Can my automation platform perform the same production change that I would normally execute manually?</strong>
+        </blockquote>
+        <p>This article documents that journey. It is not an Ansible tutorial; it is a real troubleshooting session where network engineering and NetDevOps meet.</p>
+      </section>
+
+      <section class="article-card" id="lab">
+        <h2>The Lab</h2>
+        <p>
+          This was not a mocked YAML exercise. The workflow was executed against a live EVE-NG
+          Service Provider topology running Cisco IOS XR. The troubleshooting started with an
+          actual asymmetric L3VPN routing symptom, moved through underlay and control-plane
+          verification, and finished with a real configuration deployment to PE4.
+        </p>
+        <p>The backbone combined the technologies I am practicing for CCIE Service Provider:</p>
+        <ul>
+          <li>IS-IS Level 2 and Segment Routing MPLS.</li>
+          <li>BGP Route Reflectors, VPNv4, and L3VPN.</li>
+          <li>IPv4, IPv6, and PCE.</li>
+          <li>A dedicated Ubuntu automation server.</li>
+        </ul>
+        <p>
+          P11 operated as the shadow Route Reflector and P12 as the primary Route Reflector.
+          PE1 and PE4 provided the L3VPN service edge used in the troubleshooting case. Their
+          service loopbacks—<code>101.101.101.101</code> and <code>104.104.104.104</code>—were
+          reachable across the IS-IS/SR-MPLS underlay before any BGP policy change was attempted.
+        </p>
+        <p>
+          The automation plane was intentionally separated from service forwarding through a
+          dedicated Management VRF. The Ubuntu server used <code>wan0</code> for Internet access
+          and <code>mgmt0</code> at <code>10.255.23.10/24</code> to reach P23 at
+          <code>10.255.23.1</code>. P23 provided access to the IOS XR management subnet
+          <code>10.255.231.0/24</code>.
+        </p>
+      </section>
+
+      <figure class="article-image">
+        <img src="img/netdevops-controlled-change/figure-01.png" alt="Complete EVE-NG Service Provider topology" loading="lazy" />
+        <figcaption>Figure 1 — Complete EVE-NG Service Provider topology.</figcaption>
+      </figure>
+
+      <section class="article-card">
+        <h2>Management Network</h2>
+        <p>
+          Every managed router exposed a dedicated address reachable from the Ubuntu automation
+          server. This isolated automation traffic from the lab services and made SSH reachability
+          independently testable before Ansible was involved.
+        </p>
+        <div class="cli-block"><div class="cli-header"><span>Management addressing</span></div><pre><code>Management subnet   10.255.231.0/24
+Automation server   10.255.23.10
+PE routers          10.255.231.101 / 10.255.231.104
+Route Reflectors    10.255.231.11 / 10.255.231.12</code></pre></div>
+        <p>The Ubuntu host required an explicit route through P23:</p>
+        <div class="cli-block"><div class="cli-header"><span>Ubuntu management route</span></div><pre><code>sudo ip route replace 10.255.231.0/24 \
+  via 10.255.23.1 \
+  dev mgmt0</code></pre></div>
+        <p>
+          Making the route persistent in Netplan was part of the lab lesson: a runtime fix that
+          disappears after reboot is not an operationally complete solution.
+        </p>
+      </section>
+
+      <figure class="article-image">
+        <img src="img/netdevops-controlled-change/figure-02.png" alt="Dedicated management topology for the automation server and IOS XR routers" loading="lazy" />
+        <figcaption>Figure 2 — Management topology used for every automated operation.</figcaption>
+      </figure>
+
+      <section class="article-card" id="repository">
+        <h2>Repository Architecture: Why Each Directory Exists</h2>
+        <p>
+          The repository was organized so that intent, rendering, deployment, and evidence are
+          separate concerns. This matters because a production change should be reviewable before
+          a device connection is ever opened.
+        </p>
+        <div class="cli-block"><div class="cli-header"><span>Automation workspace</span></div><pre><code>automation/
+├── change-data/        # Structured change intent and service variables
+├── inventories/        # Devices, management addresses, and logical groups
+├── templates/iosxr/    # Reusable IOS XR Jinja2 configuration models
+├── scripts/            # Input, rendering, and output validation
+├── rendered/           # Device-specific candidate configuration by Change ID
+├── playbooks/          # Validate, render, dry-run, deploy, and post-check stages
+├── pyats/              # Operational service validation
+└── evidence/           # Post-change outputs and audit artifacts</code></pre></div>
+        <ul>
+          <li><strong>change-data:</strong> records what service or change is intended, without embedding device CLI in the request.</li>
+          <li><strong>templates:</strong> converts structured intent into vendor-specific IOS XR syntax.</li>
+          <li><strong>rendered:</strong> stores the exact device-specific candidate reviewed for a Change ID.</li>
+          <li><strong>playbooks:</strong> makes the operational sequence repeatable instead of relying on engineer memory.</li>
+          <li><strong>evidence and pyATS:</strong> separate deployment success from service-level validation.</li>
+        </ul>
+        <p>
+          The hands-on PE4 change used <code>CRQ-CCIE-SP-0002</code> and a rendered file named
+          <code>rendered/CRQ-CCIE-SP-0002/PE4.cfg</code>. The repository has continued evolving
+          since that session, so reusable examples may carry different Change IDs; the lab evidence
+          in this article remains tied to CRQ-CCIE-SP-0002.
+        </p>
+      </section>
+
+      <section class="article-card" id="inventory">
+        <h2>Building the Automation Inventory</h2>
+        <p>
+          The first step was expanding the Ansible inventory. Rather than managing individual
+          devices manually, routers were organized into logical <code>p_routers</code> and
+          <code>pe_routers</code> groups. Authentication came from environment variables instead
+          of hardcoded credentials, and SSH parameters were adapted for IOS XR 6.3.1 compatibility.
+        </p>
+        <div class="cli-block"><div class="cli-header"><span>Inventory model</span></div><pre><code>all:
+  children:
+    iosxr:
+      children:
+        p_routers:
+          hosts:
+            P11-RR-SHADOW: { ansible_host: 10.255.231.11 }
+            P12-RR-PRIMARY: { ansible_host: 10.255.231.12 }
+        pe_routers:
+          hosts:
+            PE1: { ansible_host: 10.255.231.101 }
+            PE4: { ansible_host: 10.255.231.104 }</code></pre></div>
+        <p>The connection variables described how Ansible should treat every host in the IOS XR group:</p>
+        <div class="cli-block"><div class="cli-header"><span>IOS XR connection model</span></div><pre><code>ansible_connection: ansible.netcommon.network_cli
+ansible_network_os: cisco.iosxr.iosxr
+ansible_network_cli_ssh_type: libssh
+ansible_user: "{{ lookup('env', 'NETOPS_USER') }}"
+ansible_password: "{{ lookup('env', 'NETOPS_PASSWORD') }}"</code></pre></div>
+        <p>
+          The inventory did more than map names to addresses. It established a reusable execution
+          boundary. An ad hoc command aimed at <code>pe_routers</code> could collect the same BGP
+          evidence from PE1 and PE4 without opening parallel interactive SSH sessions.
+        </p>
+        <div class="cli-block"><div class="cli-header"><span>Multi-device operational check</span></div><pre><code>ansible pe_routers \
+  -i ../inventories/local \
+  -m cisco.iosxr.iosxr_command \
+  -a '{"commands":[
+    "show bgp summary",
+    "show bgp vpnv4 unicast summary"
+  ]}'</code></pre></div>
+        <p>
+          <code>iosxr_command</code> was used for read-only operational evidence;
+          <code>iosxr_config</code> was reserved for intentional configuration deployment. Keeping
+          those responsibilities explicit reduced the chance of turning troubleshooting into an
+          accidental change.
+        </p>
+      </section>
+
+      <figure class="article-image"><img src="img/netdevops-controlled-change/figure-03.png" alt="Ansible hosts inventory for the IOS XR lab" loading="lazy" /><figcaption>Figure 3 — The IOS XR inventory organized into logical groups.</figcaption></figure>
+      <figure class="article-image"><img src="img/netdevops-controlled-change/figure-04.png" alt="Ansible inventory validation against P routers" loading="lazy" /><figcaption>Figure 4A — Inventory and connectivity validation.</figcaption></figure>
+      <figure class="article-image"><img src="img/netdevops-controlled-change/figure-05.png" alt="Ansible command execution against PE routers" loading="lazy" /><figcaption>Figure 4B — The same operational command executed across the PE group.</figcaption></figure>
+
+      <section class="article-card" id="netdevops-workflow">
+        <h2>The Controlled NetDevOps Workflow</h2>
+        <p>
+          The value of the lab was the complete operational chain—not a single Ansible command.
+          Each stage answered a different risk question before the next stage was allowed to run.
+        </p>
+        <div class="cli-block"><div class="cli-header"><span>Change lifecycle used in the lab</span></div><pre><code>Detect symptom
+  ↓
+Collect BGP, VPNv4, IS-IS, and route evidence
+  ↓
+Identify the intended configuration change
+  ↓
+Create Change ID: CRQ-CCIE-SP-0002
+  ↓
+Build PE4.cfg as the reviewed candidate
+  ↓
+Validate the rendered file
+  ↓
+Run --check and review --diff
+  ↓
+Provide explicit production approval
+  ↓
+Deploy with --limit PE4
+  ↓
+Validate configuration, protocols, and service state</code></pre></div>
+        <p>
+          This flow separates three outcomes that are often incorrectly treated as the same:
+          automation execution, configuration deployment, and service restoration. A mature
+          workflow must prove each outcome independently.
+        </p>
+      </section>
+
+      <section class="article-card">
+        <h2>Change ID and Rendered Configuration</h2>
+        <p>
+          <code>CRQ-CCIE-SP-0002</code> linked the troubleshooting decision to the candidate file
+          used for PE4. The rendered configuration contained the missing policy and the exact BGP
+          attachment points:
+        </p>
+        <div class="cli-block"><div class="cli-header"><span>rendered/CRQ-CCIE-SP-0002/PE4.cfg</span></div><pre><code>route-policy BGP-PASS
+  pass
+end-policy
+!
+router bgp 500
+ vrf CUST-A
+  neighbor 192.0.3.6
+   address-family ipv4 unicast
+    route-policy BGP-PASS in
+    route-policy BGP-PASS out</code></pre></div>
+        <p>
+          The router was no longer the place where the change was authored. The candidate existed
+          first as a version-controlled artifact that could be reviewed, validated, diffed, and
+          associated with a Git commit before reaching IOS XR.
+        </p>
+      </section>
+
+      <section class="article-card">
+        <h2>Production Playbook Guardrails</h2>
+        <p>The deployment playbook encoded several safeguards directly into the workflow:</p>
+        <ul>
+          <li><code>hosts: iosxr</code> defines the eligible platform scope.</li>
+          <li><code>serial: 1</code> changes only one device at a time.</li>
+          <li><code>approve_production=true</code> is enforced with an assertion.</li>
+          <li><code>stat</code> verifies that the rendered candidate exists.</li>
+          <li><code>register</code> stores the validation result for the deployment condition.</li>
+          <li><code>delegate_to: localhost</code> checks the file on the automation server, not on IOS XR.</li>
+          <li><code>--limit PE4</code> prevents the change from escaping the intended device scope.</li>
+        </ul>
+        <div class="cli-block"><div class="cli-header"><span>Approval and candidate-file gate</span></div><pre><code>- name: Require explicit production approval variable
+  ansible.builtin.assert:
+    that:
+      - approve_production | default(false) | bool
+
+- name: Check rendered config exists for this device
+  ansible.builtin.stat:
+    path: "{{ rendered_config }}"
+  register: rendered_config_file
+  delegate_to: localhost</code></pre></div>
+        <p>
+          This is a lightweight lab approval gate, not a replacement for a formal ITSM process.
+          Its purpose is practical: running the production playbook by mistake must not be enough
+          to modify a router.
+        </p>
+      </section>
+
+      <section class="article-card" id="problem">
+        <h2>The L3VPN Problem</h2>
+        <p>
+          Customer routes were not propagating correctly between PE routers. BGP verification
+          immediately showed asymmetric behavior: PE4 learned VPNv4 routes originated by PE1,
+          but PE1 never learned the routes originated by PE4.
+        </p>
+        <div class="cli-block"><div class="cli-header"><span>Initial verification</span></div><pre><code>show bgp summary
+show bgp vpnv4 unicast summary</code></pre></div>
+      </section>
+
+      <figure class="article-image"><img src="img/netdevops-controlled-change/figure-06.png" alt="PE4 BGP summary" loading="lazy" /><figcaption>Figure 5A — PE4 BGP verification.</figcaption></figure>
+      <figure class="article-image"><img src="img/netdevops-controlled-change/figure-07.png" alt="PE4 VPNv4 routes" loading="lazy" /><figcaption>Figure 5B — PE4 learning VPNv4 routes from PE1.</figcaption></figure>
+      <figure class="article-image"><img src="img/netdevops-controlled-change/figure-08.png" alt="PE4 detailed BGP output" loading="lazy" /><figcaption>Figure 5C — Detailed BGP evidence from PE4.</figcaption></figure>
+      <figure class="article-image"><img src="img/netdevops-controlled-change/figure-09.png" alt="PE1 BGP summary" loading="lazy" /><figcaption>Figure 6A — PE1 BGP verification.</figcaption></figure>
+      <figure class="article-image"><img src="img/netdevops-controlled-change/figure-10.png" alt="PE1 missing VPNv4 routes" loading="lazy" /><figcaption>Figure 6B — Missing PE4-originated VPNv4 routes on PE1.</figcaption></figure>
+      <figure class="article-image"><img src="img/netdevops-controlled-change/figure-11.png" alt="PE1 detailed BGP evidence" loading="lazy" /><figcaption>Figure 6C — Evidence of the asymmetric route propagation.</figcaption></figure>
+
+      <section class="article-card">
+        <h2>Investigating the Route Reflectors</h2>
+        <p>
+          Because VPNv4 relies on Route Reflectors, both RR nodes were checked simultaneously.
+          RR11 was operational, while RR12 remained idle. That created the first hypothesis:
+          perhaps RR12 was responsible for the missing routes.
+        </p>
+        <div class="cli-block"><div class="cli-header"><span>Parallel RR verification</span></div><pre><code>ansible p_routers \
+  --limit P11-RR-SHADOW,P12-RR-PRIMARY</code></pre></div>
+      </section>
+
+      <figure class="article-image"><img src="img/netdevops-controlled-change/figure-12.png" alt="RR11 operational status" loading="lazy" /><figcaption>Figure 7A — RR11 operational state.</figcaption></figure>
+      <figure class="article-image"><img src="img/netdevops-controlled-change/figure-13.png" alt="RR11 BGP verification" loading="lazy" /><figcaption>Figure 7B — RR11 BGP evidence.</figcaption></figure>
+      <figure class="article-image"><img src="img/netdevops-controlled-change/figure-14.png" alt="RR12 idle BGP state" loading="lazy" /><figcaption>Figure 8A — RR12 in an idle state.</figcaption></figure>
+      <figure class="article-image"><img src="img/netdevops-controlled-change/figure-15.png" alt="RR12 verification output" loading="lazy" /><figcaption>Figure 8B — RR12 verification.</figcaption></figure>
+      <figure class="article-image"><img src="img/netdevops-controlled-change/figure-16.png" alt="Additional RR12 troubleshooting evidence" loading="lazy" /><figcaption>Figure 8C — Additional evidence from RR12.</figcaption></figure>
+
+      <section class="article-card">
+        <h2>Verifying the Underlay</h2>
+        <p>
+          Before blaming BGP, the transport network had to be verified. IS-IS neighbors and PE
+          loopback reachability were healthy, and Segment Routing was functioning correctly.
+          The underlay was not the problem.
+        </p>
+        <div class="cli-block"><div class="cli-header"><span>Underlay verification</span></div><pre><code>show isis neighbors
+show route 101.101.101.101
+show route 104.104.104.104</code></pre></div>
+      </section>
+
+      <figure class="article-image"><img src="img/netdevops-controlled-change/figure-17.png" alt="IS-IS neighbor validation" loading="lazy" /><figcaption>Figure 9A — IS-IS neighbor validation.</figcaption></figure>
+      <figure class="article-image"><img src="img/netdevops-controlled-change/figure-18.png" alt="PE loopback route verification" loading="lazy" /><figcaption>Figure 9B — PE loopback reachability.</figcaption></figure>
+      <figure class="article-image"><img src="img/netdevops-controlled-change/figure-19.png" alt="Segment Routing underlay verification" loading="lazy" /><figcaption>Figure 9C — Segment Routing transport verification.</figcaption></figure>
+      <figure class="article-image"><img src="img/netdevops-controlled-change/figure-20.png" alt="Additional underlay validation output" loading="lazy" /><figcaption>Figure 9D — Underlay validation confirms a healthy transport network.</figcaption></figure>
+
+      <section class="article-card" id="root-cause">
+        <h2>Finding the Configuration Gap</h2>
+        <p>
+          Inspection returned to PE4. The customer eBGP neighbors lacked inbound and outbound
+          route policies. Cisco IOS XR requires explicit routing policies before accepting or
+          advertising BGP prefixes. Without those policies, the result was zero prefixes.
+        </p>
+      </section>
+
+      <figure class="article-image"><img src="img/netdevops-controlled-change/figure-21.png" alt="Missing BGP route policies on PE4" loading="lazy" /><figcaption>Figure 10 — Missing inbound and outbound route policies on PE4.</figcaption></figure>
+
+      <section class="article-card">
+        <h2>The Easy Solution</h2>
+        <p>I could have logged into PE4 and completed the correction in two minutes:</p>
+        <div class="cli-block"><div class="cli-header"><span>Manual fix intentionally avoided</span></div><pre><code>configure
+route-policy BGP-PASS
+  pass
+end-policy
+commit</code></pre></div>
+        <blockquote>If I fix this manually, am I validating my automation platform—or merely proving that SSH still works?</blockquote>
+        <p>No direct SSH and no manual configuration. Everything would be executed through the NetDevOps workflow.</p>
+      </section>
+
+      <section class="article-card" id="controlled-change">
+        <h2>Building the Change Request</h2>
+        <p>
+          A controlled Change Request—<code>CRQ-CCIE-SP-0002</code>—was created instead of
+          editing the router. A rendered configuration containing the missing route policy and
+          BGP neighbor updates was generated specifically for PE4. At this point, no production
+          device had been modified; only the desired state existed.
+        </p>
+      </section>
+
+      <figure class="article-image"><img src="img/netdevops-controlled-change/figure-22.png" alt="Rendered PE4 configuration for the change request" loading="lazy" /><figcaption>Figure 11 — Rendered configuration associated with CRQ-CCIE-SP-0002.</figcaption></figure>
+
+      <section class="article-card">
+        <h2>Dry Run Before Production</h2>
+        <p>
+          The deployment was first executed in Check Mode. Ansible calculated exactly what would
+          change without touching the router. The diff showed the expected modification with no
+          hidden commands or surprises.
+        </p>
+        <div class="cli-block"><div class="cli-header"><span>Check mode and diff</span></div><pre><code>ansible-playbook deploy-production.yml --check --diff</code></pre></div>
+        <p>
+          During Check Mode, <code>changed=1</code> does not mean the router was modified. It means
+          Ansible detected a difference that would require a change. The useful review came from
+          combining both options:
+        </p>
+        <ul>
+          <li><strong><code>--check</code>:</strong> would this request require a configuration change?</li>
+          <li><strong><code>--diff</code>:</strong> exactly which commands or hierarchy would differ?</li>
+        </ul>
+        <p>
+          Check Mode reduces risk but is not a perfect emulation of every device-side result.
+          Module behavior and IOS XR semantic validation still matter. That limitation became
+          visible later when the router evaluated the dependency between the route-policy
+          definition and its BGP attachment.
+        </p>
+      </section>
+
+      <figure class="article-image"><img src="img/netdevops-controlled-change/figure-23.png" alt="Ansible dry run and configuration diff" loading="lazy" /><figcaption>Figure 12 — Dry run showing the intended change before deployment.</figcaption></figure>
+
+      <section class="article-card">
+        <h2>What <code>iosxr_config</code> Actually Added to the Lab</h2>
+        <p>
+          <code>cisco.iosxr.iosxr_config</code> is different from blindly replaying CLI text. It
+          evaluates the requested candidate against the existing device configuration, calculates
+          a delta, sends configuration through the IOS XR candidate model, and commits when the
+          candidate passes platform validation.
+        </p>
+        <p>
+          That comparison is also where engineers must be careful. The rendered file and the
+          commands actually selected by a module are not always identical. In this lab, the initial
+          delta attempted to attach <code>BGP-PASS</code> without sending the policy definition in
+          the same candidate. IOS XR correctly rejected the dependency.
+        </p>
+        <p>
+          The workflow was adjusted so the complete required block was delivered together. This
+          was a hands-on demonstration of why module matching behavior, hierarchical configuration,
+          and platform semantics must be understood—not hidden behind the word “automation.”
+        </p>
+        <p>
+          The desired end state was also idempotent: the first valid execution should report
+          <code>changed=1</code>; a later execution against an already compliant device should
+          ideally report <code>changed=0</code> instead of replaying unnecessary commands.
+        </p>
+      </section>
+
+      <section class="article-card" id="troubleshooting">
+        <h2>Automation Troubleshooting: Where the Hands-On Work Happened</h2>
+        <p>
+          The first deployment did not succeed on the first attempt. That was one of the most
+          valuable parts of the exercise: every failure exposed a different dependency in the
+          automation stack.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Failure</th><th>Technical cause</th><th>Operational lesson</th></tr></thead>
+            <tbody>
+              <tr><td>SSH host authenticity / unknown host</td><td>The Ubuntu server had not yet trusted the IOS XR host key.</td><td>Automation depends on the SSH trust layer before Ansible logic can begin.</td></tr>
+              <tr><td>Legacy SSH algorithm compatibility</td><td>IOS XR 6.3.1 required compatible host-key parameters.</td><td>Transport compatibility is part of the platform design, not a routing issue.</td></tr>
+              <tr><td>Commit comment error</td><td>Commit-comment behavior varied with IOS XR and collection versions.</td><td>Module documentation and platform release behavior must be validated together.</td></tr>
+              <tr><td><code>Policy [BGP-PASS] must be defined</code></td><td>The calculated delta attached the policy before including its definition.</td><td>Rendered intent and transmitted candidate can differ; inspect the diff.</td></tr>
+              <tr><td>YAML typo: <code>roouter</code></td><td>A misspelled hierarchy changed the intended IOS XR syntax.</td><td>Text validation is operational risk control, not cosmetic linting.</td></tr>
+              <tr><td>Inventory host-pattern mismatch</td><td>Names such as <code>P12-RR-Primary</code> and <code>P12-RR-PRIMARY</code> are not interchangeable.</td><td>Naming consistency is part of automation correctness.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          The path to the router was a dependency chain:
+          Linux routing → SSH → authentication → inventory → Ansible module → IOS XR candidate
+          configuration → commit. A failure at any layer stopped the entire workflow.
+        </p>
+      </section>
+
+      <figure class="article-image"><img src="img/netdevops-controlled-change/figure-24.png" alt="SSH host key deployment error" loading="lazy" /><figcaption>Figure 13 — SSH compatibility error encountered during deployment.</figcaption></figure>
+      <figure class="article-image"><img src="img/netdevops-controlled-change/figure-25.png" alt="IOS XR commit error" loading="lazy" /><figcaption>Figure 14 — IOS XR commit behavior required workflow adjustment.</figcaption></figure>
+      <figure class="article-image"><img src="img/netdevops-controlled-change/figure-26.png" alt="Route policy semantic validation error" loading="lazy" /><figcaption>Figure 15A — Semantic validation revealed an incomplete configuration diff.</figcaption></figure>
+      <figure class="article-image"><img src="img/netdevops-controlled-change/figure-27.png" alt="Updated Ansible deployment strategy" loading="lazy" /><figcaption>Figure 15B — Deployment adjusted to send the complete intended configuration.</figcaption></figure>
+
+      <section class="article-card" id="deployment">
+        <h2>Production Deployment</h2>
+        <p>After correcting the issues, the production-style deployment completed successfully.</p>
+        <div class="cli-block"><div class="cli-header"><span>Deployment result</span></div><pre><code>changed=1  failed=0</code></pre></div>
+        <p>
+          The rendered configuration became the running configuration. This was the first
+          controlled change executed entirely from the automation platform, without manual CLI
+          configuration.
+        </p>
+        <div class="cli-block"><div class="cli-header"><span>Scoped production execution</span></div><pre><code>export CHANGE_ID=CRQ-CCIE-SP-0002
+
+ansible-playbook \
+  -i ../inventories/local \
+  deploy-production.yml \
+  --limit PE4 \
+  -e "change_id=${CHANGE_ID}" \
+  -e "approve_production=true"</code></pre></div>
+      </section>
+
+      <figure class="article-image"><img src="img/netdevops-controlled-change/figure-28.png" alt="Successful Ansible deployment to PE4" loading="lazy" /><figcaption>Figure 16 — Successful controlled deployment to PE4.</figcaption></figure>
+
+      <section class="article-card">
+        <h2>Validation</h2>
+        <p>
+          The final step verified that the running PE4 configuration matched the rendered
+          template: the route policy was deployed, BGP neighbors were updated, and no unintended
+          changes were introduced. Configuration as code had become configuration as state.
+        </p>
+        <p>
+          Pre-change and post-change checks were deliberately broader than the modified lines.
+          Each command answered a protocol-specific question:
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Command</th><th>What it validated</th></tr></thead>
+            <tbody>
+              <tr><td><code>show isis neighbors</code></td><td>Underlay adjacencies remained established.</td></tr>
+              <tr><td><code>show route 101.101.101.101/32</code></td><td>PE1 loopback was reachable through the transport network.</td></tr>
+              <tr><td><code>show route 104.104.104.104/32</code></td><td>PE4 loopback was reachable through the transport network.</td></tr>
+              <tr><td><code>show bgp vpnv4 unicast summary</code></td><td>VPNv4 control-plane sessions and prefix exchange.</td></tr>
+              <tr><td><code>show bgp vrf CUST-A ipv4 unicast</code></td><td>Customer prefixes present in the service VRF.</td></tr>
+              <tr><td><code>show running-config router bgp</code></td><td>The route-policy and neighbor hierarchy matched intent.</td></tr>
+              <tr><td><code>show mpls forwarding</code></td><td>Label forwarding state remained available.</td></tr>
+              <tr><td><code>show segment-routing</code></td><td>Segment Routing control-plane state remained intact.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          A soft BGP clear was used to request route re-evaluation without unnecessarily tearing
+          down the complete neighbor relationship. The expected prefixes still did not return,
+          proving that the missing policy was not the only unresolved service condition.
+        </p>
+      </section>
+
+      <figure class="article-image"><img src="img/netdevops-controlled-change/figure-29.png" alt="Running configuration validation on PE4" loading="lazy" /><figcaption>Figure 17A — Running configuration validated against the intended change.</figcaption></figure>
+      <figure class="article-image"><img src="img/netdevops-controlled-change/figure-30.png" alt="Deployed BGP route policy on IOS XR" loading="lazy" /><figcaption>Figure 17B — The route policy correctly deployed on IOS XR.</figcaption></figure>
+
+      <section class="article-card">
+        <h2>An Interesting Result</h2>
+        <p>Although the configuration deployed successfully, the original routing issue still existed. At first glance, this looked like failure. It was not.</p>
+        <p>
+          Automation does not replace troubleshooting; it standardizes how changes are executed.
+          Finding the root cause remains the responsibility of the network engineer. A successful
+          deployment proves that the intended change was applied correctly—not that every network
+          symptom has necessarily disappeared.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Outcome</th><th>Result in this lab</th><th>Meaning</th></tr></thead>
+            <tbody>
+              <tr><td>Automation execution</td><td>Successful</td><td>The playbook, guardrails, transport, and module completed.</td></tr>
+              <tr><td>Configuration deployment</td><td>Successful</td><td>The approved route-policy change reached PE4 and was committed.</td></tr>
+              <tr><td>L3VPN service restoration</td><td>Additional troubleshooting required</td><td>The original symptom had more than one contributing condition.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          That distinction is what made the exercise credible. Reporting only
+          <code>changed=1 failed=0</code> would describe Ansible, not the health of the network.
+        </p>
+      </section>
+
+      <section class="article-card" id="lessons">
+        <h2>Lessons Learned</h2>
+        <ul>
+          <li>The router should never be the source of truth.</li>
+          <li>Every production-style change deserves a Change Request.</li>
+          <li>Validation is as important as deployment.</li>
+          <li>Dry runs prevent unnecessary production mistakes.</li>
+          <li>Troubleshooting and automation complement each other.</li>
+          <li>Git becomes part of the network operating model.</li>
+          <li>YAML mistakes can break production as easily as routing mistakes.</li>
+          <li>A successful deployment does not automatically mean the original problem is solved.</li>
+          <li>IOS XR semantic validation is a safety mechanism that automation must respect.</li>
+          <li>Runtime reachability and persistent management-plane configuration are separate concerns.</li>
+          <li>A reversible, auditable change process is more valuable than a fast one-off fix.</li>
+        </ul>
+      </section>
+
+      <section class="article-card">
+        <h2>Where the Lab Evolves Next</h2>
+        <p>
+          The natural next step is to move the manual approval and execution sequence into a
+          complete CI/CD control plane while preserving the same engineering gates.
+        </p>
+        <ul>
+          <li>Run schema and rendered-configuration validation automatically before merge.</li>
+          <li>Publish rendered candidates and diffs as pipeline artifacts.</li>
+          <li>Use Merge Requests as the peer-review and approval boundary.</li>
+          <li>Add post-change pyATS checks for BGP, IS-IS, VPNv4, and Segment Routing.</li>
+          <li>Prepare IOS XR rollback artifacts for every approved Change ID.</li>
+          <li>Evaluate Batfish for offline intent and reachability validation.</li>
+          <li>Send deployment and validation results to collaboration platforms.</li>
+          <li>Reuse the workflow for RR clients, IS-IS, prefix-SIDs, SR-TE, multicast, EVPN, and QoS.</li>
+        </ul>
+        <p>
+          These are roadmap items, not claims that every component is already production-ready.
+          The proven foundation is the controlled PE4 workflow documented in this hands-on lab.
+        </p>
+      </section>
+
+      <section class="article-card">
+        <h2>Final Thoughts</h2>
+        <p>
+          When I started building this CCIE Service Provider lab, the objective was learning
+          routing protocols. Today, the goal has evolved. Designing the network is only part of
+          the job; operating it efficiently is just as important.
+        </p>
+        <p>
+          This L3VPN issue became the first real validation that my automation platform can
+          execute controlled, repeatable, and auditable configuration changes across the Service
+          Provider lab. The routing issue will eventually be solved, but the automation workflow
+          built during this process will remain for every future deployment.
+        </p>
+        <p>
+          From a CCIE SP perspective, the central lesson is that protocol knowledge remains the
+          decision engine. Ansible can distribute commands consistently, Git can preserve intent,
+          and a pipeline can enforce gates—but none of them can decide whether the actual failure
+          belongs to the underlay, the VPNv4 control plane, VRF policy, or customer-edge exchange
+          without sound Service Provider troubleshooting.
+        </p>
+        <p><a href="https://www.linkedin.com/feed/update/urn:li:activity:7484397963134345216/" target="_blank" rel="noopener noreferrer">View the original LinkedIn publication</a>.</p>
+      </section>
+
+      <blockquote class="article-quote">
+        Automation does not replace network engineering. It turns engineering intent into a controlled, repeatable, and auditable operational process.
+      </blockquote>
+
+      <nav class="article-neighbor-nav" aria-label="Related articles">
+        <a href="gitlab-ci-network-configuration.html"><span>Previous Automation Lab</span><strong>GitLab CI Pipeline for Network Configuration</strong></a>
+        <a href="netlab-core-eve-ng-golden-image.html"><span>Automation Platform</span><strong>Building NetLab-Core for EVE-NG</strong></a>
+      </nav>
+
+      <section class="article-comments">
+        <h2>Comments &amp; Discussion</h2>
+        <p>How do you validate configuration intent before deploying changes to your network?</p>
+        <script src="https://giscus.app/client.js" data-repo="dfonquet/TechVortexHub" data-repo-id="R_kgDOKHmmXQ" data-category="General" data-category-id="DIC_kwDOKHmmXc4DAjYp" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="noborder_dark" data-lang="en" crossorigin="anonymous" async></script>
+      </section>
+    </article>
+  </div>
+
+  <div class="image-lightbox" id="imageLightbox" aria-hidden="true">
+    <button class="lightbox-close" type="button" aria-label="Close image preview">&times;</button>
+    <img class="lightbox-image" src="" alt="" />
+    <p class="lightbox-caption"></p>
+  </div>
+  <button class="back-to-top" type="button" aria-label="Back to top">Top</button>
+  <script src="article.js"></script>
+</body>
+</html>
