@@ -33,7 +33,7 @@
       "description": "Complete lab manual for a deterministic, read-only Cisco IOS XR network-state collection engine with Ansible, JSON evidence, GitHub Actions, and a controlled pull-request workflow."
     }
   </script>
-  <link rel="stylesheet" href="styles.css?v=20260724" />
+  <link rel="stylesheet" href="styles.css?v=20260724b" />
 </head>
 
 <body>
@@ -103,6 +103,40 @@
           routers, executes operational commands, saves one JSON evidence file per device, and
           continues even when some nodes are powered off.
         </p>
+        <h3>Quick NetDevOps Flow</h3>
+        <p>
+          For readers newer to NetDevOps, the complete delivery model can be reduced to four
+          connected stages:
+        </p>
+        <div
+          class="pipeline-flow"
+          role="img"
+          aria-label="IOS XR collection produces JSON evidence, Git records the change, and CI validates it"
+        >
+          <div class="pipeline-step">
+            <span>01</span>
+            <strong>Collection</strong>
+            <small>Read-only IOS XR commands</small>
+          </div>
+          <span class="pipeline-arrow" aria-hidden="true">→</span>
+          <div class="pipeline-step">
+            <span>02</span>
+            <strong>Evidence</strong>
+            <small>One JSON file per device</small>
+          </div>
+          <span class="pipeline-arrow" aria-hidden="true">→</span>
+          <div class="pipeline-step">
+            <span>03</span>
+            <strong>Git</strong>
+            <small>Branch, commits, and Pull Request</small>
+          </div>
+          <span class="pipeline-arrow" aria-hidden="true">→</span>
+          <div class="pipeline-step">
+            <span>04</span>
+            <strong>CI</strong>
+            <small>Automated validation before merge</small>
+          </div>
+        </div>
         <div class="concept-grid mental-model-grid">
           <div class="concept-mini-card"><h3>17</h3><p>IOS XR devices in inventory</p></div>
           <div class="concept-mini-card"><h3>8</h3><p>Read-only commands per reachable device</p></div>
@@ -865,6 +899,25 @@ RUN-P10-COLLECT-20260724T175235Z</code></pre>
           <li>Review evidence before sharing it.</li>
           <li>Keep <code>automation/evidence/</code> outside the repository history.</li>
         </ul>
+        <h3>Where Evidence Lives and How It Is Rotated</h3>
+        <p>
+          Runtime evidence remains on the Ubuntu automation server under
+          <code>automation/evidence/&lt;RUN_ID&gt;/raw/</code>. It is created locally by the
+          delegated Ansible task and is never pushed to Git. The run ID makes every collection a
+          self-contained directory that can be reviewed, retained, or removed as one unit.
+        </p>
+        <ol>
+          <li>Create one timestamped directory per collection run.</li>
+          <li>Review the JSON files and complete the sensitive-material scan before any evidence is exported.</li>
+          <li>Retain only the runs required by the agreed troubleshooting or audit window.</li>
+          <li>During approved maintenance, remove complete expired <code>RUN_ID</code> directories instead of deleting individual device files and leaving partial snapshots.</li>
+          <li>Export only explicitly approved and sanitized evidence; the raw working copy remains outside source control.</li>
+        </ol>
+        <div class="note-callout">
+          Retention length and scheduled cleanup belong to the automation server's operating
+          policy. The collector creates deterministic run boundaries; the operator or a controlled
+          housekeeping job applies the approved retention window.
+        </div>
 
         <h3 id="section-25">25. Evidence <code>.gitignore</code></h3>
         <p>
@@ -1446,6 +1499,26 @@ ansible-playbook \
   automation/playbooks/collect-network-state.yml \
   -e "run_id=${RUN_ID}"</code></pre>
         </div>
+        <h3>Scale by Inventory Group</h3>
+        <p>
+          <code>--limit</code> can target an inventory group, not only individual hostnames. The
+          following example collects the four Provider Edge routers defined under
+          <code>pe_routers</code>:
+        </p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Provider Edge group collection</span><span>Bash</span></div>
+          <pre><code>ANSIBLE_CONFIG=automation/ansible.cfg \
+ansible-playbook \
+  -i automation/inventories/local/hosts.yml \
+  automation/playbooks/collect-network-state.yml \
+  --limit "pe_routers" \
+  -e "run_id=${RUN_ID}"</code></pre>
+        </div>
+        <p>
+          Replace <code>pe_routers</code> with <code>p_routers</code> to collect the P, Route
+          Reflector, and PCE group. This keeps the same playbook and evidence model while scaling
+          the scenario through inventory structure.
+        </p>
 
         <h3 id="section-52">52. Git Commands to Remember</h3>
         <div class="table-wrap">
