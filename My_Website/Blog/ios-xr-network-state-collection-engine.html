@@ -1,0 +1,1627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="author" content="Daniel Fonque Torres" />
+  <meta
+    name="description"
+    content="Complete lab manual for building a deterministic, read-only Cisco IOS XR network-state collection engine with Ansible, JSON evidence, GitHub Actions, and a controlled pull-request workflow."
+  />
+  <title>IOS XR Network State Collection Engine | Daniel Fonque</title>
+  <link rel="canonical" href="https://dfonquet.github.io/TechVortexHub/My_Website/Blog/ios-xr-network-state-collection-engine.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="IOS XR Network State Collection Engine + GitHub Actions" />
+  <meta property="og:description" content="A complete, production-style lab manual: collect read-only IOS XR state, write per-device JSON evidence, validate safely, and merge through GitHub Actions." />
+  <meta property="og:url" content="https://dfonquet.github.io/TechVortexHub/My_Website/Blog/ios-xr-network-state-collection-engine.html" />
+  <meta property="og:image" content="https://dfonquet.github.io/TechVortexHub/My_Website/Blog/img/ios-xr-network-state-collector/cover.png" />
+  <meta property="article:author" content="Daniel Fonque Torres" />
+  <meta property="article:published_time" content="2026-07-24" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="IOS XR Network State Collection Engine" />
+  <meta name="twitter:description" content="Ansible, JSON evidence, GitHub Actions, and a controlled pull-request workflow for a real IOS XR lab." />
+  <meta name="twitter:image" content="https://dfonquet.github.io/TechVortexHub/My_Website/Blog/img/ios-xr-network-state-collector/cover.png" />
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "headline": "IOS XR Network State Collection Engine + GitHub Actions + Pull Request",
+      "datePublished": "2026-07-24",
+      "author": {"@type": "Person", "name": "Daniel Fonque Torres"},
+      "image": "https://dfonquet.github.io/TechVortexHub/My_Website/Blog/img/ios-xr-network-state-collector/cover.png",
+      "url": "https://dfonquet.github.io/TechVortexHub/My_Website/Blog/ios-xr-network-state-collection-engine.html",
+      "description": "Complete lab manual for a deterministic, read-only Cisco IOS XR network-state collection engine with Ansible, JSON evidence, GitHub Actions, and a controlled pull-request workflow."
+    }
+  </script>
+  <link rel="stylesheet" href="styles.css?v=20260724" />
+</head>
+
+<body>
+  <span id="wts2217668" class="web-stat-hidden" aria-hidden="true"></span>
+  <script src="../web-stat.js?v=20260710b"></script>
+  <noscript><img class="web-stat-hidden" src="https://app.ardalio.com/7/4/2217668.png" alt="" /></noscript>
+
+  <div class="article-page">
+    <nav class="top-nav" aria-label="Main navigation">
+      <a href="../daftiel.html">Home</a>
+      <a href="../Projects/projects.html">Projects</a>
+      <a href="blog.html">Blog</a>
+      <a href="archive.html">Archive</a>
+    </nav>
+
+    <article class="article-shell">
+      <header class="article-hero">
+        <span class="status">Network Automation</span>
+        <h1>IOS XR Network State <span>Collection Engine</span></h1>
+        <p class="article-subtitle">
+          A complete technical lab manual for building a deterministic, read-only collector,
+          preserving one JSON evidence file per router, and taking the change through Git,
+          GitHub Actions, a Pull Request, a controlled merge, and branch cleanup.
+        </p>
+        <div class="article-meta">
+          <span>Daniel Fonque Torres</span>
+          <span>July 24, 2026</span>
+          <span>Phase 1 — Validated and Merged</span>
+        </div>
+        <div class="article-badges">
+          <span>Cisco IOS XR</span>
+          <span>Ansible</span>
+          <span>JSON Evidence</span>
+          <span>Git</span>
+          <span>GitHub Actions</span>
+        </div>
+      </header>
+
+      <figure class="article-cover">
+        <img
+          src="img/ios-xr-network-state-collector/cover.png"
+          alt="IOS XR routers feeding JSON evidence into a Git branch, Pull Request, and successful CI pipeline"
+          loading="eager"
+          decoding="async"
+        />
+        <figcaption>
+          Phase 1 of the IOS XR Network Validation and Change Automation Platform:
+          read-only collection, raw JSON evidence, and auditable Git-based delivery.
+        </figcaption>
+      </figure>
+
+      <section class="article-card key-takeaways">
+        <h2>What This Lab Delivered</h2>
+        <p>
+          This was a long piece of work because we did not merely create a playbook. We built and
+          validated the first phase of a Cisco IOS XR automation platform using a workflow similar
+          to the one used in production.
+        </p>
+        <div class="path-flow" aria-label="Lab delivery workflow">
+          <span>Design</span><span>Feature branch</span><span>Local tests</span>
+          <span>Security validation</span><span>Commit &amp; push</span>
+          <span>Pull Request</span><span>CI/CD</span><span>Error correction</span>
+          <span>Controlled merge</span><span>Branch cleanup</span>
+        </div>
+        <p>
+          The final result is a deterministic, read-only Collection Engine that connects to IOS XR
+          routers, executes operational commands, saves one JSON evidence file per device, and
+          continues even when some nodes are powered off.
+        </p>
+        <div class="concept-grid mental-model-grid">
+          <div class="concept-mini-card"><h3>17</h3><p>IOS XR devices in inventory</p></div>
+          <div class="concept-mini-card"><h3>8</h3><p>Read-only commands per reachable device</p></div>
+          <div class="concept-mini-card"><h3>4</h3><p>Atomic feature commits</p></div>
+          <div class="concept-mini-card"><h3>1</h3><p>JSON file per device and run</p></div>
+        </div>
+      </section>
+
+      <section class="article-card article-toc" aria-label="Article contents">
+        <h2>On This Lab Manual</h2>
+        <div class="toc-list">
+          <a href="#foundation">1–10 · Foundation and environment</a>
+          <a href="#collector">11–19 · Collection Engine internals</a>
+          <a href="#execution">20–30 · Execution, evidence, and validation</a>
+          <a href="#git-lifecycle">31–49 · Git, PR, CI/CD, and cleanup</a>
+          <a href="#lessons">50–53 · Lessons, rerun guide, and roadmap</a>
+          <a href="#references">Verified references and live artifacts</a>
+        </div>
+      </section>
+
+      <section class="article-card" id="foundation">
+        <h2>Foundation and Environment</h2>
+
+        <h3 id="section-1">1. General Lab Objective</h3>
+        <p>The objective was to start building this platform:</p>
+        <div class="ascii-diagram"><code>IOS XR Network Validation and Change Automation Platform
+
+IOS XR Devices
+      │
+      ▼
+Collection Engine
+      │
+      ▼
+Raw JSON Evidence
+      │
+      ▼
+Structured Parsers
+      │
+      ▼
+Expected-State Validation
+      │
+      ├── PASS
+      ├── WARN
+      └── FAIL
+      │
+      ▼
+Reports / Pre-Checks / Post-Checks / RCA</code></div>
+        <p>In this first phase, we implemented only:</p>
+        <div class="ascii-diagram"><code>IOS XR Devices
+      │
+      ▼
+Read-Only Collection Engine
+      │
+      ▼
+One JSON File per Device</code></div>
+        <p>The collector:</p>
+        <ul>
+          <li>Uses only <code>show</code> commands.</li>
+          <li>Does not modify configuration.</li>
+          <li>Generates evidence per device.</li>
+          <li>Distinguishes reachable from unreachable devices.</li>
+          <li>Does not stop the entire execution when one router fails.</li>
+          <li>Excludes secret lines from the running configuration.</li>
+          <li>Stores evidence locally and outside Git version control.</li>
+        </ul>
+
+        <h3 id="section-2">2. Repository Used</h3>
+        <p>
+          The working repository was
+          <a href="https://github.com/dfonquet/CCIE-SP-NetOps-Automation" target="_blank" rel="noopener noreferrer">dfonquet/CCIE-SP-NetOps-Automation</a>.
+          Its local Linux path was <code>~/netops/CCIE-SP-NetOps-Automation</code>.
+        </p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Enter the repository</span><span>Bash</span></div>
+          <pre><code>cd ~/netops/CCIE-SP-NetOps-Automation</code></pre>
+        </div>
+        <p>
+          <code>cd</code> means <em>change directory</em>. It changes the terminal's current
+          directory. After running it, every Git, Ansible, and Python command operates on this
+          repository.
+        </p>
+
+        <h3 id="section-3">3. Topology Included in the Inventory</h3>
+        <p>
+          The inventory was organized under the main <code>iosxr</code> group, with two child
+          groups: <code>p_routers</code> and <code>pe_routers</code>.
+        </p>
+        <div class="ascii-diagram"><code>iosxr
+├── p_routers
+│   ├── P1 – P10
+│   ├── P11-RR-SHADOW
+│   ├── P12-RR-PRIMARY
+│   └── P23-PCE
+│
+└── pe_routers
+    ├── PE1
+    ├── PE2
+    ├── PE3
+    └── PE4</code></div>
+        <div class="cli-block">
+          <div class="cli-header"><span>Inventory total</span><span>17 devices</span></div>
+          <pre><code>13 P / RR / PCE routers
+ 4 PE routers
+-----------------------
+17 IOS XR devices</code></pre>
+        </div>
+        <p>During this work, we specifically added:</p>
+        <div class="cli-block">
+          <div class="cli-header"><span>New inventory entries</span><span>YAML</span></div>
+          <pre><code>PE2:
+  ansible_host: 10.255.231.102
+
+PE3:
+  ansible_host: 10.255.231.103</code></pre>
+        </div>
+        <p>The complete inventory uses management addresses inside <code>10.255.231.0/24</code>.</p>
+
+        <h3 id="section-4">4. Ansible Connection Variables</h3>
+        <p>The inventory defines these variables at the <code>iosxr</code> group, so they apply automatically to every router:</p>
+        <div class="cli-block">
+          <div class="cli-header"><span>IOS XR group variables</span><span>YAML</span></div>
+          <pre><code>ansible_connection: ansible.netcommon.network_cli
+ansible_network_os: cisco.iosxr.iosxr
+ansible_network_cli_ssh_type: libssh
+ansible_user: "{{ lookup('env', 'NETOPS_USER') }}"
+ansible_password: "{{ lookup('env', 'NETOPS_PASSWORD') }}"</code></pre>
+        </div>
+        <h3><code>ansible_connection</code></h3>
+        <p>
+          <code>ansible.netcommon.network_cli</code> tells Ansible that the target is not a normal
+          Linux server. Ansible connects over SSH to the CLI of a network device.
+        </p>
+        <div class="ascii-diagram"><code>Ansible
+   │
+   ▼
+SSH
+   │
+   ▼
+IOS XR CLI</code></div>
+        <h3><code>ansible_network_os</code></h3>
+        <p>
+          <code>cisco.iosxr.iosxr</code> identifies the remote operating system as Cisco IOS XR.
+          This lets Ansible know how to enter the CLI, execute commands, interpret prompts, select
+          collection modules, and handle IOS XR-specific errors.
+        </p>
+        <h3><code>ansible_network_cli_ssh_type</code></h3>
+        <p>
+          <code>libssh</code> instructs the connection to use libssh through
+          <code>ansible-pylibssh</code>. This mattered because the incorrect virtual environment
+          did not include that dependency.
+        </p>
+        <h3>User and password</h3>
+        <p>
+          Credentials are not written directly into the inventory. Ansible obtains
+          <code>NETOPS_USER</code> and <code>NETOPS_PASSWORD</code> from operating-system
+          environment variables. This prevents passwords from being committed accidentally to Git.
+        </p>
+
+        <h3 id="section-5">5. Activate the Correct Virtual Environment</h3>
+        <p>The correct environment was <code>automation/.venv/</code>, not the <code>.venv</code> at the repository root.</p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Activate and verify</span><span>Bash</span></div>
+          <pre><code>source automation/.venv/bin/activate
+
+which python
+which ansible</code></pre>
+        </div>
+        <p>After activation, the prompt shows <code>(.venv)</code>:</p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Expected shell prompt</span></div>
+          <pre><code>(.venv) daniel@netlab-core:~/netops/CCIE-SP-NetOps-Automation$</code></pre>
+        </div>
+        <p>
+          <code>source</code> executes a file inside the current Bash session. Here, it loads the
+          virtual environment's Python, pip, Ansible, and project-specific libraries. The paths
+          returned by <code>which</code> should point to <code>automation/.venv/bin/</code>.
+        </p>
+
+        <h3 id="section-6">6. The <code>ansible-pylibssh</code> Dependency</h3>
+        <p>
+          We added <code>ansible-pylibssh&gt;=1.4.0</code> to
+          <code>automation/requirements.txt</code>. It lets <code>network_cli</code> use libssh to
+          connect to the routers.
+        </p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Install all project dependencies</span><span>Python</span></div>
+          <pre><code>python -m pip install -r automation/requirements.txt</code></pre>
+        </div>
+        <p>
+          <code>python -m pip</code> runs pip with the exact active Python interpreter. It is safer
+          than typing only <code>pip</code>, which can install libraries into another Python
+          environment. <code>install</code> requests package installation; <code>-r</code> means
+          “requirements file”; and <code>automation/requirements.txt</code> is the dependency list.
+        </p>
+
+        <h3 id="section-7">7. Load Credentials Securely</h3>
+        <p>The repository manual documented the credential workflow as follows:</p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Secure credential loading</span><span>Bash</span></div>
+          <pre><code>export NETOPS_USER="netops"
+read -rsp "NETOPS_PASSWORD: " NETOPS_PASSWORD
+echo
+export NETOPS_PASSWORD</code></pre>
+        </div>
+        <ol>
+          <li>
+            <code>export NETOPS_USER="netops"</code> creates and exports the
+            <code>NETOPS_USER</code> variable. The inventory reads it with
+            <code>lookup('env', 'NETOPS_USER')</code>.
+          </li>
+          <li>
+            <code>read -rsp "NETOPS_PASSWORD: " NETOPS_PASSWORD</code> requests the password
+            without displaying it. <code>read</code> accepts terminal input; <code>-r</code>
+            prevents backslash interpretation; <code>-s</code> enables silent mode;
+            <code>-p</code> displays the prompt; and <code>NETOPS_PASSWORD</code> is the variable
+            that temporarily receives the value.
+          </li>
+          <li><code>echo</code> adds a clean newline after silent input.</li>
+          <li><code>export NETOPS_PASSWORD</code> makes the value available to child processes such as Ansible.</li>
+        </ol>
+        <p>Verify that the variable exists without displaying it:</p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Safe verification</span><span>Bash</span></div>
+          <pre><code>test -n "$NETOPS_PASSWORD" &amp;&amp; echo "Password loaded"</code></pre>
+        </div>
+        <p>Do not use <code>echo "$NETOPS_PASSWORD"</code>, because that exposes the password on screen.</p>
+
+        <h3 id="section-8">8. Ansible Configuration</h3>
+        <p>The file used was <code>automation/ansible.cfg</code>:</p>
+        <div class="cli-block">
+          <div class="cli-header"><span>automation/ansible.cfg</span><span>INI</span></div>
+          <pre><code>[defaults]
+inventory = inventories/local/hosts.yml
+host_key_checking = False
+retry_files_enabled = False
+stdout_callback = ansible.builtin.default
+callback_result_format = yaml
+callback_format_pretty = true
+timeout = 30
+
+[persistent_connection]
+connect_timeout = 60
+command_timeout = 90
+
+[paramiko_connection]
+use_rsa_sha2_algorithms = false</code></pre>
+        </div>
+        <h3>Callback issue</h3>
+        <p>
+          The previous <code>stdout_callback = yaml</code> was no longer available in the Ansible
+          version used. We replaced it with the official default callback plus
+          <code>callback_result_format = yaml</code> and <code>callback_format_pretty = true</code>,
+          preserving readable YAML output.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Option</th><th>Purpose</th></tr></thead>
+            <tbody>
+              <tr><td><code>inventory</code></td><td>Defines <code>inventories/local/hosts.yml</code> as the default inventory. Tests also passed it explicitly with <code>-i</code> to remove ambiguity.</td></tr>
+              <tr><td><code>host_key_checking = False</code></td><td>Stops SSH from requesting manual fingerprint confirmation. Practical in a lab; it requires careful risk evaluation in production because it reduces man-in-the-middle protection.</td></tr>
+              <tr><td><code>retry_files_enabled = False</code></td><td>Prevents Ansible from creating <code>.retry</code> files after failures.</td></tr>
+              <tr><td><code>timeout = 30</code></td><td>Sets Ansible's general timeout.</td></tr>
+              <tr><td><code>connect_timeout = 60</code></td><td>Allows up to 60 seconds to establish a persistent connection.</td></tr>
+              <tr><td><code>command_timeout = 90</code></td><td>Allows up to 90 seconds for a remote command, which helps virtual routers that answer slowly.</td></tr>
+              <tr><td><code>use_rsa_sha2_algorithms = false</code></td><td>Helps SSH compatibility with older IOS XR images that use legacy RSA algorithms.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 id="section-9">9. Use <code>ANSIBLE_CONFIG</code> Explicitly</h3>
+        <div class="cli-block">
+          <div class="cli-header"><span>Explicit configuration selection</span><span>Bash</span></div>
+          <pre><code>ANSIBLE_CONFIG=automation/ansible.cfg \
+ansible-playbook ...</code></pre>
+        </div>
+        <p>
+          <code>ANSIBLE_CONFIG=automation/ansible.cfg</code> creates an environment variable only
+          for the command that follows it. It does not permanently change the terminal. The
+          conceptual meaning is: “Run this <code>ansible-playbook</code> with this
+          <code>ansible.cfg</code> file.”
+        </p>
+        <p>
+          This prevents Ansible from accidentally using <code>/etc/ansible/ansible.cfg</code>,
+          <code>~/.ansible.cfg</code>, another system file, or configuration belonging to a
+          different project.
+        </p>
+
+        <h3 id="section-10">10. Create the Collection Engine</h3>
+        <p>The central file created was <code>automation/playbooks/collect-network-state.yml</code>:</p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Playbook header</span><span>YAML</span></div>
+          <pre><code>---
+- name: Collect structured IOS XR network state
+  hosts: iosxr
+  gather_facts: false</code></pre>
+        </div>
+        <p>
+          <code>hosts: iosxr</code> runs the playbook over the complete <code>iosxr</code> group,
+          so it can include both <code>p_routers</code> and <code>pe_routers</code>.
+        </p>
+        <p>
+          Linux servers commonly begin with a generic fact-gathering pass. Network devices do not
+          need that behavior here, so <code>gather_facts: false</code> reduces execution time,
+          avoids unnecessary tasks, and keeps the collector completely explicit.
+        </p>
+      </section>
+
+      <section class="article-card" id="collector">
+        <h2>Collection Engine Internals</h2>
+
+        <h3 id="section-11">11. Unique Run Identifier</h3>
+        <div class="cli-block">
+          <div class="cli-header"><span>Playbook variable</span><span>Jinja</span></div>
+          <pre><code>collector_run_id: "{{ run_id | default('RUN-MANUAL') }}"</code></pre>
+        </div>
+        <p>
+          If a <code>run_id</code> variable is supplied, the playbook uses it; otherwise it uses
+          <code>RUN-MANUAL</code>. We created the identifier with:
+        </p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Create a UTC run ID</span><span>Bash</span></div>
+          <pre><code>export RUN_ID="RUN-COLLECT-$(date -u +%Y%m%dT%H%M%SZ)"</code></pre>
+        </div>
+        <p>
+          <code>export RUN_ID=</code> creates the variable. <code>$(...)</code> executes the
+          command inside the parentheses and inserts its result into the string.
+          <code>date -u</code> produces UTC time, avoiding timezone problems, simplifying evidence
+          comparison, and matching common logging practice.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Token</th><th>Meaning</th></tr></thead>
+            <tbody>
+              <tr><td><code>%Y</code></td><td>Year</td></tr>
+              <tr><td><code>%m</code></td><td>Month</td></tr>
+              <tr><td><code>%d</code></td><td>Day</td></tr>
+              <tr><td><code>T</code></td><td>Separator</td></tr>
+              <tr><td><code>%H</code></td><td>Hour</td></tr>
+              <tr><td><code>%M</code></td><td>Minute</td></tr>
+              <tr><td><code>%S</code></td><td>Second</td></tr>
+              <tr><td><code>Z</code></td><td>UTC marker</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Example: <code>RUN-COLLECT-20260724T175235Z</code>. Every execution is therefore separated.</p>
+
+        <h3 id="section-12">12. Evidence Directory</h3>
+        <div class="cli-block">
+          <div class="cli-header"><span>Evidence path variable</span><span>Jinja</span></div>
+          <pre><code>evidence_dir: "{{ automation_dir }}/evidence/{{ collector_run_id }}"</code></pre>
+        </div>
+        <div class="ascii-diagram"><code>automation/
+└── evidence/
+    └── RUN-COLLECT-20260724T175235Z/
+        └── raw/
+            ├── P10.json
+            ├── P23-PCE.json
+            └── PE1.json</code></div>
+        <p>The official pattern is <code>automation/evidence/&lt;RUN_ID&gt;/raw/&lt;DEVICE&gt;.json</code>.</p>
+
+        <h3 id="section-13">13. Create Directories Automatically</h3>
+        <div class="cli-block">
+          <div class="cli-header"><span>Directory creation task</span><span>YAML</span></div>
+          <pre><code>- name: Create collection evidence directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ evidence_dir }}"
+    - "{{ evidence_dir }}/raw"
+  delegate_to: localhost
+  run_once: true</code></pre>
+        </div>
+        <ul>
+          <li><code>ansible.builtin.file</code> manages files and directories.</li>
+          <li><code>state: directory</code> requires the path to exist as a directory and creates it when absent.</li>
+          <li><code>mode: "0755"</code> gives the owner read/write/execute and the group and others read/execute.</li>
+          <li>The loop runs twice: once for <code>automation/evidence/&lt;RUN_ID&gt;</code> and once for its <code>raw</code> directory.</li>
+          <li><code>delegate_to: localhost</code> creates the folder on the Ubuntu Ansible server, not on the IOS XR router.</li>
+          <li><code>run_once: true</code> creates the folder once instead of repeating the task for all 17 devices.</li>
+        </ul>
+
+        <h3 id="section-14">14. Initial Reachability Probe</h3>
+        <div class="cli-block">
+          <div class="cli-header"><span>Device probe</span><span>YAML</span></div>
+          <pre><code>- name: Probe IOS XR device reachability
+  cisco.iosxr.iosxr_command:
+    commands:
+      - show running-config hostname
+  register: device_probe
+  ignore_errors: true
+  ignore_unreachable: true</code></pre>
+        </div>
+        <p>
+          <code>show running-config hostname</code> is a small, safe command. It validates host
+          resolution, IP connectivity, the SSH port, SSH negotiation, username, password, CLI
+          access, and IOS XR compatibility.
+        </p>
+        <p>
+          <code>register: device_probe</code> stores the result in <code>device_probe</code>, which
+          can contain <code>failed</code>, <code>unreachable</code>, <code>stdout</code>,
+          <code>stdout_lines</code>, and <code>msg</code>.
+        </p>
+        <p>
+          <code>ignore_errors: true</code> lets the playbook continue after a failed command.
+          <code>ignore_unreachable: true</code> also lets it continue when a router cannot be
+          reached. Without both options, one powered-off router could stop collection for the
+          entire network.
+        </p>
+
+        <h3 id="section-15">15. Calculate Device State</h3>
+        <div class="cli-block">
+          <div class="cli-header"><span>Reachability calculation</span><span>Jinja</span></div>
+          <pre><code>collector_reachable: &gt;-
+  {{
+    not (device_probe.unreachable | default(false))
+    and not (device_probe.failed | default(false))
+  }}</code></pre>
+        </div>
+        <p>
+          A device is reachable only when <code>unreachable = false</code> and
+          <code>failed = false</code>.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Scenario</th><th>Result</th><th>Behavior</th></tr></thead>
+            <tbody>
+              <tr><td>Healthy router</td><td><code>collector_reachable = true</code></td><td>The playbook executes all eight commands.</td></tr>
+              <tr><td>Powered-off router</td><td><code>collector_reachable = false</code></td><td>Operational collection is skipped, but a JSON file is still generated.</td></tr>
+              <tr><td>Incorrect credentials</td><td><code>collector_reachable = false</code></td><td>The access probe fails and the state is recorded.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 id="section-16">16. Commands Collected</h3>
+        <p>The collector executes eight commands.</p>
+
+        <h3>16.1 Sanitized running configuration</h3>
+        <div class="command-list"><code>show running-config | exclude secret</code></div>
+        <p>
+          This obtains the router's active configuration. <code>exclude secret</code> prevents
+          lines containing the word <code>secret</code> from being included, reducing the risk of
+          storing hashes or credentials.
+        </p>
+        <p>
+          The result can include interfaces, routing protocols, BGP, IS-IS, Segment Routing, MPLS,
+          VRFs, route policies, prefix sets, BFD, multicast, and services. This is not a universal
+          Data Loss Prevention solution; evidence must always be reviewed before it is shared.
+        </p>
+
+        <h3>16.2 Interface summary</h3>
+        <div class="command-list"><code>show interfaces brief</code></div>
+        <p>
+          This shows configured interfaces, administrative state, operational state, IP address,
+          up/up links, shut interfaces, and interfaces with protocol problems. It provides a base
+          for identifying physical or logical faults.
+        </p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Conceptual output</span></div>
+          <pre><code>Interface           IP-Address       Status      Protocol
+Gi0/0/0/0           10.0.10.1        Up          Up
+Gi0/0/0/1           10.0.20.1        Down        Down</code></pre>
+        </div>
+
+        <h3>16.3 IS-IS neighbors</h3>
+        <div class="command-list"><code>show isis neighbors</code></div>
+        <p>
+          This verifies IS-IS adjacencies, System IDs, interfaces, adjacency state, IS-IS level,
+          and hold time. In the backbone, it is essential for validating that the IS-IS underlay
+          remains stable.
+        </p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Future validation example</span></div>
+          <pre><code>Expected: P10 must have 3 IS-IS neighbors
+Actual:   P10 has 2
+Result:   FAIL</code></pre>
+        </div>
+
+        <h3>16.4 Global BGP summary</h3>
+        <div class="command-list"><code>show bgp summary</code></div>
+        <p>
+          This shows the router ID, AS number, BGP neighbors, session state, received prefixes,
+          and sessions in Idle, Active, or Established.
+        </p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Future validation targets</span></div>
+          <pre><code>P12-RR-PRIMARY ↔ PE1 = Established
+P12-RR-PRIMARY ↔ PE2 = Established
+P12-RR-PRIMARY ↔ PE3 = Established
+P12-RR-PRIMARY ↔ PE4 = Established</code></pre>
+        </div>
+
+        <h3>16.5 BGP VPNv4 summary</h3>
+        <div class="command-list"><code>show bgp vpnv4 unicast summary</code></div>
+        <p>
+          This focuses on the VPNv4 Unicast address family. It is especially important for L3VPN,
+          Route Reflectors, VPN route distribution, PE–RR session validation, and VPNv4 NLRI
+          propagation. A global BGP session can be established while the VPNv4 address family is
+          inactive, which is why both BGP commands are collected.
+        </p>
+
+        <h3>16.6 MPLS forwarding</h3>
+        <div class="command-list"><code>show mpls forwarding</code></div>
+        <p>
+          This displays the LFIB — Label Forwarding Information Base — including local labels,
+          outgoing labels, prefixes, next hops, outgoing interfaces, and push, swap, or pop
+          operations. It is central to validating SR-MPLS, LDP where present, VPN transport, and
+          label-switched path continuity.
+        </p>
+
+        <h3>16.7 IS-IS Prefix-SIDs</h3>
+        <div class="command-list"><code>show running-config router isis | include prefix-sid</code></div>
+        <p>
+          This searches for configuration lines related to <code>prefix-sid</code>. It quickly
+          validates Node-SIDs, Prefix-SID indexes, and Segment Routing configuration under IS-IS.
+          It does not collect the complete IS-IS block; it extracts only SR-relevant lines.
+        </p>
+
+        <h3>16.8 BFD sessions</h3>
+        <div class="command-list"><code>show bfd session</code></div>
+        <p>
+          This verifies BFD sessions, UP or DOWN state, interfaces, neighbors, multipliers, and
+          timers. BFD commonly protects IS-IS, BGP, core links, fast convergence, TI-LFA, and other
+          fast-reroute mechanisms.
+        </p>
+
+        <h3 id="section-17">17. Execute Each Command Individually</h3>
+        <div class="cli-block">
+          <div class="cli-header"><span>Per-command collection loop</span><span>YAML</span></div>
+          <pre><code>- name: Collect IOS XR commands individually
+  cisco.iosxr.iosxr_command:
+    commands:
+      - "{{ item }}"
+  loop: "{{ collection_commands }}"
+  loop_control:
+    label: "{{ item }}"
+  register: command_results
+  ignore_errors: true
+  when: collector_reachable</code></pre>
+        </div>
+        <p>
+          All eight commands could have been sent in one task. Running them individually has an
+          important advantage: if one fails, the results of the other seven are preserved.
+        </p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Partial command support example</span></div>
+          <pre><code>show interfaces brief       → success
+show isis neighbors         → success
+show bgp summary            → success
+show bgp vpnv4...           → unsupported command
+show mpls forwarding        → success</code></pre>
+        </div>
+        <p>
+          <code>loop_control.label</code> makes output display the real command, such as
+          <code>item=show bgp summary</code>, instead of unclear loop data.
+          <code>register: command_results</code> stores all results in
+          <code>command_results.results</code>. <code>when: collector_reachable</code> runs the
+          commands only after a successful probe.
+        </p>
+
+        <h3 id="section-18">18. Generate the JSON File</h3>
+        <p>
+          The final task writes
+          <code>automation/evidence/&lt;RUN_ID&gt;/raw/&lt;DEVICE&gt;.json</code> with
+          <code>ansible.builtin.copy</code> delegated to localhost.
+        </p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Conceptual evidence document</span><span>JSON</span></div>
+          <pre><code>{
+  "run_id": "RUN-COLLECT-20260724T175235Z",
+  "device": "P10",
+  "management_address": "10.255.231.10",
+  "status": "collected",
+  "probe": {},
+  "commands": []
+}</code></pre>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Field</th><th>Meaning</th></tr></thead>
+            <tbody>
+              <tr><td><code>run_id</code></td><td>Identifies the execution.</td></tr>
+              <tr><td><code>device</code></td><td>Inventory hostname.</td></tr>
+              <tr><td><code>management_address</code></td><td>Address Ansible used to connect.</td></tr>
+              <tr><td><code>status</code></td><td>Either <code>collected</code> or <code>unreachable</code>.</td></tr>
+              <tr><td><code>probe</code></td><td>Result of the initial connectivity command.</td></tr>
+              <tr><td><code>commands</code></td><td>Results of the eight operational commands.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 id="section-19">19. State Model</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>State</th><th>Meaning</th><th>Important nuance</th></tr></thead>
+            <tbody>
+              <tr><td><code>collected</code></td><td>The device was reachable and collection was attempted.</td><td>It does not mean every command succeeded. An individual failure can remain recorded for analysis.</td></tr>
+              <tr><td><code>unreachable</code></td><td>The probe could not connect or authenticate.</td><td>The evidence contains <code>"commands": []</code>.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>The model is documented explicitly in the repository.</p>
+      </section>
+
+      <section class="article-card" id="execution">
+        <h2>Execution, Evidence, and Validation</h2>
+
+        <h3 id="section-20">20. Run the Collector</h3>
+        <div class="cli-block">
+          <div class="cli-header"><span>Main execution command</span><span>Bash</span></div>
+          <pre><code>ANSIBLE_CONFIG=automation/ansible.cfg \
+ansible-playbook \
+  -i automation/inventories/local/hosts.yml \
+  automation/playbooks/collect-network-state.yml \
+  --limit "P10,P23-PCE" \
+  -e "run_id=${RUN_ID}"</code></pre>
+        </div>
+        <p>
+          The backslash (<code>\</code>) continues the command on the next line. Without the
+          backslashes, the same command can be written on one line; they only improve readability.
+        </p>
+        <ul>
+          <li><code>ansible-playbook</code> executes a YAML playbook.</li>
+          <li><code>-i automation/inventories/local/hosts.yml</code> selects the inventory; <code>-i</code> means inventory.</li>
+          <li><code>automation/playbooks/collect-network-state.yml</code> contains the collection tasks.</li>
+          <li><code>--limit "P10,P23-PCE"</code> restricts the <code>iosxr</code> target to those devices.</li>
+          <li><code>-e "run_id=${RUN_ID}"</code> passes an extra variable; <code>-e</code> means extra vars.</li>
+        </ul>
+        <p>Ansible receives the equivalent of <code>run_id: RUN-COLLECT-20260724T175235Z</code>.</p>
+
+        <h3 id="section-21">21. Test Scenarios Performed</h3>
+        <h3>21.1 Test against P10</h3>
+        <div class="cli-block">
+          <div class="cli-header"><span>P10 result</span></div>
+          <pre><code>--limit "P10"
+
+status: collected
+commands: 8
+failed commands: 0</code></pre>
+        </div>
+        <p>
+          This verified SSH connectivity, credentials, IOS XR compatibility, command execution,
+          JSON writing, and configuration sanitization.
+        </p>
+
+        <h3>21.2 Test against P23-PCE</h3>
+        <div class="cli-block">
+          <div class="cli-header"><span>P23-PCE result</span></div>
+          <pre><code>--limit "P23-PCE"
+
+status: collected
+commands: 8
+failed commands: 0</code></pre>
+        </div>
+        <p>
+          This proved that the collector was not built only for P10. It also worked on the PCE
+          router.
+        </p>
+
+        <h3>21.3 Concurrent collection</h3>
+        <div class="cli-block">
+          <div class="cli-header"><span>Common snapshot</span></div>
+          <pre><code>--limit "P10,P23-PCE"
+
+P10.json
+P23-PCE.json</code></pre>
+        </div>
+        <p>
+          Both files were written under the same <code>RUN_ID</code>, proving that one execution
+          can represent a common snapshot of several routers.
+        </p>
+
+        <h3>21.4 Mixed availability test</h3>
+        <div class="cli-block">
+          <div class="cli-header"><span>P10 online, PE1 powered off</span></div>
+          <pre><code>--limit "P10,PE1"
+
+P10
+  status: collected
+  commands: 8
+
+PE1
+  status: unreachable
+  commands: []</code></pre>
+        </div>
+        <p>
+          The playbook continued correctly. This test was especially important because it
+          demonstrated tolerance of partial failures.
+        </p>
+
+        <h3 id="section-22">22. Why the Recap Showed <code>ignored=1</code></h3>
+        <p>When PE1 was powered off, Ansible could show:</p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Play recap</span></div>
+          <pre><code>unreachable=0
+ignored=1</code></pre>
+        </div>
+        <p>
+          This can look strange. Ansible detected the problem, but because
+          <code>ignore_errors: true</code> and <code>ignore_unreachable: true</code> told it to
+          continue, the failure was counted as ignored.
+        </p>
+        <p>
+          Application state must therefore not be interpreted only from <code>PLAY RECAP</code>.
+          The real source of state is the JSON field <code>"status": "unreachable"</code>. This is
+          intentional design, not an error.
+        </p>
+
+        <h3 id="section-23">23. Inspect Evidence</h3>
+        <div class="cli-block">
+          <div class="cli-header"><span>List JSON evidence files</span><span>Bash</span></div>
+          <pre><code>find "automation/evidence/${RUN_ID}/raw" \
+  -type f \
+  -name "*.json" \
+  -print</code></pre>
+        </div>
+        <p>
+          <code>find</code> searches files or directories; <code>-type f</code> selects regular
+          files; <code>-name "*.json"</code> limits the result to JSON files; and
+          <code>-print</code> displays their paths.
+        </p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Review a complete evidence document</span><span>jq</span></div>
+          <pre><code>jq . "automation/evidence/${RUN_ID}/raw/P10.json"</code></pre>
+        </div>
+        <p>
+          <code>jq</code> is a command-line JSON processor. The dot (<code>.</code>) means “display
+          the complete object.”
+        </p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Show only state and command count</span><span>jq</span></div>
+          <pre><code>jq '{
+  device,
+  status,
+  command_count: (.commands | length)
+}' "automation/evidence/${RUN_ID}/raw/P10.json"</code></pre>
+        </div>
+
+        <h3 id="section-24">24. Evidence Security</h3>
+        <p>
+          During testing, we found that two old executions contained sensitive material from
+          earlier tests. The following folders were removed:
+        </p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Unsafe historical runs removed</span></div>
+          <pre><code>RUN-P10-NETOPS-20260724T174938Z
+RUN-P10-COLLECT-20260724T175235Z</code></pre>
+        </div>
+        <p>We then reviewed the remaining evidence. The result was:</p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Security review result</span></div>
+          <pre><code>No sensitive evidence files detected.</code></pre>
+        </div>
+        <p>The established rules were:</p>
+        <ul>
+          <li>Never store credentials in Git.</li>
+          <li>Obtain credentials from environment variables.</li>
+          <li>Exclude secret lines from the running configuration.</li>
+          <li>Review evidence before sharing it.</li>
+          <li>Keep <code>automation/evidence/</code> outside the repository history.</li>
+        </ul>
+
+        <h3 id="section-25">25. Evidence <code>.gitignore</code></h3>
+        <p>
+          We added <code>automation/evidence/.gitignore</code>. Its purpose is to preserve the
+          directory structure without versioning runtime JSON files.
+        </p>
+        <p>This prevents Git from attempting to upload:</p>
+        <ul>
+          <li>Running configurations.</li>
+          <li>Management addresses.</li>
+          <li>Operational output.</li>
+          <li>BGP neighbors.</li>
+          <li>IS-IS neighbors.</li>
+          <li>MPLS labels.</li>
+          <li>Device errors.</li>
+        </ul>
+        <p>Operational evidence must not be part of the source code.</p>
+
+        <h3 id="section-26">26. Documentation Created</h3>
+        <p>We updated <code>automation/playbooks/README.txt</code>. It now explains:</p>
+        <ul>
+          <li>The purpose of the directory.</li>
+          <li>The collector's function.</li>
+          <li>The commands executed.</li>
+          <li>Required variables.</li>
+          <li>How to run it.</li>
+          <li>The evidence path.</li>
+          <li>The <code>collected</code> and <code>unreachable</code> states.</li>
+          <li>Security considerations.</li>
+          <li>Next phases.</li>
+        </ul>
+        <p>Automation without documentation becomes difficult to operate and maintain.</p>
+
+        <h3 id="section-27">27. Configuration Validator Problem</h3>
+        <p>
+          During the Pull Request, the job
+          <code>CCIE SP Change Pipeline / Validate YAML and Render</code> failed with:
+        </p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Initial CI failure</span></div>
+          <pre><code>PE4.cfg:
+  router bgp block missing vpnv4 address-family
+  VRF block missing import route-target</code></pre>
+        </div>
+        <p>
+          The file contained an incremental change for a VRF and BGP neighbors. It was not the
+          router's complete configuration.
+        </p>
+        <p>The validator incorrectly assumed:</p>
+        <ul>
+          <li>If <code>router bgp</code> exists, <code>address-family vpnv4 unicast</code> must exist.</li>
+          <li>If <code>vrf</code> exists, an import route target must exist.</li>
+          <li>If <code>router isis</code> exists, a <code>prefix-sid index</code> must exist.</li>
+        </ul>
+        <p>
+          Those rules would be reasonable only for a complete configuration. Files under
+          <code>automation/rendered/</code> are incremental snippets: for example, add a route
+          policy, add two neighbors, change a metric, or add a Prefix-SID. They are not required to
+          contain the full protocol configuration.
+        </p>
+
+        <h3 id="section-28">28. Fix the Validator</h3>
+        <p>The file was <code>automation/scripts/validate_rendered_config.py</code>.</p>
+        <p>
+          The validator retained checks for <code>TODO</code>, <code>None</code>,
+          <code>{{ }}</code>, and <code>{% %}</code>. We also added an explicit empty-file check:
+        </p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Meaningful generic validation</span><span>Python</span></div>
+          <pre><code>if not text.strip():
+    errors.append(f"{path}: rendered configuration is empty")</code></pre>
+        </div>
+        <p>And documented the real model in the code:</p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Validator design note</span><span>Python</span></div>
+          <pre><code># Files under automation/rendered are incremental IOS XR change
+# snippets, not necessarily complete device configurations.
+# Service-specific completeness checks require the associated change
+# intent and must not be inferred from an isolated snippet.</code></pre>
+        </div>
+        <blockquote>
+          A validator must check the file's real intent, not invent requirements from isolated words.
+        </blockquote>
+
+        <h3 id="section-29">29. Run the Validator Locally</h3>
+        <div class="cli-block">
+          <div class="cli-header"><span>Local rendered-config validation</span><span>Bash</span></div>
+          <pre><code>python automation/scripts/validate_rendered_config.py \
+  --rendered-dir automation/rendered</code></pre>
+        </div>
+        <p>
+          <code>python</code> runs the script with the virtual environment interpreter.
+          <code>--rendered-dir</code> identifies the directory containing generated
+          <code>.cfg</code> files.
+        </p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Result after correction</span></div>
+          <pre><code>Rendered config OK: 2 files</code></pre>
+        </div>
+        <p>
+          The script searches recursively with <code>args.rendered_dir.rglob("*.cfg")</code> and
+          returns an error when it finds no files, unresolved tokens, or an empty file.
+        </p>
+
+        <h3 id="section-30">30. Negative Validator Test</h3>
+        <p>
+          A validator must not only accept correct configurations; it must reject incorrect ones.
+          We temporarily created an empty <code>EMPTY.cfg</code>.
+        </p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Expected negative-test response</span></div>
+          <pre><code>Rendered config validation failed:
+- .../EMPTY.cfg: rendered configuration is empty
+
+Exit code: 1
+NEGATIVE TEST: PASS</code></pre>
+        </div>
+        <p>
+          Although it may sound contradictory, the negative test passed because the validator
+          correctly rejected the invalid file.
+        </p>
+      </section>
+
+      <section class="article-card" id="git-lifecycle">
+        <h2>Git, Pull Request, CI/CD, and Cleanup</h2>
+
+        <h3 id="section-31">31. Check Differences with Git</h3>
+        <div class="cli-block">
+          <div class="cli-header"><span>Whitespace and conflict-marker checks</span><span>Git</span></div>
+          <pre><code>git diff --check
+git diff --cached --check</code></pre>
+        </div>
+        <p>
+          <code>git diff --check</code> finds problems in unstaged changes, including trailing
+          whitespace, other whitespace errors, and conflict markers.
+          <code>git diff --cached --check</code> performs the same review against staged changes.
+        </p>
+        <p>
+          The documentation used a line containing <code>=======</code>. Git interpreted it as a
+          possible conflict marker because classic markers are:
+        </p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Classic merge-conflict markers</span></div>
+          <pre><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;
+=======
+&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code></pre>
+        </div>
+        <p>
+          We changed the first underline to <code>-------</code>. It was not a real conflict, but
+          <code>git diff --check</code> correctly forced us to remove the ambiguity.
+        </p>
+
+        <h3 id="section-32">32. Development Branch</h3>
+        <p>We worked on <code>feature/network-validation-engine</code>, protecting <code>main</code>.</p>
+        <div class="ascii-diagram"><code>main
+  │
+  └── feature/network-validation-engine
+          │
+          ├── inventory
+          ├── collector
+          ├── documentation
+          └── CI correction</code></div>
+        <p>
+          The idea is that <code>main</code> receives changes only after tests, review, successful
+          CI, and a Pull Request.
+        </p>
+
+        <h3 id="section-33">33. Commits Created</h3>
+        <p>Four functional commits were preserved:</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Commit</th><th>Message</th><th>Purpose</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><a href="https://github.com/dfonquet/CCIE-SP-NetOps-Automation/commit/bc8510945f8fef6f3b6f00889e1219d7b94bee0d" target="_blank" rel="noopener noreferrer"><code>bc85109</code></a></td>
+                <td>Add PE2 and PE3 to IOS XR inventory</td>
+                <td>Added PE2 and PE3.</td>
+              </tr>
+              <tr>
+                <td><a href="https://github.com/dfonquet/CCIE-SP-NetOps-Automation/commit/18ee6152007b98c827f245558ac208ce45815f79" target="_blank" rel="noopener noreferrer"><code>18ee615</code></a></td>
+                <td>Add IOS XR network state collection engine</td>
+                <td>Added the collector.</td>
+              </tr>
+              <tr>
+                <td><a href="https://github.com/dfonquet/CCIE-SP-NetOps-Automation/commit/a3baec30db829cfc5f1b291210ca6bf90b07160e" target="_blank" rel="noopener noreferrer"><code>a3baec3</code></a></td>
+                <td>Document IOS XR network state collector</td>
+                <td>Added detailed documentation.</td>
+              </tr>
+              <tr>
+                <td><a href="https://github.com/dfonquet/CCIE-SP-NetOps-Automation/commit/0ea2582b098b7d1cb972d13c3a968b710a96735e" target="_blank" rel="noopener noreferrer"><code>0ea2582</code></a></td>
+                <td>Fix validation for incremental IOS XR snippets</td>
+                <td>Corrected the validator after CI failed.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Each commit represents one logical unit: inventory, collector, documentation, and
+          correction. This makes changes easier to review, regressions easier to locate, rollback
+          easier to perform, history easier to understand, and versions easier to compare.
+        </p>
+
+        <h3 id="section-34">34. GitHub CLI</h3>
+        <p>
+          We used <code>gh</code>, GitHub's official CLI. It can manage Pull Requests, checks,
+          workflows, issues, releases, merges, and authentication from the terminal.
+        </p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Version and authentication checks</span><span>GitHub CLI</span></div>
+          <pre><code>gh version
+gh auth status</code></pre>
+        </div>
+        <p>
+          Authentication was associated with the <code>dfonquet</code> user. The stored token must
+          never be displayed.
+        </p>
+
+        <h3 id="section-35">35. Pull Request Created</h3>
+        <p>
+          We created
+          <a href="https://github.com/dfonquet/CCIE-SP-NetOps-Automation/pull/1" target="_blank" rel="noopener noreferrer">Pull Request #1 — Add IOS XR network state collection engine</a>
+          with <code>base: main</code> and
+          <code>head: feature/network-validation-engine</code>.
+        </p>
+        <p>
+          The PR contained four commits and was ultimately merged through
+          <a href="https://github.com/dfonquet/CCIE-SP-NetOps-Automation/commit/479b3053556cf451fea2046900188c9c5231e7ac" target="_blank" rel="noopener noreferrer"><code>479b3053556cf451fea2046900188c9c5231e7ac</code></a>.
+          It documented the P10 and P23-PCE tests, concurrent execution, the PE1-offline test, and
+          the sensitive-material review.
+        </p>
+
+        <h3 id="section-36">36. Initial Check Query</h3>
+        <div class="cli-block">
+          <div class="cli-header"><span>Inspect PR checks</span><span>GitHub CLI</span></div>
+          <pre><code>gh pr checks 1</code></pre>
+        </div>
+        <p>
+          <code>gh</code> is the CLI; <code>pr</code> works with Pull Requests;
+          <code>checks</code> retrieves associated checks; and <code>1</code> is the PR number.
+        </p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Initial result</span></div>
+          <pre><code>1 successful
+1 pending
+0 failing</code></pre>
+        </div>
+        <p>One workflow had succeeded, one was still running, and none were failing at that moment.</p>
+
+        <h3 id="section-37">37. Watch Checks in Real Time</h3>
+        <div class="cli-block">
+          <div class="cli-header"><span>Wait for PR checks</span><span>GitHub CLI</span></div>
+          <pre><code>gh pr checks 1 --watch</code></pre>
+        </div>
+        <p><code>--watch</code> keeps the command open and refreshes results until completion.</p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Final CI result</span></div>
+          <pre><code>All checks were successful
+
+0 cancelled
+0 failing
+2 successful
+3 skipped
+0 pending</code></pre>
+        </div>
+        <p>Successful checks:</p>
+        <ul>
+          <li><a href="https://github.com/dfonquet/CCIE-SP-NetOps-Automation/actions/runs/30131270487" target="_blank" rel="noopener noreferrer"><code>CCIE SP Lab CI / Offline Vision</code></a></li>
+          <li><a href="https://github.com/dfonquet/CCIE-SP-NetOps-Automation/actions/runs/30131270512" target="_blank" rel="noopener noreferrer"><code>CCIE SP Change Pipeline / Validate YAML and Render</code></a></li>
+        </ul>
+        <p>Skipped jobs:</p>
+        <ul>
+          <li><code>CML/EVE-NG Deploy and pyATS</code></li>
+          <li><code>CML/EVE-NG Dry-run</code></li>
+          <li><code>Production Deploy</code></li>
+        </ul>
+        <p>
+          These jobs were skipped because the event was a Pull Request. That is correct and safe:
+          a PR should validate the change, but it should not automatically deploy to production or
+          the lab unless the pipeline is explicitly designed to do so.
+        </p>
+
+        <h3 id="section-38">38. Verify Mergeability</h3>
+        <div class="cli-block">
+          <div class="cli-header"><span>Request only the relevant PR fields</span><span>GitHub CLI</span></div>
+          <pre><code>gh pr view 1 \
+  --json state,mergeable,reviewDecision,isDraft \
+  --jq '{
+    state,
+    mergeable,
+    reviewDecision,
+    isDraft
+  }'</code></pre>
+        </div>
+        <div class="cli-block">
+          <div class="cli-header"><span>Result before merge</span><span>JSON</span></div>
+          <pre><code>{
+  "isDraft": false,
+  "mergeable": "MERGEABLE",
+  "reviewDecision": "",
+  "state": "OPEN"
+}</code></pre>
+        </div>
+        <ul>
+          <li><code>gh pr view 1</code> inspects Pull Request #1.</li>
+          <li><code>--json</code> requests specific fields.</li>
+          <li><code>state</code> can be OPEN, CLOSED, or MERGED.</li>
+          <li><code>mergeable: MERGEABLE</code> means no conflicts block the merge.</li>
+          <li><code>reviewDecision</code> was empty because no required approval was outstanding.</li>
+          <li><code>isDraft: false</code> means the PR was ready, not a draft.</li>
+          <li><code>--jq</code> filters and reorganizes the JSON instead of displaying dozens of fields.</li>
+        </ul>
+
+        <h3 id="section-39">39. Merge the Pull Request</h3>
+        <div class="cli-block">
+          <div class="cli-header"><span>Controlled merge</span><span>GitHub CLI</span></div>
+          <pre><code>gh pr merge 1 \
+  --merge \
+  --subject "Add IOS XR network state collection engine"</code></pre>
+        </div>
+        <p>
+          <code>gh pr merge 1</code> merges PR #1. <code>--merge</code> uses a traditional merge
+          commit. We chose it to preserve all four commits rather than collapse them into one
+          squash commit. <code>--subject</code> defines the merge-commit title.
+        </p>
+        <div class="ascii-diagram"><code>main ----------------------------- M
+                                   /
+feature --- C1 --- C2 --- C3 --- C4</code></div>
+        <p>Result: <code>Merged pull request</code>.</p>
+
+        <h3 id="section-40">40. Confirm the Merge</h3>
+        <div class="cli-block">
+          <div class="cli-header"><span>Post-merge verification</span><span>GitHub CLI</span></div>
+          <pre><code>gh pr view 1 \
+  --json state,mergedAt,mergeCommit,url \
+  --jq '{
+    state,
+    mergedAt,
+    mergeCommit: .mergeCommit.oid,
+    url
+  }'</code></pre>
+        </div>
+        <div class="cli-block">
+          <div class="cli-header"><span>Verified merge metadata</span><span>JSON</span></div>
+          <pre><code>{
+  "mergeCommit": "479b3053556cf451fea2046900188c9c5231e7ac",
+  "mergedAt": "2026-07-24T22:35:58Z",
+  "state": "MERGED"
+}</code></pre>
+        </div>
+        <p>
+          <code>.mergeCommit.oid</code> returns the full merge-commit SHA.
+          <code>mergedAt</code> is the UTC merge time. <code>state: MERGED</code> confirms that the
+          PR was merged, not merely closed.
+        </p>
+
+        <h3 id="section-41">41. Switch to <code>main</code></h3>
+        <div class="cli-block">
+          <div class="cli-header"><span>Change branches</span><span>Git</span></div>
+          <pre><code>git switch main</code></pre>
+        </div>
+        <p><code>git switch</code> changes branches; <code>main</code> is the destination. Output: <code>Switched to branch 'main'</code>.</p>
+
+        <h3 id="section-42">42. Synchronize <code>main</code></h3>
+        <div class="cli-block">
+          <div class="cli-header"><span>Safe main update</span><span>Git</span></div>
+          <pre><code>git pull --ff-only origin main</code></pre>
+        </div>
+        <p>
+          <code>git pull</code> conceptually performs a fetch plus integration.
+          <code>--ff-only</code> allows only a fast-forward and prevents an accidental local merge
+          commit. If local and remote history had diverged, the command would have failed instead
+          of changing history ambiguously. <code>origin</code> is the remote, and
+          <code>main</code> is the branch.
+        </p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Synchronization result</span></div>
+          <pre><code>Updating ac3bb3f..479b305
+Fast-forward</code></pre>
+        </div>
+        <p>The local branch moved from <code>ac3bb3f</code> to <code>479b305</code>.</p>
+
+        <h3 id="section-43">43. Verify Local State</h3>
+        <div class="cli-block">
+          <div class="cli-header"><span>Short branch-aware status</span><span>Git</span></div>
+          <pre><code>git status -sb
+
+## main...origin/main</code></pre>
+        </div>
+        <p>
+          <code>-s</code> requests short format and <code>-b</code> includes branch information.
+          The result means that the current branch is <code>main</code>, it tracks
+          <code>origin/main</code>, no files are modified, and it is neither ahead nor behind.
+        </p>
+
+        <h3 id="section-44">44. Delete the Local Feature Branch</h3>
+        <div class="cli-block">
+          <div class="cli-header"><span>Safe branch deletion</span><span>Git</span></div>
+          <pre><code>git branch -d feature/network-validation-engine</code></pre>
+        </div>
+        <p>
+          <code>git branch</code> manages branches. <code>-d</code> deletes a branch only when Git
+          considers it merged, making it the safe option. <code>-D</code> would force deletion even
+          if the branch were unmerged; we did not use it.
+        </p>
+        <p>Output: <code>Deleted branch feature/network-validation-engine</code>.</p>
+
+        <h3 id="section-45">45. Check the Remote Branch</h3>
+        <div class="cli-block">
+          <div class="cli-header"><span>Find the remote reference</span><span>Git + grep</span></div>
+          <pre><code>git branch -r | grep 'origin/feature/network-validation-engine'</code></pre>
+        </div>
+        <p>
+          <code>git branch -r</code> lists remote branches. The pipe sends the left command's
+          output to <code>grep</code>, which searches for text. The result confirmed that the local
+          branch was gone but <code>origin/feature/network-validation-engine</code> still existed.
+        </p>
+
+        <h3 id="section-46">46. Delete the Remote Feature Branch</h3>
+        <div class="cli-block">
+          <div class="cli-header"><span>Remote branch cleanup</span><span>Git</span></div>
+          <pre><code>git push origin --delete feature/network-validation-engine</code></pre>
+        </div>
+        <p>
+          <code>git push</code> sends a request to the remote; <code>origin</code> names that
+          remote; <code>--delete</code> requests removal of the named remote branch.
+        </p>
+        <p>
+          Result: <code>- [deleted] feature/network-validation-engine</code>. This did not delete
+          the merged commits because they were already contained in <code>main</code> through the
+          merge commit.
+        </p>
+
+        <h3 id="section-47">47. Prune Old Remote References</h3>
+        <div class="cli-block">
+          <div class="cli-header"><span>Reference cleanup</span><span>Git</span></div>
+          <pre><code>git fetch --prune</code></pre>
+        </div>
+        <p>
+          <code>git fetch</code> updates remote information. <code>--prune</code> removes local
+          references to remote branches that no longer exist, such as a stale
+          <code>origin/feature/network-validation-engine</code>. The command produced no output
+          because cleanup completed normally without errors.
+        </p>
+
+        <h3 id="section-48">48. Final Branch Verification</h3>
+        <div class="cli-block">
+          <div class="cli-header"><span>Final repository view</span><span>Git</span></div>
+          <pre><code>git status -sb
+git branch -a
+
+## main...origin/main
+* main
+  remotes/origin/HEAD -&gt; origin/main
+  remotes/origin/main</code></pre>
+        </div>
+        <p>
+          <code>git branch -a</code> lists local and remote branches. The asterisk marks the active
+          <code>main</code> branch. <code>origin/HEAD -&gt; origin/main</code> identifies the remote
+          default branch, and <code>origin/main</code> is the remote main branch.
+        </p>
+        <p>
+          Neither <code>feature/network-validation-engine</code> nor
+          <code>origin/feature/network-validation-engine</code> appeared. Cleanup was complete.
+        </p>
+
+        <h3 id="section-49">49. Final Repository Result</h3>
+        <div class="cli-block">
+          <div class="cli-header"><span>Definitive state</span></div>
+          <pre><code>Local branch:          main
+Remote branch:         origin/main
+Working tree:          clean
+PR #1:                 merged
+Feature branch local:  deleted
+Feature branch remote: deleted
+Merge commit:          479b3053556cf451fea2046900188c9c5231e7ac</code></pre>
+        </div>
+        <p>Main files incorporated:</p>
+        <ul>
+          <li><code>automation/ansible.cfg</code></li>
+          <li><code>automation/inventories/local/hosts.yml</code></li>
+          <li><code>automation/playbooks/README.txt</code></li>
+          <li><code>automation/playbooks/collect-network-state.yml</code></li>
+          <li><code>automation/requirements.txt</code></li>
+          <li><code>automation/scripts/validate_rendered_config.py</code></li>
+        </ul>
+      </section>
+
+      <section class="article-card" id="lessons">
+        <h2>Lessons, Rerun Guide, and Roadmap</h2>
+
+        <h3 id="section-50">50. What We Learned Technically</h3>
+        <h3>50.1 Collect first, interpret later</h3>
+        <p>
+          The collector preserves raw evidence. It does not yet try to decide immediately why BGP
+          is down, why an IS-IS neighbor is missing, or why a label does not exist. It first
+          gathers objective data; parsers and rules come later.
+        </p>
+        <div class="ascii-diagram"><code>Raw data
+   ↓
+Structured data
+   ↓
+Validation
+   ↓
+Diagnosis</code></div>
+
+        <h3>50.2 A partial failure must not destroy the complete process</h3>
+        <p>
+          One powered-off router must not prevent collection from the other 16. That is why the
+          design uses <code>ignore_errors: true</code>, <code>ignore_unreachable: true</code>, and
+          explicit JSON states.
+        </p>
+
+        <h3>50.3 Validators must understand context</h3>
+        <p>
+          An incremental snippet is not a complete configuration. We cannot assume that every
+          file containing <code>router bgp</code> must also contain VPNv4. Validation must align
+          with the change intent.
+        </p>
+
+        <h3>50.4 CI does not merely approve; it also teaches</h3>
+        <p>The pipeline failure revealed a conceptual defect in the validator. The correct sequence was:</p>
+        <div class="ascii-diagram"><code>CI fails
+   ↓
+Read the error
+   ↓
+Inspect the file
+   ↓
+Understand the data model
+   ↓
+Correct the logic
+   ↓
+Test locally
+   ↓
+Push
+   ↓
+CI passes</code></div>
+
+        <h3>50.5 Security from the beginning</h3>
+        <p>
+          Security was not postponed until the end. We used credentials through environment
+          variables, a sanitized running configuration, evidence outside Git, secret scanning,
+          and deletion of unsafe historical runs.
+        </p>
+
+        <h3>50.6 Git as change control</h3>
+        <p>
+          Work was not performed directly on <code>main</code>. We used a feature branch, atomic
+          commits, a Pull Request, CI validation, a merge commit, and branch cleanup. That turns a
+          manual change into an auditable process.
+        </p>
+
+        <h3 id="section-51">51. Quick Flow to Run the Collector Again</h3>
+        <div class="cli-block">
+          <div class="cli-header"><span>Selected-device collection</span><span>Bash</span></div>
+          <pre><code>cd ~/netops/CCIE-SP-NetOps-Automation
+
+source automation/.venv/bin/activate
+
+export NETOPS_USER="netops"
+read -rsp "NETOPS_PASSWORD: " NETOPS_PASSWORD
+echo
+export NETOPS_PASSWORD
+
+export RUN_ID="RUN-COLLECT-$(date -u +%Y%m%dT%H%M%SZ)"
+
+ANSIBLE_CONFIG=automation/ansible.cfg \
+ansible-playbook \
+  -i automation/inventories/local/hosts.yml \
+  automation/playbooks/collect-network-state.yml \
+  --limit "P10,P23-PCE" \
+  -e "run_id=${RUN_ID}"</code></pre>
+        </div>
+        <p>To run against all 17 routers, remove <code>--limit "P10,P23-PCE"</code>:</p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Complete inventory collection</span><span>Bash</span></div>
+          <pre><code>ANSIBLE_CONFIG=automation/ansible.cfg \
+ansible-playbook \
+  -i automation/inventories/local/hosts.yml \
+  automation/playbooks/collect-network-state.yml \
+  -e "run_id=${RUN_ID}"</code></pre>
+        </div>
+
+        <h3 id="section-52">52. Git Commands to Remember</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Purpose</th><th>Command</th></tr></thead>
+            <tbody>
+              <tr><td>View state</td><td><code>git status -sb</code></td></tr>
+              <tr><td>View branches</td><td><code>git branch -a</code></td></tr>
+              <tr><td>Switch to main</td><td><code>git switch main</code></td></tr>
+              <tr><td>Update main safely</td><td><code>git pull --ff-only origin main</code></td></tr>
+              <tr><td>View PR checks</td><td><code>gh pr checks 1</code></td></tr>
+              <tr><td>Wait for checks</td><td><code>gh pr checks 1 --watch</code></td></tr>
+              <tr><td>View PR information</td><td><code>gh pr view 1</code></td></tr>
+              <tr><td>Delete a merged local branch</td><td><code>git branch -d &lt;branch&gt;</code></td></tr>
+              <tr><td>Delete a remote branch</td><td><code>git push origin --delete &lt;branch&gt;</code></td></tr>
+              <tr><td>Prune old references</td><td><code>git fetch --prune</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 id="section-53">53. Next Platform Phases</h3>
+        <p>The repository documented these extensions:</p>
+        <ul>
+          <li>Structured parsers.</li>
+          <li>Expected-state YAML.</li>
+          <li>PASS / WARN / FAIL.</li>
+          <li>Pre-change comparison.</li>
+          <li>Post-change comparison.</li>
+          <li>Network health reports.</li>
+          <li>Root-cause analysis.</li>
+          <li>Streamlit visualization.</li>
+          <li>Controlled AI-assisted analysis.</li>
+        </ul>
+        <p>The next logical evolution is:</p>
+        <div class="ascii-diagram"><code>Raw JSON
+   ↓
+Parser
+   ↓
+Normalized State</code></div>
+        <div class="cli-block">
+          <div class="cli-header"><span>Normalized state example</span><span>JSON</span></div>
+          <pre><code>{
+  "device": "P10",
+  "isis": {
+    "neighbors_up": 3
+  },
+  "bgp": {
+    "neighbors_established": 6
+  },
+  "bfd": {
+    "sessions_up": 4,
+    "sessions_down": 0
+  }
+}</code></pre>
+        </div>
+        <p>That state can then be compared with an expected-state file:</p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Expected-state example</span><span>YAML</span></div>
+          <pre><code>P10:
+  isis:
+    expected_neighbors: 3
+  bgp:
+    expected_established: 6
+  bfd:
+    expected_down: 0</code></pre>
+        </div>
+        <p>And produce:</p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Future validation report</span></div>
+          <pre><code>P10 IS-IS neighbors: PASS
+P10 BGP sessions: PASS
+P10 BFD sessions: PASS</code></pre>
+        </div>
+      </section>
+
+      <section class="article-card" id="references">
+        <h2>Verified References and Live Artifacts</h2>
+        <p>
+          The repository, Pull Request, commit identifiers, and merge metadata below were verified
+          against the live public GitHub repository. The command behavior links point to the
+          official project manuals.
+        </p>
+        <h3>Live lab artifacts</h3>
+        <ul>
+          <li><a href="https://github.com/dfonquet/CCIE-SP-NetOps-Automation" target="_blank" rel="noopener noreferrer">CCIE-SP-NetOps-Automation repository</a></li>
+          <li><a href="https://github.com/dfonquet/CCIE-SP-NetOps-Automation/pull/1" target="_blank" rel="noopener noreferrer">PR #1 — Add IOS XR network state collection engine</a></li>
+          <li><a href="https://github.com/dfonquet/CCIE-SP-NetOps-Automation/commit/18ee6152007b98c827f245558ac208ce45815f79" target="_blank" rel="noopener noreferrer">Collector implementation commit</a></li>
+          <li><a href="https://github.com/dfonquet/CCIE-SP-NetOps-Automation/commit/a3baec30db829cfc5f1b291210ca6bf90b07160e" target="_blank" rel="noopener noreferrer">Collector documentation commit</a></li>
+          <li><a href="https://github.com/dfonquet/CCIE-SP-NetOps-Automation/commit/0ea2582b098b7d1cb972d13c3a968b710a96735e" target="_blank" rel="noopener noreferrer">Incremental-snippet validator fix</a></li>
+          <li><a href="https://github.com/dfonquet/CCIE-SP-NetOps-Automation/commit/479b3053556cf451fea2046900188c9c5231e7ac" target="_blank" rel="noopener noreferrer">Final merge commit</a></li>
+          <li><a href="https://github.com/dfonquet/CCIE-SP-NetOps-Automation/actions/runs/30131270487" target="_blank" rel="noopener noreferrer">Successful CCIE SP Lab CI run</a></li>
+          <li><a href="https://github.com/dfonquet/CCIE-SP-NetOps-Automation/actions/runs/30131270512" target="_blank" rel="noopener noreferrer">Successful CCIE SP Change Pipeline run</a></li>
+        </ul>
+        <h3>Official technical references</h3>
+        <ul>
+          <li><a href="https://docs.ansible.com/projects/ansible/latest/collections/cisco/iosxr/iosxr_command_module.html" target="_blank" rel="noopener noreferrer">Ansible — <code>cisco.iosxr.iosxr_command</code></a></li>
+          <li><a href="https://docs.ansible.com/projects/ansible/latest/collections/ansible/netcommon/network_cli_connection.html" target="_blank" rel="noopener noreferrer">Ansible — <code>ansible.netcommon.network_cli</code></a></li>
+          <li><a href="https://docs.ansible.com/ansible/latest/reference_appendices/config.html" target="_blank" rel="noopener noreferrer">Ansible configuration reference</a></li>
+          <li><a href="https://git-scm.com/docs/git-diff" target="_blank" rel="noopener noreferrer">Git — <code>git diff</code></a></li>
+          <li><a href="https://git-scm.com/docs/git-switch" target="_blank" rel="noopener noreferrer">Git — <code>git switch</code></a></li>
+          <li><a href="https://git-scm.com/docs/git-pull" target="_blank" rel="noopener noreferrer">Git — <code>git pull --ff-only</code></a></li>
+          <li><a href="https://git-scm.com/docs/git-branch" target="_blank" rel="noopener noreferrer">Git — branch listing and deletion</a></li>
+          <li><a href="https://git-scm.com/docs/git-fetch" target="_blank" rel="noopener noreferrer">Git — <code>git fetch --prune</code></a></li>
+          <li><a href="https://git-scm.com/docs/git-push" target="_blank" rel="noopener noreferrer">Git — remote branch deletion</a></li>
+          <li><a href="https://cli.github.com/manual/gh_pr_checks" target="_blank" rel="noopener noreferrer">GitHub CLI — <code>gh pr checks</code></a></li>
+          <li><a href="https://cli.github.com/manual/gh_pr_merge" target="_blank" rel="noopener noreferrer">GitHub CLI — <code>gh pr merge</code></a></li>
+          <li><a href="https://www.gnu.org/software/bash/manual/bash.html#Bourne-Shell-Builtins" target="_blank" rel="noopener noreferrer">GNU Bash manual — <code>cd</code>, <code>read</code>, <code>source</code>, and <code>export</code></a></li>
+          <li><a href="https://www.gnu.org/software/coreutils/manual/html_node/date-invocation.html" target="_blank" rel="noopener noreferrer">GNU Coreutils — <code>date</code></a></li>
+          <li><a href="https://www.gnu.org/software/findutils/manual/html_node/find_html/index.html" target="_blank" rel="noopener noreferrer">GNU Findutils — <code>find</code></a></li>
+          <li><a href="https://jqlang.org/manual/" target="_blank" rel="noopener noreferrer">jq manual</a></li>
+        </ul>
+      </section>
+
+      <section class="article-card key-takeaways">
+        <h2>Conclusion</h2>
+        <p>
+          In this lab, we did not merely build “a script that runs commands.” We built a serious
+          NetDevOps foundation: inventory, credentials, SSH transport, read-only collection,
+          failure handling, JSON evidence, security controls, offline validation, CI/CD, a Pull
+          Request, a controlled merge, Git branch hygiene, and documentation.
+        </p>
+        <p>The completed phase was:</p>
+        <blockquote><strong>Phase 1 — Deterministic IOS XR Collection Engine</strong></blockquote>
+        <p>
+          It is officially integrated into <code>main</code>, validated against real devices in
+          the lab, and protected by GitHub Actions.
+        </p>
+      </section>
+
+      <blockquote class="article-quote">
+        Collect objective state first. Interpret it second. Deliver every change through an auditable path.
+      </blockquote>
+
+      <nav class="article-neighbor-nav" aria-label="Related articles">
+        <a href="netdevops-controlled-change-ios-xr.html">
+          <span>Previous Automation Lab</span>
+          <strong>From Troubleshooting to Controlled Change</strong>
+        </a>
+        <a href="netlab-core-eve-ng-golden-image.html">
+          <span>Automation Platform</span>
+          <strong>Building NetLab-Core for EVE-NG</strong>
+        </a>
+      </nav>
+
+      <section class="article-comments">
+        <h2>Comments &amp; Discussion</h2>
+        <p>
+          How are you preserving operational evidence and handling unreachable devices in your
+          network-automation workflows?
+        </p>
+        <script
+          src="https://giscus.app/client.js"
+          data-repo="dfonquet/TechVortexHub"
+          data-repo-id="R_kgDOKHmmXQ"
+          data-category="General"
+          data-category-id="DIC_kwDOKHmmXc4DAjYp"
+          data-mapping="pathname"
+          data-strict="0"
+          data-reactions-enabled="1"
+          data-emit-metadata="0"
+          data-input-position="bottom"
+          data-theme="noborder_dark"
+          data-lang="en"
+          crossorigin="anonymous"
+          async
+        ></script>
+      </section>
+    </article>
+  </div>
+
+  <div class="image-lightbox" id="imageLightbox" aria-hidden="true">
+    <button class="lightbox-close" type="button" aria-label="Close image preview">&times;</button>
+    <img class="lightbox-image" src="" alt="" />
+    <p class="lightbox-caption"></p>
+  </div>
+  <button class="back-to-top" type="button" aria-label="Back to top">Top</button>
+  <script src="article.js"></script>
+</body>
+</html>
