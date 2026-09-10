@@ -28,7 +28,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--color-accent); 
 .skip-link { position: fixed; top: 8px; left: 12px; z-index: 10; padding: 12px 20px; background: var(--color-text); color: var(--color-bg); transform: translateY(-150%); }
 .skip-link:focus { transform: none; }
 #particles-js { position: fixed; inset: 0; z-index: 0; pointer-events: none; background: linear-gradient(rgba(10,14,26,.88), rgba(10,14,26,.96)), url("img/DATA_8.jpg") center / cover no-repeat; }
-#particles-js canvas { opacity: .46; }
+#particles-js canvas { opacity: .75; }
 .site-header { position: sticky; top: 0; z-index: 5; background: rgba(10,14,26,.94); border-bottom: 1px solid var(--color-border); backdrop-filter: blur(18px); }
 .main-nav { width: min(var(--content-width), calc(100% - 48px)); margin: auto; display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 82px; }
 .brand { font: 700 1.8rem var(--font-display); letter-spacing: -.05em; text-decoration: none; }

@@ -4,7 +4,7 @@
   var legacyParticlesOptions = {
     particles: {
       number: {
-        value: window.matchMedia("(max-width: 600px)").matches ? 24 : 64,
+        value: window.matchMedia("(max-width: 600px)").matches ? 24 : 96,
         density: {
           enable: true,
           value_area: 800
@@ -24,7 +24,7 @@
         }
       },
       opacity: {
-        value: 0.3,
+        value: 0.5,
         random: false,
         anim: {
           enable: false,
@@ -47,7 +47,7 @@
         enable: true,
         distance: 150,
         color: "#ffffff",
-        opacity: 0.22,
+        opacity: 0.35,
         width: 1
       },
       move: {
@@ -66,10 +66,10 @@
       }
     },
     interactivity: {
-      detect_on: "canvas",
+      detect_on: "window",
       events: {
         onhover: {
-          enable: false,
+          enable: window.matchMedia("(hover: hover) and (pointer: fine)").matches,
           mode: "repulse"
         },
         onclick: {
