@@ -1,13 +1,20 @@
 (function () {
   var header = document.querySelector(".site-header");
-  var links = Array.from(document.querySelectorAll('.nav-links a[href^="#"]'));
+  var links = Array.from(document.querySelectorAll('.main-nav a[href^="#"]'));
   var sections = Array.from(document.querySelectorAll("main > section[id]"));
   var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   var scheduled = false;
+  var headerHeight = 82;
+  if (!header || !sections.length) return;
+
+  function measureHeader() {
+    headerHeight = Math.ceil(header.getBoundingClientRect().height);
+    document.documentElement.style.setProperty("--header-height", headerHeight + "px");
+    scheduleUpdate();
+  }
 
   function updateNavigation() {
-    var offset = header.getBoundingClientRect().height + 24;
-    document.documentElement.style.setProperty("--header-offset", offset + "px");
+    var offset = headerHeight;
     var active = sections[0];
     sections.forEach(function (section) {
       if (section.getBoundingClientRect().top <= offset + 40) active = section;
@@ -28,10 +35,10 @@
     }
   }
   window.addEventListener("scroll", scheduleUpdate, { passive: true });
-  window.addEventListener("resize", scheduleUpdate);
+  window.addEventListener("resize", measureHeader);
   window.addEventListener("hashchange", scheduleUpdate);
-  if ("ResizeObserver" in window) new ResizeObserver(scheduleUpdate).observe(header);
-  updateNavigation();
+  if ("ResizeObserver" in window) new ResizeObserver(measureHeader).observe(header);
+  measureHeader();
 
   if (!reducedMotion.matches && "IntersectionObserver" in window) {
     var observer = new IntersectionObserver(function (entries) {
