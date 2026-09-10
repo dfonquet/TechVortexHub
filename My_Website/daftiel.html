@@ -30,69 +30,105 @@
     rel="stylesheet"
   />
 
-  <link rel="stylesheet" href="styles.css?v=20260717a" />
+  <link rel="stylesheet" href="styles.css?v=20260910a" />
 </head>
 
 <body>
-  <!-- Private visitor analytics via Web-Stat. -->
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <!-- Existing visitor analytics. -->
   <span id="wts2217668" class="web-stat-hidden" aria-hidden="true"></span>
   <script src="web-stat.js?v=20260710b"></script>
-  <noscript>
-    <img class="web-stat-hidden" src="https://app.ardalio.com/7/4/2217668.png" alt="" />
-  </noscript>
-
-  <!-- Animated background layer: particles.js renders the moving network effect here. -->
+  <noscript><img class="web-stat-hidden" src="https://app.ardalio.com/7/4/2217668.png" alt="" /></noscript>
   <div id="particles-js" aria-hidden="true"></div>
 
-  <div class="page-shell">
-    <!-- Main navigation: connects the homepage with the Projects and Blog sections. -->
+  <header class="site-header">
     <nav class="main-nav" aria-label="Main navigation">
-      <a href="Projects/projects.html" class="nav-button">Projects</a>
-      <a href="Blog/blog.html" class="nav-button">Blog</a>
+      <a class="brand" href="#home" aria-label="Daftiel home">daftiel<span aria-hidden="true">.</span></a>
+      <div class="nav-links">
+        <a href="#about">About</a>
+        <a href="#projects">Projects</a>
+        <a href="#credentials">Credentials</a>
+        <a href="#blog">Blog</a>
+        <a href="#contact">Contact</a>
+      </div>
     </nav>
+  </header>
 
-    <!-- Hero section: first impression and professional identity. -->
-    <main class="hero">
-      <h1 class="hero-title">
-        &iexcl;Step into my World!
-        <span class="hero-intro">I am</span>
-        <span class="hero-name">Daniel Fonque</span>
-      </h1>
+  <main id="main-content" class="page-shell">
+    <section id="home" class="hero" aria-labelledby="hero-title">
+      <p class="eyebrow">Network engineering · Security · Automation</p>
+      <p class="hero-welcome">¡Step into my World!</p>
+      <h1 id="hero-title"><span class="hero-intro">I am</span> <span class="hero-name">Daniel Fonque</span></h1>
+      <p class="hero-role">Senior Network &amp; Security Engineer</p>
+      <p class="hero-summary">I build networks that are reliable, scalable, secure, and clear enough to operate when things get complex.</p>
+      <div class="actions">
+        <a class="button button-primary" href="#projects">Explore my projects <span aria-hidden="true">↗</span></a>
+        <a class="button button-secondary" href="#about">Meet the engineer</a>
+      </div>
+      <a class="scroll-cue" href="#about"><span aria-hidden="true">↓</span> A little further into my world</a>
+    </section>
 
-      <section class="bio-card" aria-label="Professional summary">
-        <p>
-          I am a Senior Network and Security Engineer who enjoys building networks that are
-          reliable, scalable, secure, and clear enough to operate when things get complex.
-        </p>
+    <section id="about" class="content-section" aria-labelledby="about-title">
+      <div class="section-heading" data-reveal>
+        <p class="eyebrow"><span>01 /</span> Behind the configuration</p>
+        <h2 id="about-title">Networks with purpose.<br /><span>Engineering with curiosity.</span></h2>
+      </div>
+      <div class="about-layout" data-reveal>
+        <div class="about-copy">
+          <p>Most of my work lives between Service Provider and enterprise environments: MPLS VPNs, BGP, SD-WAN, cloud connectivity, security platforms, and multi-vendor infrastructure across Cisco, Juniper, Fortinet, Meraki, and related technologies.</p>
+          <p>I like going beyond the configuration line. I care about why a route is selected, how a service is validated end to end, how a migration should be sequenced, and how automation can make operations cleaner and more predictable.</p>
+          <p>I am still that curious engineer who breaks things in the lab, rebuilds them with patience, documents the lesson, and keeps learning with purpose.</p>
+        </div>
+        <div class="expertise" aria-label="Engineering focus">
+          <div><span class="focus-number" aria-hidden="true">01</span><div><h3>Service Provider</h3><p>BGP · MPLS VPNs · Multi-vendor networks</p></div></div>
+          <div><span class="focus-number" aria-hidden="true">02</span><div><h3>Enterprise &amp; Security</h3><p>SD-WAN · Cloud connectivity · Security platforms</p></div></div>
+          <div><span class="focus-number" aria-hidden="true">03</span><div><h3>Automation</h3><p>Python · Validation · Network operations</p></div></div>
+        </div>
+      </div>
+    </section>
 
-        <p>
-          Most of my work lives between Service Provider and enterprise environments: MPLS
-          VPNs, BGP, SD-WAN, cloud connectivity, security platforms, and multi-vendor
-          infrastructure across Cisco, Juniper, Fortinet, Meraki, and related technologies.
-        </p>
+    <section id="projects" class="content-section" aria-labelledby="projects-title">
+      <div class="section-heading heading-with-link" data-reveal>
+        <div><p class="eyebrow"><span>02 /</span> Projects &amp; labs</p><h2 id="projects-title">Built in the lab.<br /><span>Understood in practice.</span></h2></div>
+        <a class="text-link" href="Projects/projects.html">All projects <span aria-hidden="true">↗</span></a>
+      </div>
+      <article class="featured-project" data-reveal>
+        <div class="project-copy">
+          <p class="eyebrow">Featured lab / Cisco</p>
+          <h3>CCIE SP Labs &amp; Preparation</h3>
+          <p>A hands-on Service Provider library with EVE-NG labs, IOS XR configurations, diagrams, and troubleshooting notes.</p>
+          <ul class="tags" aria-label="Lab technologies"><li>IOS XR</li><li>SR-MPLS</li><li>L3VPN</li><li>EVE-NG</li></ul>
+          <a class="button button-primary" href="Projects/ccie-sp-labs.html">Explore the lab <span aria-hidden="true">↗</span></a>
+        </div>
+        <a class="project-visual" href="Projects/ccie-sp-labs.html" aria-label="Explore the CCIE SP backbone lab and topology">
+          <img src="Blog/img/ospf-isis-sr-mpls-migration/ccie-sp-isp-backbone-lab.png" alt="Topology of the CCIE SP ISP backbone lab" loading="lazy" decoding="async" />
+          <span>Inside the Service Provider backbone <span aria-hidden="true">↗</span></span>
+        </a>
+      </article>
+      <div class="project-grid">
+        <article class="project-card" data-reveal>
+          <p class="eyebrow">Automation / Engineering journal</p>
+          <h3>IOS XR Network State Collection Engine</h3>
+          <p>A read-only collector with per-device JSON evidence, partial-failure handling, and a controlled GitHub Actions workflow.</p>
+          <a class="text-link" href="Blog/ios-xr-network-state-collection-engine.html">Read the engineering notes <span aria-hidden="true">↗</span></a>
+        </article>
+        <article class="project-card" data-reveal>
+          <p class="eyebrow">Design / Engineering journal</p>
+          <h3>Campus Floor Connectivity Design</h3>
+          <p>A campus design study connecting Cisco switching, FortiGate services, fiber paths, resiliency, and growth planning.</p>
+          <a class="text-link" href="Blog/campus-floor-connectivity-design.html">Explore the design <span aria-hidden="true">↗</span></a>
+        </article>
+      </div>
+    </section>
 
-        <p>
-          I like going beyond the configuration line. I care about why a route is selected,
-          how a service is validated end to end, how a migration should be sequenced, and how
-          automation can make operations cleaner and more predictable.
-        </p>
+    <section id="credentials" class="content-section" aria-labelledby="credentials-title">
+      <div class="section-heading" data-reveal>
+        <p class="eyebrow"><span>03 /</span> Continuous learning</p>
+        <h2 id="credentials-title">Credentials <span>&amp; Recognition</span></h2>
+        <p>Technical foundations, continued learning, and a connection to the engineering community.</p>
+      </div>
+      <div class="credential-grid" data-reveal>
 
-        <p>
-          I am still that curious engineer who breaks things in the lab, rebuilds them with
-          patience, documents the lesson, and keeps learning with purpose.
-        </p>
-      </section>
-
-      <section class="personal-note" aria-label="Personal note">
-        <p>
-          This website is my technical notebook, lab archive, and personal space to document
-          how I learn, break, rebuild, and understand networks.
-        </p>
-      </section>
-
-      <section class="credentials-showcase" aria-label="Certifications and recognition">
-        <h2 class="credentials-title">Credentials <span>&amp; Recognition</span></h2>
-        <div class="credential-grid">
           <article class="credential-card">
             <a
               class="credential-media credential-media-light"
@@ -110,7 +146,7 @@
                 onerror="this.remove()"
               />
             </a>
-            <h2>CCNP SP</h2>
+            <h3>CCNP SP</h3>
           </article>
 
           <article class="credential-card">
@@ -130,7 +166,7 @@
                 onerror="this.remove()"
               />
             </a>
-            <h2>JNCIP-SP</h2>
+            <h3>JNCIP-SP</h3>
           </article>
 
           <article class="credential-card">
@@ -150,7 +186,7 @@
                 onerror="this.remove()"
               />
             </a>
-            <h2>Cisco Champion 2025</h2>
+            <h3>Cisco Champion 2025</h3>
           </article>
 
           <article class="credential-card">
@@ -170,47 +206,53 @@
                 onerror="this.remove()"
               />
             </a>
-            <h2>Legendary Technical Champion</h2>
+            <h3>Legendary Technical Champion</h3>
           </article>
         </div>
-      </section>
+    </section>
 
-<div class="resume-link-wrapper">
-  <span class="resume-arrow" aria-hidden="true">&darr;</span>
-  <p class="resume-note" aria-label="Interested in my background and experience?">
-    <span class="resume-note-word" aria-hidden="true">Interested</span>
-    <span class="resume-note-word" aria-hidden="true">in</span>
-    <span class="resume-note-word" aria-hidden="true">my</span>
-    <span class="resume-note-word" aria-hidden="true">background</span>
-    <span class="resume-note-word" aria-hidden="true">and</span>
-    <span class="resume-note-word" aria-hidden="true">experience?</span>
-  </p>
-  <a
-    class="resume-link"
-    href="./assets/Resume_Daniel_Fonque_Torres.pdf"
-    target="_blank"
-    rel="noopener noreferrer"
-    type="application/pdf"
-  >
-    View Full Resume
-  </a>
-</div>
-</main>
+    <section id="blog" class="content-section" aria-labelledby="blog-title">
+      <div class="section-heading heading-with-link" data-reveal>
+        <div><p class="eyebrow"><span>04 /</span> The technical notebook</p><h2 id="blog-title">Build. Break. Learn.<br /><span>Document the journey.</span></h2></div>
+        <a class="text-link" href="Blog/blog.html">Explore the blog <span aria-hidden="true">↗</span></a>
+      </div>
+      <p class="section-intro">This website is my technical notebook, lab archive, and personal space to document how I learn, break, rebuild, and understand networks.</p>
+      <div class="article-list">
+        <article class="article-row" data-reveal>
+          <p class="article-category">Service Provider</p>
+          <div><h3><a href="Blog/ccie-sp-ospf-isis-sr-mpls-migration.html">OSPF to IS-IS, SR-MPLS, RR Design, NAT, and SR-TE Groundwork <span aria-hidden="true">↗</span></a></h3><p>Migration decisions and lessons from a Service Provider lab.</p></div>
+        </article>
+        <article class="article-row" data-reveal>
+          <p class="article-category">Juniper</p>
+          <div><h3><a href="Blog/junos-troubleshooting-field-notes.html">Junos Troubleshooting Field Notes <span aria-hidden="true">↗</span></a></h3><p>Practical troubleshooting inspired by the Juniper Technical Champions program.</p></div>
+        </article>
+        <article class="article-row" data-reveal>
+          <p class="article-category">NetDevOps</p>
+          <div><h3><a href="Blog/netdevops-controlled-change-ios-xr.html">From Troubleshooting to Controlled Change <span aria-hidden="true">↗</span></a></h3><p>Network validation and controlled change in an IOS XR environment.</p></div>
+        </article>
+      </div>
+      <a class="text-link archive-link" href="Blog/archive.html">Browse all technical notes <span aria-hidden="true">↗</span></a>
+    </section>
 
-    <!-- Social links: external profiles for GitHub and LinkedIn. -->
-    <footer class="social-footer" aria-label="Social links">
-      <a href="https://github.com/dfonquet" target="_blank" rel="noopener noreferrer" class="social-link">
-        <img src="img/GIT.png" alt="GitHub" class="social-icon" />
-      </a>
-
-      <a href="https://www.linkedin.com/in/danielfonquetorres-188851a2/" target="_blank" rel="noopener noreferrer" class="social-link">
-        <img src="img/IN.png" alt="LinkedIn" class="social-icon" />
-      </a>
-    </footer>
-  </div>
-
-  <!-- Homepage particle background. -->
-  <script src="particles.min.js"></script>
-  <script src="home-particles.js?v=20260709f"></script>
+    <section id="contact" class="content-section contact-section" aria-labelledby="contact-title">
+      <div data-reveal>
+        <p class="eyebrow"><span>05 /</span> Let's connect</p>
+        <h2 id="contact-title">Good networks start<br />with <span>good connections.</span></h2>
+        <p>Interested in my background and experience? Explore my work, read my resume, or connect with me on LinkedIn.</p>
+        <div class="actions">
+          <a class="button button-primary" href="https://www.linkedin.com/in/danielfonquetorres-188851a2/" target="_blank" rel="noopener noreferrer">Connect on LinkedIn <span aria-hidden="true">↗</span></a>
+          <a class="button button-secondary" href="assets/Resume_Daniel_Fonque_Torres.pdf" target="_blank" rel="noopener noreferrer" type="application/pdf">View full resume <span aria-hidden="true">↗</span></a>
+          <a class="text-link" href="https://github.com/dfonquet" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <p>© 2026 Daniel Fonque <span> / Daftiel</span></p>
+    <a class="text-link" href="#home">Back to top <span aria-hidden="true">↑</span></a>
+  </footer>
+  <script src="home.js?v=20260910a" defer></script>
+  <script src="particles.min.js" defer></script>
+  <script src="home-particles.js?v=20260910a" defer></script>
 </body>
 </html>

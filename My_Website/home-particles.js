@@ -4,7 +4,7 @@
   var legacyParticlesOptions = {
     particles: {
       number: {
-        value: 152,
+        value: window.matchMedia("(max-width: 600px)").matches ? 24 : 64,
         density: {
           enable: true,
           value_area: 800
@@ -24,7 +24,7 @@
         }
       },
       opacity: {
-        value: 0.5,
+        value: 0.3,
         random: false,
         anim: {
           enable: false,
@@ -47,12 +47,12 @@
         enable: true,
         distance: 150,
         color: "#ffffff",
-        opacity: 0.4,
+        opacity: 0.22,
         width: 1
       },
       move: {
         enable: true,
-        speed: 6,
+        speed: 1.2,
         direction: "none",
         random: false,
         straight: false,
@@ -69,11 +69,11 @@
       detect_on: "canvas",
       events: {
         onhover: {
-          enable: true,
+          enable: false,
           mode: "repulse"
         },
         onclick: {
-          enable: true,
+          enable: false,
           mode: "push"
         },
         resize: true
@@ -100,7 +100,7 @@
   function loadParticles() {
     var target = document.getElementById(targetId);
 
-    if (!target || !window.particlesJS) {
+    if (!target || !window.particlesJS || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       return;
     }
 
