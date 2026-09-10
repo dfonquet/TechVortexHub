@@ -31,22 +31,30 @@
   />
   <link rel="stylesheet" href="styles.css?v=20260717n" />
   <script src="blog.js?v=20260709b" defer></script>
+  <link rel="stylesheet" href="../site-shared.css?v=20260910a" />
 </head>
 
-<body class="has-ambient-glow">
+<body class="has-ambient-glow site-index">
+  <a class="skip-link" href="#main-content">Skip to content</a>
   <span id="wts2217668" class="web-stat-hidden" aria-hidden="true"></span>
   <script src="../web-stat.js?v=20260710b"></script>
   <noscript>
     <img class="web-stat-hidden" src="https://app.ardalio.com/7/4/2217668.png" alt="" />
   </noscript>
 
-  <div class="page">
-    <nav class="top-nav" aria-label="Main navigation">
-      <a href="../daftiel.html">Home</a>
-      <a href="../Projects/projects.html">Projects</a>
-      <a href="blog.html">Blog</a>
-      <a href="archive.html" aria-current="page">Archive</a>
+  <header class="site-header">
+    <nav class="main-nav" aria-label="Main navigation">
+      <a class="brand" href="../daftiel.html" aria-label="Daftiel home">daftiel<span aria-hidden="true">.</span></a>
+      <div class="nav-links">
+        <a href="../daftiel.html">Home</a>
+        <a href="../Projects/projects.html">Projects</a>
+        <a href="../Blog/blog.html">Blog</a>
+        <a href="../Blog/archive.html" aria-current="page">Archive</a>
+      </div>
     </nav>
+  </header>
+  <div class="page">
+
 
     <header class="hero">
       <p class="eyebrow">All Notes</p>
@@ -56,14 +64,14 @@
         fastest way to follow how the site and the lab work evolve over time.
       </p>
       <div class="hero-actions">
-        <a class="post-link is-secondary" href="#ccie-sp-notes">CCIE SP notes</a>
-        <a class="post-link is-secondary" href="#juniper-notes">Juniper notes</a>
-        <a class="post-link is-secondary" href="#design-notes">Design notes</a>
-        <a class="post-link is-secondary" href="#network-automation-notes">Network Automation notes</a>
+        <a class="button button-secondary" href="#ccie-sp-notes">CCIE SP notes</a>
+        <a class="button button-secondary" href="#juniper-notes">Juniper notes</a>
+        <a class="button button-secondary" href="#design-notes">Design notes</a>
+        <a class="button button-secondary" href="#network-automation-notes">Network Automation notes</a>
       </div>
     </header>
 
-    <main>
+    <main id="main-content" tabindex="-1">
       <section class="archive-section" id="ccie-sp-notes" aria-label="CCIE SP notes">
         <div class="archive-section-header">
           <span class="status">Cisco</span>
@@ -233,9 +241,11 @@
       </section>
     </main>
 
-    <footer class="page-footer">
-      <p>&copy; 2026 Daniel Fonque</p>
-    </footer>
+
   </div>
+  <footer class="site-footer">
+    <p>© 2026 Daniel Fonque <span> / Daftiel</span></p>
+    <a class="text-link" href="../daftiel.html#contact">Let’s connect <span aria-hidden="true">↗</span></a>
+  </footer>
 </body>
 </html>

@@ -29,9 +29,11 @@
 
   <link rel="stylesheet" href="styles.css?v=20260717g" />
   <script src="projects.js?v=20260709d" defer></script>
+  <link rel="stylesheet" href="../site-shared.css?v=20260910a" />
 </head>
 
-<body class="has-ambient-glow">
+<body class="has-ambient-glow site-index">
+  <a class="skip-link" href="#main-content">Skip to content</a>
   <!-- Private visitor analytics via Web-Stat. -->
   <span id="wts2217668" class="web-stat-hidden" aria-hidden="true"></span>
   <script src="../web-stat.js?v=20260710b"></script>
@@ -39,12 +41,19 @@
     <img class="web-stat-hidden" src="https://app.ardalio.com/7/4/2217668.png" alt="" />
   </noscript>
 
-  <div class="page">
-    <nav class="top-nav" aria-label="Main navigation">
-      <a href="../daftiel.html">Home</a>
-      <a href="projects.html" aria-current="page">Projects</a>
-      <a href="../Blog/blog.html">Blog</a>
+  <header class="site-header">
+    <nav class="main-nav" aria-label="Main navigation">
+      <a class="brand" href="../daftiel.html" aria-label="Daftiel home">daftiel<span aria-hidden="true">.</span></a>
+      <div class="nav-links">
+        <a href="../daftiel.html">Home</a>
+        <a href="../Projects/projects.html" aria-current="page">Projects</a>
+        <a href="../Blog/blog.html">Blog</a>
+        <a href="../Blog/archive.html">Archive</a>
+      </div>
     </nav>
+  </header>
+  <div class="page">
+
 
     <header class="hero">
       <p class="eyebrow">Certification Labs & Engineering Projects</p>
@@ -56,7 +65,7 @@
       </p>
     </header>
 
-    <main>
+    <main id="main-content" tabindex="-1">
       <section class="project-grid" aria-label="Projects and labs">
         <article class="project-card">
           <div class="card-top">
@@ -73,9 +82,9 @@
             <span>EVE-NG</span>
             <span>IOS XR</span>
           </div>
-          <a class="card-link is-featured" href="ccie-sp-labs.html">Open CCIE SP Library</a>
+          <a class="button button-primary" href="ccie-sp-labs.html">Open CCIE SP Library</a>
           <a
-            class="card-link"
+            class="button button-secondary"
             href="https://www.cisco.com/c/dam/en_us/training-events/le31/le46/cln/marketing/exam-topics/CCIE-Service-Provider-v5-Exam-Topics.pdf"
             target="_blank"
             rel="noopener noreferrer"
@@ -189,9 +198,11 @@
       </section>
     </main>
 
-    <footer class="page-footer">
-    <p>&copy; 2026 Daniel Fonque</p>
-    </footer>
+
   </div>
+  <footer class="site-footer">
+    <p>© 2026 Daniel Fonque <span> / Daftiel</span></p>
+    <a class="text-link" href="../daftiel.html#contact">Let’s connect <span aria-hidden="true">↗</span></a>
+  </footer>
 </body>
 </html>

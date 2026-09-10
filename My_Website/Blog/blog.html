@@ -29,9 +29,11 @@
 
   <link rel="stylesheet" href="styles.css?v=20260717n" />
   <script src="blog.js?v=20260709b" defer></script>
+  <link rel="stylesheet" href="../site-shared.css?v=20260910a" />
 </head>
 
-<body class="has-ambient-glow">
+<body class="has-ambient-glow site-index">
+  <a class="skip-link" href="#main-content">Skip to content</a>
   <!-- Private visitor analytics via Web-Stat. -->
   <span id="wts2217668" class="web-stat-hidden" aria-hidden="true"></span>
   <script src="../web-stat.js?v=20260710b"></script>
@@ -39,15 +41,21 @@
     <img class="web-stat-hidden" src="https://app.ardalio.com/7/4/2217668.png" alt="" />
   </noscript>
 
+  <header class="site-header">
+    <nav class="main-nav" aria-label="Main navigation">
+      <a class="brand" href="../daftiel.html" aria-label="Daftiel home">daftiel<span aria-hidden="true">.</span></a>
+      <div class="nav-links">
+        <a href="../daftiel.html">Home</a>
+        <a href="../Projects/projects.html">Projects</a>
+        <a href="../Blog/blog.html" aria-current="page">Blog</a>
+        <a href="../Blog/archive.html">Archive</a>
+      </div>
+    </nav>
+  </header>
   <div class="page">
 
     <!-- Main navigation: connects the Blog with the homepage and Projects sections. -->
-    <nav class="top-nav" aria-label="Main navigation">
-      <a href="../daftiel.html">Home</a>
-      <a href="../Projects/projects.html">Projects</a>
-      <a href="blog.html" aria-current="page">Blog</a>
-      <a href="archive.html">Archive</a>
-    </nav>
+
 
     <!-- Hero section: introduces the Blog as a technical study journal. -->
     <header class="hero">
@@ -59,12 +67,12 @@
         automation, security, and infrastructure engineering.
       </p>
       <div class="hero-actions">
-        <a class="post-link is-featured" href="archive.html">Open all notes archive</a>
+        <a class="button button-primary" href="archive.html">Browse all notes</a>
       </div>
     </header>
 
     <!-- Blog post grid: organizes study areas and published notes into reusable cards. -->
-    <main>
+    <main id="main-content" tabindex="-1">
       <section class="post-grid" aria-label="Technical blog categories">
 
         <!-- CCIE SP category: groups published Service Provider articles in one place. -->
@@ -85,7 +93,7 @@
           </div>
 
           <div class="post-link-list">
-            <a class="post-link is-secondary" href="archive.html#ccie-sp-notes">View all CCIE SP notes</a>
+            <a class="button button-secondary" href="archive.html#ccie-sp-notes">View all CCIE SP notes</a>
           </div>
         </article>
 
@@ -105,7 +113,7 @@
           </div>
 
           <div class="post-link-list">
-            <a class="post-link is-secondary" href="archive.html#juniper-notes">View all Juniper notes</a>
+            <a class="button button-secondary" href="archive.html#juniper-notes">View all Juniper notes</a>
           </div>
         </article>
 
@@ -124,7 +132,7 @@
           </div>
 
           <div class="post-link-list">
-              <a class="post-link is-secondary" href="archive.html#design-notes">View all Design notes</a>
+              <a class="button button-secondary" href="archive.html#design-notes">View all Design notes</a>
           </div>
 
         </article>
@@ -165,17 +173,19 @@
           </div>
 
           <div class="post-link-list">
-              <a class="post-link is-secondary" href="archive.html#network-automation-notes">View all Network Automation notes</a>
+              <a class="button button-secondary" href="archive.html#network-automation-notes">View all Network Automation notes</a>
           </div>
-          
+
         </article>
       </section>
     </main>
 
     <!-- Footer: simple ownership and copyright information. -->
-    <footer class="page-footer">
-      <p>&copy; 2026 Daniel Fonque</p>
-    </footer>
+
   </div>
+  <footer class="site-footer">
+    <p>© 2026 Daniel Fonque <span> / Daftiel</span></p>
+    <a class="text-link" href="../daftiel.html#contact">Let’s connect <span aria-hidden="true">↗</span></a>
+  </footer>
 </body>
 </html>
