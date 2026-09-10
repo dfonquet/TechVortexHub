@@ -6,18 +6,18 @@
   <meta name="author" content="Daniel Fonque" />
   <meta
     name="description"
-    content="Projects and engineering labs by Daniel Fonque, including CCIE SP, JNCIE-SP, CCDE, automation, AI, and network security."
+    content="Public Service Provider labs, IOS XR automation, lab infrastructure, and network design studies by Daniel Fonque."
   />
   <title>Projects | Daniel Fonque</title>
   <link rel="canonical" href="https://dfonquet.github.io/TechVortexHub/My_Website/Projects/projects.html" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Projects | Daniel Fonque" />
-  <meta property="og:description" content="Projects and engineering labs by Daniel Fonque, including CCIE SP, JNCIE-SP, CCDE, automation, AI, and network security." />
+  <meta property="og:description" content="Public Service Provider labs, IOS XR automation, lab infrastructure, and network design studies by Daniel Fonque." />
   <meta property="og:url" content="https://dfonquet.github.io/TechVortexHub/My_Website/Projects/projects.html" />
   <meta property="og:image" content="https://dfonquet.github.io/TechVortexHub/My_Website/img/DATA_8.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Projects | Daniel Fonque" />
-  <meta name="twitter:description" content="Engineering labs and technical projects across CCIE SP, JNCIE-SP, CCDE, automation, AI, and network security." />
+  <meta name="twitter:description" content="Public Service Provider labs, IOS XR automation, lab infrastructure, and network design studies by Daniel Fonque." />
   <meta name="twitter:image" content="https://dfonquet.github.io/TechVortexHub/My_Website/img/DATA_8.jpg" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -27,9 +27,9 @@
     rel="stylesheet"
   />
 
-  <link rel="stylesheet" href="styles.css?v=20260717g" />
+  <link rel="stylesheet" href="styles.css?v=20260910b" />
   <script src="projects.js?v=20260709d" defer></script>
-  <link rel="stylesheet" href="../site-shared.css?v=20260910a" />
+  <link rel="stylesheet" href="../site-shared.css?v=20260910b" />
 </head>
 
 <body class="has-ambient-glow site-index">
@@ -56,145 +56,68 @@
 
 
     <header class="hero">
-      <p class="eyebrow">Certification Labs & Engineering Projects</p>
+      <p class="eyebrow">Engineering Projects &amp; Labs</p>
       <h1>Projects <span>& Labs</span></h1>
       <p>
-        A collection of labs, study projects, and technical notes focused on CCIE Service
-        Provider, JNCIE-SP, CCDE design, network automation, AI-assisted engineering,
-        networking, and security.
+        Hands-on Service Provider labs, network design studies, and automation workflows.
+        These projects document what I build, how I validate it, and the decisions behind it.
+        Security and AI-assisted research support the engineering process.
       </p>
     </header>
 
     <main id="main-content" tabindex="-1">
-      <section class="project-grid" aria-label="Projects and labs">
+      <section class="project-grid" aria-label="Public engineering projects">
         <article class="project-card">
-          <div class="card-top">
-            <span class="status">Cisco</span>
-          </div>
-          <h2>CCIE SP Labs & Preparation</h2>
-          <p>
-            A practical CCIE SP library with EVE-NG labs, device configurations,
-            diagrams, and troubleshooting notes. Content is aligned with the
-            official CCIE SP blueprint linked below.
-          </p>
-          <div class="tags">
-            <span>CCIE SP</span>
-            <span>EVE-NG</span>
-            <span>IOS XR</span>
-          </div>
-          <a class="button button-primary" href="ccie-sp-labs.html">Open CCIE SP Library</a>
-          <a
-            class="button button-secondary"
-            href="https://www.cisco.com/c/dam/en_us/training-events/le31/le46/cln/marketing/exam-topics/CCIE-Service-Provider-v5-Exam-Topics.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            View CCIE SP Blueprint
-          </a>
+          <div class="card-top"><span class="status">Service Provider / Public repository</span></div>
+          <h2>CCIE SP Master Lab</h2>
+          <p>Reproducible Containerlab environments for Service Provider study, with generated topologies, validation tooling, and documented operating procedures. Explore the Master, Inter-AS, and SRv6 profiles.</p>
+          <div class="tags"><span>Containerlab</span><span>XRd</span><span>IOL-XE</span><span>Python</span></div>
+          <div class="project-actions"><a class="button button-primary" href="https://github.com/dfonquet/ccie-sp-master-lab" target="_blank" rel="noopener noreferrer">Explore repository <span aria-hidden="true">↗</span></a></div>
         </article>
 
         <article class="project-card">
-          <div class="card-top">
-            <span class="status">Juniper</span>
-          </div>
-          <h2>JNCIE-SP Labs & Preparation</h2>
-          <p>
-            Junos-based labs covering IS-IS, BGP, MPLS, L3VPN, RSVP, Segment Routing,
-            routing policy, and service provider design scenarios.
-          </p>
-          <div class="tags">
-            <span>JNCIE-SP</span>
-            <span>Junos</span>
-            <span>SP</span>
-          </div>
-          <span class="card-link is-disabled">Coming Soon</span>
+          <div class="card-top"><span class="status">Service Provider / Living lab</span></div>
+          <h2>Service Provider Lab Library</h2>
+          <p>A dual-stack backbone lab exploring IS-IS, SR-MPLS, MP-BGP, L3VPN, and failure recovery. Inspect the topology, device configurations, and validation notes.</p>
+          <div class="tags"><span>IOS XR</span><span>IS-IS</span><span>SR-MPLS</span><span>L3VPN</span><span>EVE-NG</span></div>
+          <div class="project-actions"><a class="button button-primary" href="ccie-sp-labs.html">Explore the lab</a><a class="text-link" href="https://www.cisco.com/c/dam/en_us/training-events/le31/le46/cln/marketing/exam-topics/CCIE-Service-Provider-v5-Exam-Topics.pdf" target="_blank" rel="noopener noreferrer">CCIE SP v5 blueprint <span aria-hidden="true">↗</span></a></div>
         </article>
 
         <article class="project-card">
-          <div class="card-top">
-            <span class="status">Design</span>
-          </div>
-          <h2>CCDE Design Studies</h2>
-          <p>
-            Design-oriented notes focused on requirements analysis, constraints, trade-offs,
-            routing architecture, resiliency, scalability, and operational simplicity.
-          </p>
-          <div class="tags">
-            <span>CCDE</span>
-            <span>Design</span>
-            <span>Architecture</span>
-          </div>
-          <span class="card-link is-disabled">Coming Soon</span>
+          <div class="card-top"><span class="status">Network Automation / Public repository</span></div>
+          <h2>CCIE-SP NetOps Automation</h2>
+          <p>Read-only IOS XR state collection with per-router JSON evidence and a controlled Git workflow. The engineering notes explain the validated first phase.</p>
+          <div class="tags"><span>Ansible</span><span>IOS XR</span><span>JSON</span><span>GitHub Actions</span></div>
+          <div class="project-actions"><a class="button button-primary" href="../Blog/ios-xr-network-state-collection-engine.html">Read engineering notes</a><a class="button button-external" href="https://github.com/dfonquet/CCIE-SP-NetOps-Automation" target="_blank" rel="noopener noreferrer"><svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 19c-4 1-4-2-6-2m12 5v-4a3.5 3.5 0 0 0-1-2.7c3.3-.4 6.8-1.6 6.8-7.3a5.7 5.7 0 0 0-1.5-4c.2-1 .2-2-.2-3 0 0-1.2-.4-4.1 1.5a14.2 14.2 0 0 0-7 0C5.1.6 3.9 1 3.9 1c-.4 1-.4 2-.2 3a5.7 5.7 0 0 0-1.5 4c0 5.7 3.5 6.9 6.8 7.3A3.5 3.5 0 0 0 8 18v4"/></svg>View on GitHub <span aria-hidden="true">↗</span></a></div>
         </article>
 
         <article class="project-card">
-          <div class="card-top">
-            <span class="status">Automation</span>
-          </div>
-          <h2>Network Automation & AI</h2>
-          <p>
-            Experiments using Python, APIs, templates, validation workflows, Git, and
-            AI-assisted engineering to improve network operations and documentation.
-          </p>
-          <div class="tags">
-            <span>Python</span>
-            <span>APIs</span>
-            <span>AI</span>
-          </div>
-          <span class="card-link is-disabled">Coming Soon</span>
+          <div class="card-top"><span class="status">Lab Infrastructure / Build notes</span></div>
+          <h2>NetLab-Core</h2>
+          <p>A reusable Ubuntu automation host for EVE-NG. Follow the golden-image build, QCOW2 conversion, tooling choices, and lab integration.</p>
+          <div class="tags"><span>Ubuntu</span><span>QCOW2</span><span>EVE-NG</span><span>NetOps</span></div>
+          <div class="project-actions"><a class="button button-primary" href="../Blog/netlab-core-eve-ng-golden-image.html">Read the build notes</a></div>
         </article>
 
         <article class="project-card">
-          <div class="card-top">
-            <span class="status">Automation</span>
-          </div>
-          <h2>CCIE Automation</h2>
-          <p>
-            Study projects focused on network programmability, automation workflows, APIs,
-            model-driven telemetry, validation, configuration templates, and infrastructure operations.
-          </p>
-          <div class="tags">
-            <span>CCIE Automation</span>
-            <span>APIs</span>
-            <span>Telemetry</span>
-          </div>
-          <span class="card-link is-disabled">Coming Soon</span>
+          <div class="card-top"><span class="status">Network Design / Case study</span></div>
+          <h2>Campus Connectivity Design</h2>
+          <p>A campus connectivity study covering fiber uplinks, switching, firewall high availability, and segmentation, with resiliency and capacity trade-offs.</p>
+          <div class="tags"><span>Cisco Switching</span><span>FortiGate</span><span>Fiber</span><span>Resiliency</span></div>
+          <div class="project-actions"><a class="button button-primary" href="../Blog/campus-floor-connectivity-design.html">Explore the design</a></div>
         </article>
-
-        <article class="project-card">
-          <div class="card-top">
-            <span class="status">Security</span>
-          </div>
-          <h2>Networks & Security</h2>
-          <p>
-            Practical labs around segmentation, firewall policies, VPNs, secure connectivity,
-            routing behavior, visibility, and infrastructure hardening.
-          </p>
-          <div class="tags">
-            <span>Security</span>
-            <span>VPN</span>
-            <span>Networking</span>
-          </div>
-          <span class="card-link is-disabled">Coming Soon</span>
-        </article>
-
-        <article class="project-card">
-          <div class="card-top">
-            <span class="status">Enterprise</span>
-          </div>
-          <h2>SD-WAN & Wireless Design</h2>
-          <p>
-            Design and lab notes focused on SD-WAN architectures, branch connectivity,
-            wireless design, segmentation, secure access, application performance,
-            resiliency, and operational visibility.
-          </p>
-          <div class="tags">
-            <span>SD-WAN</span>
-            <span>Wireless</span>
-            <span>Design</span>
-          </div>
-          <span class="card-link is-disabled">Coming Soon</span>
-        </article>
+      </section>
+      <section class="engineering-roadmap" aria-labelledby="roadmap-title">
+        <p class="eyebrow">Next directions</p>
+        <h2 id="roadmap-title">Currently Exploring</h2>
+        <p>Study directions for future published work.</p>
+        <ul>
+          <li><strong>Junos &amp; JNCIE-SP:</strong> deeper Service Provider lab scenarios.</li>
+          <li><strong>CCDE design:</strong> requirements, scalability, and migration strategy.</li>
+          <li><strong>Automation &amp; programmability:</strong> telemetry, validation, and AI-assisted documentation.</li>
+          <li><strong>Network security:</strong> segmentation, VPNs, and infrastructure hardening.</li>
+          <li><strong>SD-WAN &amp; wireless:</strong> branch connectivity and resilient access design.</li>
+        </ul>
       </section>
     </main>
 

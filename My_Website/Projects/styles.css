@@ -3,23 +3,11 @@
 /* Projects visual system: dark technical style with controlled accent colors. */
 
 :root {
-  --color-bg: #0a0e1a;
-  --color-surface: rgba(17, 24, 39, 0.74);
-  --color-surface-strong: rgba(5, 10, 18, 0.84);
-  --color-primary: #7c6fdc;
-  --color-accent: #1d9bf0;
-  --color-text: #e2e8f0;
-  --color-text-muted: #94a3b8;
-  --color-border: rgba(255, 255, 255, 0.08);
-  --color-border-accent: rgba(29, 155, 240, 0.42);
-  --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.34);
-  --font-body: "Inter", Arial, sans-serif;
-  --font-display: "Space Grotesk", "Inter", Arial, sans-serif;
-  --content-width: 1180px;
+  --color-surface-strong: var(--color-surface);
+  --shadow-soft: 0 18px 45px rgba(0,0,0,.2);
   --radius-pill: 999px;
-  --radius-card: 8px;
-  --transition-fast: 0.22s ease;
-  --transition-medium: 0.24s ease;
+  --transition-fast: .22s ease;
+  --transition-medium: .24s ease;
 }
 
 /* Base reset: removes default browser spacing and keeps element sizing predictable. */
@@ -53,8 +41,8 @@ body.has-ambient-glow::before {
   background:
     radial-gradient(
       760px circle at var(--ambient-x, 50vw) var(--ambient-y, 36vh),
-      rgba(29, 155, 240, 0.075),
-      rgba(124, 111, 220, 0.045) 34%,
+      rgba(97, 197, 255, 0.075),
+      rgba(161, 147, 255, 0.045) 34%,
       transparent 72%
     );
   opacity: 0.82;
@@ -87,42 +75,6 @@ button:focus-visible {
   width: min(var(--content-width), calc(100% - 32px));
   margin: 0 auto;
   padding: 64px 0 42px;
-}
-
-/* Top navigation: primary links across the website. */
-
-.top-nav {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 14px;
-  margin-bottom: 58px;
-}
-
-.top-nav a {
-  min-width: 104px;
-  padding: 12px 22px;
-  border: 1px solid rgba(124, 111, 220, 0.28);
-  border-radius: var(--radius-pill);
-  background: rgba(124, 111, 220, 0.78);
-  color: #ffffff;
-  text-align: center;
-  text-decoration: none;
-  font-weight: 800;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
-  transition:
-    transform var(--transition-fast),
-    background-color var(--transition-fast),
-    color var(--transition-fast),
-    border-color var(--transition-fast);
-}
-
-.top-nav a:hover,
-.top-nav a[aria-current="page"] {
-  transform: translateY(-3px);
-  border-color: var(--color-accent);
-  background: var(--color-accent);
-  color: #081018;
 }
 
 /* Hero section: introduces the Projects page with clearer hierarchy. */
@@ -166,7 +118,7 @@ button:focus-visible {
 
 .project-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 22px;
   margin-top: 36px;
 }
@@ -201,8 +153,8 @@ button:focus-visible {
   background:
     radial-gradient(
       420px circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%),
-      rgba(29, 155, 240, 0.16),
-      rgba(124, 111, 220, 0.08) 38%,
+      rgba(97, 197, 255, 0.16),
+      rgba(161, 147, 255, 0.08) 38%,
       transparent 70%
     );
   opacity: 0;
@@ -221,7 +173,7 @@ button:focus-visible {
   background: rgba(8, 15, 28, 0.9);
   box-shadow:
     0 22px 52px rgba(0, 0, 0, 0.42),
-    0 0 30px rgba(29, 155, 240, 0.1);
+    0 0 30px rgba(97, 197, 255, 0.1);
 }
 
 .project-card:hover::before {
@@ -230,15 +182,15 @@ button:focus-visible {
 
 .card-top {
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   margin-bottom: 18px;
 }
 
 .status {
   padding: 6px 10px;
-  border: 1px solid rgba(29, 155, 240, 0.22);
+  border: 1px solid rgba(97, 197, 255, 0.22);
   border-radius: var(--radius-pill);
-  background: rgba(29, 155, 240, 0.09);
+  background: rgba(97, 197, 255, 0.09);
   color: var(--color-accent);
   font-size: 0.78rem;
   font-weight: 800;
@@ -268,108 +220,10 @@ button:focus-visible {
 .tags span {
   padding: 7px 10px;
   border-radius: var(--radius-pill);
-  background: rgba(124, 111, 220, 0.22);
+  background: rgba(161, 147, 255, 0.22);
   color: var(--color-text);
   font-size: 0.84rem;
   font-weight: 800;
-}
-
-.card-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  align-self: flex-start;
-  margin-top: 18px;
-  padding: 9px 12px;
-  border: 1px solid rgba(29, 155, 240, 0.36);
-  border-radius: var(--radius-pill);
-  background:
-    linear-gradient(135deg, rgba(29, 155, 240, 0.1), rgba(124, 111, 220, 0.1)),
-    rgba(5, 10, 18, 0.42);
-  color: #b7f7ff;
-  font-size: 0.88rem;
-  font-weight: 700;
-  text-decoration: none;
-  line-height: 1.2;
-  box-shadow: 0 0 16px rgba(29, 155, 240, 0.05);
-  transition:
-    transform var(--transition-fast),
-    background-color var(--transition-fast),
-    color var(--transition-fast),
-    border-color var(--transition-fast),
-    box-shadow var(--transition-fast);
-}
-
-.card-link:hover {
-  transform: translateY(-2px);
-  border-color: rgba(29, 155, 240, 0.72);
-  background:
-    linear-gradient(135deg, rgba(29, 155, 240, 0.18), rgba(124, 111, 220, 0.18)),
-    rgba(5, 10, 18, 0.58);
-  color: #ffffff;
-  box-shadow: 0 0 22px rgba(29, 155, 240, 0.1);
-}
-
-.card-link.is-featured {
-  border-color: rgba(103, 199, 238, 0.72);
-  background: rgba(47, 170, 223, 0.78);
-  color: #051018;
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.025),
-    0 0 22px rgba(56, 189, 248, 0.18);
-}
-
-.card-link.is-featured:hover {
-  border-color: rgba(158, 221, 247, 0.86);
-  background: rgba(103, 199, 238, 0.86);
-  color: #051018;
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.035),
-    0 0 28px rgba(125, 211, 252, 0.26);
-}
-
-.card-link.is-disabled {
-  position: relative;
-  gap: 8px;
-  padding-left: 13px;
-  border-color: rgba(245, 158, 11, 0.28);
-  cursor: default;
-  background:
-    linear-gradient(135deg, rgba(29, 155, 240, 0.10), rgba(124, 111, 220, 0.12), rgba(245, 158, 11, 0.10)),
-    rgba(5, 10, 18, 0.48);
-  color: #f3f8ff;
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.025),
-    0 0 18px rgba(245, 158, 11, 0.06);
-}
-
-.card-link.is-disabled::before {
-  content: "";
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #f59e0b, var(--color-primary));
-  box-shadow: 0 0 12px rgba(245, 158, 11, 0.34);
-}
-
-.card-link.is-disabled:hover {
-  transform: translateY(-2px);
-  border-color: rgba(245, 158, 11, 0.44);
-  background:
-    linear-gradient(135deg, rgba(29, 155, 240, 0.14), rgba(124, 111, 220, 0.15), rgba(245, 158, 11, 0.13)),
-    rgba(5, 10, 18, 0.56);
-  color: #ffffff;
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.035),
-    0 0 22px rgba(245, 158, 11, 0.09);
-}
-
-/* Footer: simple ownership information. */
-
-.page-footer {
-  margin-top: 44px;
-  text-align: center;
-  color: var(--color-text-muted);
 }
 
 /* Tablet layout: two-column project grid. */
@@ -394,17 +248,6 @@ button:focus-visible {
   .page {
     width: 100%;
     padding: 28px 14px 32px;
-  }
-
-  .top-nav {
-    gap: 8px;
-    margin-bottom: 34px;
-  }
-
-  .top-nav a {
-    min-width: 86px;
-    padding: 10px 14px;
-    font-size: 0.86rem;
   }
 
   .hero {
@@ -460,26 +303,26 @@ button:focus-visible {
     font-size: 0.78rem;
   }
 
-  .page-footer {
-    margin-top: 30px;
-    font-size: 0.85rem;
-  }
 }
 
 /* Reduced motion: respects users who prefer less animation. */
 
 @media (prefers-reduced-motion: reduce) {
-  .top-nav a,
   body.has-ambient-glow::before,
   .project-card,
-  .project-card::before,
-  .card-link {
+  .project-card::before {
     transition: none;
   }
 
-  .top-nav a:hover,
-  .project-card:hover,
-  .card-link:hover {
+  .project-card:hover {
     transform: none;
   }
 }
+
+/* Evidence actions and the secondary study roadmap belong to Projects. */
+.project-actions { display:flex; flex-wrap:wrap; align-items:center; gap:16px; margin-top:24px; }
+.engineering-roadmap { margin-top:56px; padding-top:32px; border-top:1px solid var(--color-border); color:var(--color-muted); line-height:1.75; }
+.engineering-roadmap h2 { font:600 1.75rem var(--font-display); color:var(--color-text); margin-bottom:12px; }
+.engineering-roadmap ul { padding-left:20px; margin-top:20px; }
+.engineering-roadmap li + li { margin-top:10px; }
+.engineering-roadmap strong { color:var(--color-text); font-weight:600; }

@@ -1666,3 +1666,7 @@ body.diagram-open {
     transition: none;
   }
 }
+
+/* Inline paths may wrap on narrow screens; CLI blocks retain horizontal scrolling. */
+.article-card p code, .article-card li code { overflow-wrap: anywhere; }
+.command-list code { max-width: 100%; overflow-x: auto; }
