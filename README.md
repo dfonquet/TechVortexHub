@@ -2,8 +2,8 @@
 
 #  TechVortexHub
 
-[![Static Site](https://img.shields.io/badge/site-static-0f172a?style=for-the-badge)](https://dfonquet.github.io/TechVortexHub/My_Website/daftiel.html)
-[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Deployed-22c55e?style=for-the-badge&logo=github)](https://dfonquet.github.io/TechVortexHub/My_Website/daftiel.html)
+[![Static Site](https://img.shields.io/badge/site-static-0f172a?style=for-the-badge)](https://danielfonque.com/)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Deployed-22c55e?style=for-the-badge&logo=github)](https://danielfonque.com/)
 
 [![HTML](https://img.shields.io/badge/HTML-54.2%25-e34f26?style=for-the-badge&logo=html5&logoColor=white)](https://github.com/dfonquet/TechVortexHub/search?l=html)
 [![CSS](https://img.shields.io/badge/CSS-29.2%25-1572b6?style=for-the-badge&logo=css3&logoColor=white)](https://github.com/dfonquet/TechVortexHub/search?l=css)
@@ -14,7 +14,7 @@
 
 **Personal technical hub for Service Provider networking labs, blog posts, and certification study notes.**
 
-[🌐 Live Site](https://dfonquet.github.io/TechVortexHub/My_Website/daftiel.html) · [📋 Projects](#-main-sections) · [📝 Blog](#-main-sections) · [🏅 Certifications](#-main-sections)
+[🌐 Live Site](https://danielfonque.com/) · [📋 Projects](#-main-sections) · [📝 Blog](#-main-sections) · [🏅 Certifications](#-main-sections)
 
 </div>
 
@@ -36,7 +36,7 @@ It brings together my personal website, technical blog posts, project pages, and
 
 ##  Live Site
 
-> **GitHub Pages:** [dfonquet.github.io/TechVortexHub](https://dfonquet.github.io/TechVortexHub/My_Website/daftiel.html)
+> **GitHub Pages:** [danielfonque.com](https://danielfonque.com/)
 
 ---
 
@@ -142,3 +142,5 @@ Network Design Patterns          Automation, Templating & Tooling
 *This project is actively evolving — ongoing improvements to structure, design, and technical content.*
 
 </div>
+
+Custom-domain deployment and manual cutover steps: [PAGES-DEPLOYMENT.md](PAGES-DEPLOYMENT.md).

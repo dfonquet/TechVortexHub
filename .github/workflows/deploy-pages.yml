@@ -1,0 +1,51 @@
+name: Deploy portfolio to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'My_Website/**'
+      - '.github/workflows/deploy-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Verify homepage compatibility
+        run: |
+          test -s My_Website/index.html
+          cmp My_Website/index.html My_Website/daftiel.html
+
+      - name: Read Pages configuration
+        uses: actions/configure-pages@v5
+        with:
+          # The owner must select GitHub Actions in Settings > Pages first.
+          enablement: false
+
+      - name: Upload website contents as the site root
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: My_Website
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
