@@ -549,27 +549,83 @@
           validation because the required policy, budget, and management approvals were not granted.
         </p>
 
-        <h3>Illustrative WAN Port-Channel</h3>
+        <h3>LACP Port-Channels from the Cisco Core Stack to the FortiGate Firewalls</h3>
         <p>
-          This Cisco-side template shows one WAN bundle to one FortiGate unit. Replace the interface
-          and VLAN placeholders from the approved port schedule and configure the matching firewall
-          aggregate. The other HA unit and LAN-side connections require separate switch-side bundles.
-          HA behavior and secondary-unit LACP participation must be checked for the selected release;
-          see <a href="https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide/900885/ha-active-passive-cluster-setup" target="_blank" rel="noopener">Fortinet's HA active/passive cluster setup guide</a>.
+          This member-interface example shows the proposed eight-link allocation across three
+          Cisco StackWise members: four WAN-side links and four LAN-side links, organized into
+          four two-member LACP bundles. It illustrates a shared switching arrangement, distinct
+          from the dedicated WAN switching option discussed above. WAN transport VLANs must remain
+          isolated from trusted LAN VLANs, with no routing or bridging that bypasses the firewalls.
+          The three-member numbering is not the interface layout of the two-chassis C9500
+          StackWise Virtual pair in the campus diagram.
+        </p>
+        <ul class="decision-list">
+          <li><strong>Port-channel101 (WAN) and Port-channel100 (LAN):</strong> members 1 and 2, assigned to the first firewall in this example.</li>
+          <li><strong>Port-channel103 (WAN) and Port-channel102 (LAN):</strong> members 2 and 3, assigned to the second firewall in this example.</li>
+        </ul>
+        <p>
+          Each bundle must terminate on one firewall unit. The repeated FW-601-E descriptions
+          below are the original example labels; the implementation port schedule must distinguish
+          the two units. Member 2 participates in all four bundles, so its loss leaves each bundle
+          with one surviving link. Remaining capacity and minimum-link settings must support that
+          failure condition.
+        </p>
+        <p>
+          This excerpt configures physical members only. Before deployment, define Port-channel100
+          through Port-channel103, restrict each trunk to its intended WAN or LAN VLANs, and match
+          the FortiGate aggregates and subinterfaces. Verify actual interface numbering and supported
+          HA/LACP behavior for the selected platform and release. See
+          <a href="https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide/900885/ha-active-passive-cluster-setup" target="_blank" rel="noopener">Fortinet's HA active/passive cluster setup guide</a>.
         </p>
         <div class="cli-block">
-          <div class="cli-header"><span>Example</span><span>WAN-side port-channel toward one FortiGate</span></div>
-          <pre><code>interface range &lt;approved-member-interfaces&gt;
- description TO-FORTIGATE-WAN
+          <div class="cli-header"><span>Example</span><span>Cisco core stack to FortiGate firewalls - LACP member interfaces</span></div>
+          <pre><code>interface TenGigabitEthernet1/0/1
+ description FortigateFW-601-E-to-Wan
  switchport mode trunk
- switchport trunk allowed vlan &lt;wan-vlan-list&gt;
  channel-protocol lacp
  channel-group 101 mode active
-
-interface Port-channel101
- description TO-FORTIGATE-WAN
+!
+interface TenGigabitEthernet1/0/2
+ description Lan-To-FortigateFW-601-E
  switchport mode trunk
- switchport trunk allowed vlan &lt;wan-vlan-list&gt;</code></pre>
+ channel-protocol lacp
+ channel-group 100 mode active
+
+interface TenGigabitEthernet2/0/1
+ description FortigateFW-601-E-to-Wan
+ switchport mode trunk
+ channel-protocol lacp
+ channel-group 101 mode active
+!
+interface TenGigabitEthernet2/0/2
+ description Lan-To-FortigateFW-601-E
+ switchport mode trunk
+ channel-protocol lacp
+ channel-group 100 mode active
+!
+interface TenGigabitEthernet2/0/3
+ description Lan-To-FortigateFW-601-E
+ switchport mode trunk
+ channel-protocol lacp
+ channel-group 102 mode active
+!
+interface TenGigabitEthernet2/0/4
+ description FortigateFW-601-E-to-Wan
+ switchport mode trunk
+ channel-protocol lacp
+ channel-group 103 mode active
+
+interface TenGigabitEthernet3/0/1
+ description FortigateFW-601-E-to-Wan
+ switchport mode trunk
+ channel-protocol lacp
+ channel-group 103 mode active
+!
+interface TenGigabitEthernet3/0/2
+ description Lan-To-FortigateFW-601-E
+ switchport mode trunk
+ channel-protocol lacp
+ channel-group 102 mode active</code></pre>
         </div>
       </section>
 
