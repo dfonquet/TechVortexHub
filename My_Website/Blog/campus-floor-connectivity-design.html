@@ -524,6 +524,24 @@ end</code></pre>
         </div>
         <p>The original rule uses <code>ALL</code> services. That is broader than a service-specific allow list, even with restricted address objects. A refinement would validate application dependencies and restrict allowed services through the change process. This excerpt does not establish web filtering or application-control enforcement; those require the relevant policy settings and profile definitions.</p>
 
+        <h3>Viewing Configuration in the Correct VDOM</h3>
+        <p>The source backup contains multiple VDOMs. To inspect one, select an existing VDOM before displaying its SD-WAN, address objects, routing, and firewall policies. <code>VDOM_A</code> below is an anonymized label: replace it with a verified existing name, since <code>edit</code> with a new name can create a VDOM. These commands inspect configuration; they do not enable VDOM mode or define a new segmentation design.</p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Configuration review</span><span>Select an existing VDOM - anonymized name</span></div>
+          <pre><code>config vdom
+    edit "VDOM_A"
+        show
+        show system settings
+        show system virtual-wan-link
+        show firewall address
+        show firewall policy
+        show router static
+        show full-configuration system virtual-wan-link
+    next
+end</code></pre>
+        </div>
+        <p>Within the selected VDOM, <code>show</code> displays configuration with default settings generally omitted. <code>show full-configuration</code> includes defaults; the scoped command above limits that output to SD-WAN. Repeat the review in the VDOM containing the SLA example rather than combining settings from different domains. These are command examples, not captured live output. Sanitize configuration output before sharing it, including encrypted credential fields.</p>
+
         <h3>Operational Verification</h3>
         <p>Run these read-only commands in the relevant VDOM on the historical FortiOS release. Compare configured members and rules with live health and route selection; the backup alone contains no runtime evidence of successful failover.</p>
         <div class="cli-block">
