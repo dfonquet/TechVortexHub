@@ -455,43 +455,105 @@
       <section class="article-card" id="design-improvement">
         <h2>Design Improvement I Would Apply Today</h2>
         <p>
-          Looking at this design with more experience, I would replace the existing SG300 WAN
-          handoff with a dedicated redundant WAN aggregation stack, preserving the same security order: <strong>ISP handoffs &rarr; dedicated WAN stack &rarr; FortiGate HA
-          &rarr; campus core/distribution</strong>. The WAN stack would carry isolated ISP VLANs to
-          the firewall, with no direct path into the LAN. This addresses the upstream switch failure domain while keeping
-          WAN transport separate from trusted campus switching.
+          During the project, I recommended a further phase to strengthen the WAN edge and improve
+          service recovery. The site operated 24/7, and the Change Advisory Board (CAB) and executive
+          leadership did not authorize the proposed production changes. Operational continuity,
+          internal policy, and budget constraints prevented this phase from proceeding.
+          The following describes the design I proposed and how I would refine it today;
+          it was not part of the completed campus expansion.
+        </p>
+
+        <h3>WAN Aggregation and Firewall Connectivity</h3>
+        <p>
+          The first objective was to replace the existing SG300 WAN aggregation switch, a shared
+          point of failure ahead of the FortiGate HA pair, with a dedicated redundant switching
+          block. ISP handoffs would remain upstream of the firewalls:
+          <strong>ISP circuits &rarr; isolated WAN aggregation &rarr; FortiGate HA &rarr;
+          trusted Cisco campus switching</strong>. This would preserve a clear security boundary
+          while reducing dependence on a single WAN handoff switch.
         </p>
         <p>
-          I would separate each firewall's WAN-side and LAN-side LACP aggregates. WAN bundles would
-          terminate on the dedicated WAN stack; LAN bundles would terminate on the campus
-          core/distribution pair. Each switch-side bundle would serve one FortiGate unit rather
-          than combining ports to both HA units into one EtherChannel. VLAN allow-lists and
-          firewall subinterfaces would match the function of each handoff. HA and LACP behavior,
-          including secondary-unit participation, must follow the supported configuration for
-          the selected FortiOS release.
+          My initial cabling proposal called for eight links: four on the WAN side and four on
+          the LAN side. These were separate functional groups, not one eight-member EtherChannel
+          or unidirectional inbound and outbound links. The final allocation across HA units and
+          switch members would need to be documented in the port schedule and validated against
+          interface availability, throughput, and the capacity required after a failure.
         </p>
         <p>
-          I would size the bundles from required throughput, available interfaces, and capacity after
-          a member or chassis failure. The member count should follow those requirements.
-          LACP negotiates the bundle; traffic distribution follows the forwarding hash. A single flow
-          does not normally use the sum of all member speeds.
-          On the C9500 StackWise Virtual pair, a bundle spanning both chassis is a MEC. On a C9300
-          StackWise stack, the corresponding term is cross-stack EtherChannel. Neither design
-          justifies spanning a bundle across two unrelated standalone switches or claiming
-          physical diversity when its members share a cable route.
+          Each untagged ISP handoff would use an access port in that provider's VLAN. Trunks toward
+          the firewall would carry only the required tagged WAN VLANs, with matching firewall
+          subinterfaces. A provider delivering a tagged service would need a matching handoff
+          configuration. Separate LAN-side aggregates would connect the firewalls to trusted
+          campus switching; ISP VLANs would not be extended into the core as a path around the firewall.
         </p>
         <p>
-          This Cisco-side template illustrates one WAN bundle to one FortiGate unit. It is not
-          ready to paste: replace the interface and VLAN placeholders from an approved port plan,
-          validate platform support, and configure the matching firewall aggregate. The other HA
-          unit and the LAN-side handoffs require separate switch-side bundles. See
-          <a href="https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide/900885/ha-active-passive-cluster-setup" target="_blank" rel="noopener">Fortinet's HA active/passive cluster setup guide</a>
-          for the HA setup procedure.
+          Each switch-side LACP bundle would terminate on one FortiGate unit. Ports leading to both
+          HA units would not be combined into one EtherChannel. Across a C9300 StackWise stack,
+          this is a cross-stack EtherChannel; across the C9500 StackWise Virtual pair, it is a
+          Multi-Chassis EtherChannel (MEC). LACP negotiates the bundle, while the forwarding hash
+          distributes traffic. A single flow does not normally use the sum of all member speeds.
+          Physical route and power diversity would still need to be addressed separately.
+        </p>
+
+        <h3>VDOM Separation and Application Policy</h3>
+        <p>
+          I also planned separate FortiGate virtual domains: an Internet VDOM and a VDOM for
+          critical services. Each would have its own interfaces, routing, and security policies,
+          subject to the platform's VDOM support and licensing. Any communication between them
+          would use explicitly controlled inter-VDOM connectivity. This provides logical separation
+          while retaining shared hardware and its associated failure domain.
         </p>
         <p>
-          I would also make physical route diversity and per-switch power resilience explicit
-          acceptance items. The expansion already had redundant connection intent; the next step
-          is to ensure that cable routes, power feeds, and failure-state capacity support it.
+          The policy design included web filtering, application control, and service-specific
+          access rules for selected customer applications. Where supported by the chosen inspection
+          feature, I considered pattern-based matching, including regular expressions. Those rules
+          would need application testing and an appropriate inspection strategy for encrypted
+          traffic; they would complement explicit source, destination, and service controls.
+        </p>
+
+        <h3>AWS Recovery Option for Critical Services</h3>
+        <p>
+          For critical migrations and selected customer services, I considered an AWS recovery
+          environment connected to the on-premises FortiGate edge through redundant IPsec tunnels.
+          The cloud firewall role would require a virtual appliance such as
+          <a href="https://www.fortinet.com/content/dam/fortinet/assets/data-sheets/FortiGate_VM_AWS.pdf" target="_blank" rel="noopener">FortiGate-VM for AWS</a>,
+          rather than a physical FortiGate 600 in AWS. This remained a recovery concept;
+          the cloud service model, appliance sizing, and availability design were not finalized.
+        </p>
+        <p>
+          <a href="https://docs.aws.amazon.com/vpn/latest/s2svpn/VPC_VPN.html" target="_blank" rel="noopener">AWS Site-to-Site VPN</a>
+          provides two tunnels per connection. Both would need routing and failover configuration.
+          In that model, the tunnels terminate on the AWS VPN gateway service; routing would then
+          steer protected traffic through the cloud firewall before it reaches the EC2 workloads,
+          with a corresponding return path. Tunnels terminated directly on FortiGate-VM would be
+          a different design and would not automatically receive the managed service's two-tunnel
+          arrangement. Two tunnels also do not remove a shared on-premises ISP, device, or power failure.
+        </p>
+        <p>
+          EC2 workloads would sit in protected subnets behind the inspection path. Security groups
+          would restrict each workload to its required peers and service ports, while subnet network
+          ACLs would provide additional controls. Security groups are stateful; network ACLs are
+          stateless and require explicit return-traffic rules. Firewall policy and VPC routing would
+          need to preserve inspection in both directions, rather than assume that placing a firewall
+          in the VPC makes every flow pass through it.
+          <a href="https://docs.aws.amazon.com/en_en/vpc/latest/userguide/nacl-examples.html" target="_blank" rel="noopener">AWS documents the distinction between these controls</a>.
+        </p>
+        <p>
+          Connectivity alone would not make this a disaster recovery solution. The next design steps
+          would define recovery time and recovery point objectives, data replication and backups,
+          application dependencies, recovery capacity, and tested failover and failback procedures.
+          A production migration would also need an approved change window, rollback criteria,
+          and named operational owners. None of this recovery phase reached implementation or
+          validation because the required policy, budget, and management approvals were not granted.
+        </p>
+
+        <h3>Illustrative WAN Port-Channel</h3>
+        <p>
+          This Cisco-side template shows one WAN bundle to one FortiGate unit. Replace the interface
+          and VLAN placeholders from the approved port schedule and configure the matching firewall
+          aggregate. The other HA unit and LAN-side connections require separate switch-side bundles.
+          HA behavior and secondary-unit LACP participation must be checked for the selected release;
+          see <a href="https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide/900885/ha-active-passive-cluster-setup" target="_blank" rel="noopener">Fortinet's HA active/passive cluster setup guide</a>.
         </p>
         <div class="cli-block">
           <div class="cli-header"><span>Example</span><span>WAN-side port-channel toward one FortiGate</span></div>
