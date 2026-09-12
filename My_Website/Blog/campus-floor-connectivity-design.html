@@ -6,23 +6,23 @@
   <meta name="author" content="Daniel Fonque" />
   <meta
     name="description"
-    content="Enterprise building-to-building campus connectivity design using FortiGate 600 HA, Cisco C9300 StackWise, Cisco C9500 StackWise Virtual, OM3 fiber, access zones, resiliency, security, and growth planning."
+    content="Campus expansion case study: existing FortiGate 600-series HA, new C9500 distribution, C9300 access, reused OM3 fiber infrastructure, and operational trade-offs."
   />
   <title>Campus Floor Connectivity Design | Daniel Fonque</title>
   <link rel="canonical" href="https://danielfonque.com/Blog/campus-floor-connectivity-design.html" />
   <meta property="og:type" content="article" />
   <meta property="og:title" content="Campus Floor Connectivity Design" />
-  <meta property="og:description" content="Enterprise building-to-building design using FortiGate 600 HA, Cisco C9300 StackWise, Cisco C9500 StackWise Virtual, and OM3 fiber access zones." />
+  <meta property="og:description" content="Campus expansion case study: existing FortiGate 600-series HA, new C9500 distribution, C9300 access, reused OM3 fiber infrastructure, and operational trade-offs." />
   <meta property="og:url" content="https://danielfonque.com/Blog/campus-floor-connectivity-design.html" />
   <meta property="og:image" content="https://danielfonque.com/img/DATA_8.jpg" />
   <meta property="article:author" content="Daniel Fonque Torres" />
   <meta property="article:published_time" content="2026-07-17" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Campus Floor Connectivity Design" />
-  <meta name="twitter:description" content="Enterprise campus design with FortiGate 600 HA, Cisco C9300/C9500, OM3 fiber, StackWise, and access zones." />
+  <meta name="twitter:description" content="Campus expansion case study: existing FortiGate 600-series HA, new C9500 distribution, C9300 access, reused OM3 fiber infrastructure, and operational trade-offs." />
   <meta name="twitter:image" content="https://danielfonque.com/img/DATA_8.jpg" />
   <script type="application/ld+json">
-    {"@context":"https://schema.org","@type":"BlogPosting","headline":"Campus Floor Connectivity Design","datePublished":"2026-07-17","author":{"@type":"Person","name":"Daniel Fonque Torres"},"image":"https://danielfonque.com/img/DATA_8.jpg","url":"https://danielfonque.com/Blog/campus-floor-connectivity-design.html","description":"Enterprise building-to-building campus connectivity design using FortiGate 600 HA, Cisco C9300 StackWise, Cisco C9500 StackWise Virtual, OM3 fiber, access zones, resiliency, security, and growth planning."}
+    {"@context":"https://schema.org","@type":"BlogPosting","headline":"Campus Floor Connectivity Design","datePublished":"2026-07-17","author":{"@type":"Person","name":"Daniel Fonque Torres"},"image":"https://danielfonque.com/img/DATA_8.jpg","url":"https://danielfonque.com/Blog/campus-floor-connectivity-design.html","description":"Campus expansion case study: existing FortiGate 600-series HA, new C9500 distribution, C9300 access, reused OM3 fiber infrastructure, and operational trade-offs."}
   </script>
   <link rel="stylesheet" href="styles.css?v=20260717n" />
 </head>
@@ -65,22 +65,22 @@
 
         <div class="hero-summary">
           <p>
-            Enterprise building-to-building campus design using FortiGate 600-series firewalls
-            in HA, Cisco C9300 StackWise, Cisco C9500 StackWise Virtual, OM3 multimode fiber,
-            access zones, segmentation, and clear operational handoff.
+            Expanding an operating campus: retaining the FortiGate 600-series HA edge, adding C9500
+            distribution, reusing OM3 fiber infrastructure, and extending C9300 access across
+            two buildings.
           </p>
         </div>
       </header>
 
       <figure class="article-image">
-        <img src="img/design/asteria-campus-connectivity.svg" alt="Asteria campus connectivity design diagram" />
+        <img src="img/design/asteria-campus-connectivity.svg?v=cc8f8d48" alt="Original campus expansion diagram with fictional names and example public IP addresses" />
         <figcaption>
-          Original campus design view for <strong>Asteria Operations Group</strong>, showing WAN aggregation,
-          FortiGate HA, the C9500 core/distribution pair, and C9300 access zones. The diagram is retained
-          as a design reference, not a verified as-built inventory. Its secondary/alternate fiber
-          labels do not establish physically diverse routes; the Floor 1-to-Floor 5 run remains a
-          shared physical dependency. The drawing also does not show the VLAN and routing separation
-          needed to enforce the firewall boundary. Those limitations are addressed below.
+          Original October 2024 design, with its layout, device symbols, and connections preserved.
+          Atlas and Orion are fictional building names; provider names and public IP addresses
+          have been replaced with examples. Private addressing and technical annotations remain
+          as drawn. The Floor 7 symbols represent 12 C9300 switches in total; Orion Floor 2 has
+          five C9300 switches in StackWise. Paired fiber lines do not establish physical route diversity.
+          <a href="img/design/campus-expansion-anonymized.pdf" target="_blank" rel="noopener">Open the anonymized original design PDF</a>.
         </figcaption>
       </figure>
 
@@ -102,165 +102,112 @@
 
       <section class="article-card" id="design-context">
         <h2>Design Context</h2>
-        <p>
-          This design connected two campus buildings. In the original layout, Building 1 provided the
-          ISP handoffs, C9300 StackWise aggregation, and FortiGate 600-series HA firewalls. Building 2
-          used two C9500 switches in StackWise Virtual as a combined core/distribution layer on Floor 1,
-          with OM3 fiber extending to the Floor 5 access zones and a local Floor 1 extension.
-          The firewall was intended to control traffic between the campus and the Internet;
-          a physical connection to the aggregation stack alone does not enforce that boundary.
-        </p>
-        <p>
-          I put particular care into the fiber path, firewall handoff, switching roles, and documentation.
-          Those decisions determine how a fault is isolated and how safely the network can grow.
-          This case study preserves the original design and material notes while identifying gaps
-          that would need to be resolved before treating them as an implementation plan.
-        </p>
+        <p>This project was an expansion of an operating campus network. The FortiGate 600-series HA firewalls were already in place; the work focused on extending connectivity, upgrading distribution, and integrating new access switches with existing infrastructure. In this public version, I use Orion and Atlas as fictional building names and replace provider names and public IP addresses in the original plan with examples.</p>
+        <p>Orion Floor 2 housed the WAN handoff and a five-switch C9300 StackWise stack on the trusted side of the firewalls. At Atlas, an existing fiber rack on Floor 4 became the connection point for the new C9500 distribution pair, the Floor 7 access groups, and a separate Floor 4 extension. The C9500s took over the distribution role previously served by C9200-series switches, which were retained downstream for access.</p>
+        <p>I put particular care into how the new switching would fit the existing fiber plant. A contractor installed the fiber links, and their routing and endpoint mapping had to be checked on site. That coordination mattered as much as the logical topology: a redundant line on a drawing is only useful when the actual patching and failure domains support it.</p>
       </section>
 
       <section class="article-card" id="hardware-inventory">
         <h2>Hardware Inventory and Roles</h2>
-        <p>
-          The first table follows the <strong>original diagram</strong>: 24 C9300 access switches on
-          Floor 5 (three zones, each with two four-switch stacks), plus four C9300 switches in the
-          Floor 1 extension. That is 28 access switches, excluding the Building 1 stack, whose member
-          count is unspecified. The two C9500 switches serve the campus core/distribution role.
-        </p>
-
+        <p>The inventory below follows the original drawing and my implementation context. It separates existing equipment from the expansion work and distinguishes device counts from representative diagram symbols.</p>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>Layer / Role</th>
-                <th>Platform in Original Diagram</th>
-                <th>Quantity</th>
-                <th>Purpose</th>
-                <th>Reference</th>
+                <th>Location / Role</th>
+                <th>Platform</th>
+                <th>Quantity / Scope</th>
+                <th>Implementation Context</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>Building 1 SD-WAN Zone</td>
-                <td>FortiGate 600-series HA pair</td>
-                <td>2 firewalls</td>
-                <td>Firewall policy, SD-WAN services, Internet security boundary, and controlled routing into the campus.</td>
-                <td><a href="https://www.fortinet.com/resources/data-sheets/fortigate-600f-series" target="_blank" rel="noopener">FortiGate 600F reference*</a></td>
+                <td>Orion Floor 2 - WAN handoff</td>
+                <td>Cisco SG300</td>
+                <td>Existing aggregation switch</td>
+                <td>Carries ISP handoffs to the firewall WAN interfaces; it is upstream of the C9300 campus stack.</td>
               </tr>
               <tr>
-                <td>Building 1 WAN Aggregation</td>
-                <td>Cisco Catalyst C9300 StackWise</td>
-                <td>Member count unspecified</td>
-                <td>Provides separate Layer 2 handoffs for ISP services and the firewall. Any campus-facing transit on the same stack must remain isolated from the WAN VLANs.</td>
-                <td><a href="https://www.cisco.com/c/en/us/products/collateral/switches/catalyst-9300-series-switches/nb-06-cat9300-ser-data-sheet-cte-en.html" target="_blank" rel="noopener">Cisco C9300</a></td>
+                <td>Existing security edge</td>
+                <td>FortiGate 600-series HA</td>
+                <td>Existing firewall pair</td>
+                <td>Retained for firewall policy and SD-WAN; this project did not introduce a new firewall platform.</td>
               </tr>
               <tr>
-                <td>Building 2 Floor 1 Core</td>
-                <td>2 x Cisco Catalyst C9500 in StackWise Virtual</td>
-                <td>2 switches</td>
-                <td>Campus core/distribution point, receiving Building 1 OM3 fiber and extending OM3 fiber through the Floor 1 OM3 fiber rack to Floor 5.</td>
-                <td><a href="https://www.cisco.com/c/en/us/products/switches/catalyst-9500-series-switches/datasheet-listing.html" target="_blank" rel="noopener">Cisco C9500</a> / <a href="https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9500/software/release/17-13/configuration_guide/ha/b_1713_ha_9500_cg/configuring_cisco_stackwise_virtual.html" target="_blank" rel="noopener">StackWise Virtual</a></td>
+                <td>Orion Floor 2 - trusted switching</td>
+                <td>Cisco C9300 StackWise</td>
+                <td>5 switches in one stack</td>
+                <td>Campus-side connectivity after the firewalls. StackPower was not deployed.</td>
               </tr>
               <tr>
-                <td>Building 2 Floor 1 OM3 Fiber Rack</td>
-                <td>OM3 fiber rack</td>
-                <td>Fiber handoff point</td>
-                <td>Clean demarcation between the C9500 core and the OM3 runs toward Floor 5 and local extensions.</td>
-                <td><a href="https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/transceiver-modules/data_sheet_c78-455693.html" target="_blank" rel="noopener">Cisco 10G optics</a></td>
+                <td>Atlas Floor 4 - distribution</td>
+                <td>Cisco C9500 pair</td>
+                <td>2 new switches</td>
+                <td>Took over distribution from the C9200-series equipment; linked using the StackWise Virtual architecture described below.</td>
               </tr>
               <tr>
-                <td>Building 2 Floor 5 OM3 Fiber Rack</td>
-                <td>OM3 fiber rack</td>
-                <td>Fiber handoff point</td>
-                <td>Receives OM3 fiber from Floor 1 and presents clear handoffs into the D1, D2, and D3 access zones.</td>
-                <td><a href="https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/transceiver-modules/data_sheet_c78-455693.html" target="_blank" rel="noopener">Cisco 10G optics</a></td>
+                <td>Atlas Floor 4 - retained access</td>
+                <td>Cisco C9200L</td>
+                <td>Existing equipment, shown as a pair in the source</td>
+                <td>Reused downstream after the distribution upgrade; distinct from the new C9500 pair.</td>
               </tr>
               <tr>
-                <td>Building 2 Floor 5 Access</td>
-                <td>Cisco Catalyst C9300 access switching with StackWise groups</td>
-                <td>24 switches across D1, D2, and D3</td>
-                <td>Each zone has 8 access switches, split into two 4-switch StackWise groups.</td>
-                <td><a href="https://www.cisco.com/c/en/us/products/collateral/switches/catalyst-9300-series-switches/nb-06-cat9300-ser-data-sheet-cte-en.html" target="_blank" rel="noopener">Cisco C9300</a></td>
+                <td>Atlas Floor 7 - access</td>
+                <td>Cisco C9300</td>
+                <td>12 switches total across D1, D2 and D3</td>
+                <td>The original icons were representative; the installed floor total is 12 switches.</td>
               </tr>
               <tr>
-                <td>Building 2 Floor 1 Extension</td>
-                <td>4 x Cisco Catalyst C9300 in StackWise</td>
-                <td>4 switches / 1 stack</td>
-                <td>Local Floor 1 C9300 extension connected from the C9500 core area through OM3 multimode fiber.</td>
-                <td><a href="https://www.cisco.com/c/en/us/products/collateral/switches/catalyst-9300-series-switches/nb-06-cat9300-ser-data-sheet-cte-en.html" target="_blank" rel="noopener">Cisco C9300</a></td>
+                <td>Atlas Floor 4 extension</td>
+                <td>Cisco C9300 access</td>
+                <td>Separate extension block</td>
+                <td>Connected through the extension fiber handoff; not the five-switch stack on Orion Floor 2.</td>
+              </tr>
+              <tr>
+                <td>Fiber infrastructure</td>
+                <td>OM3 multimode fiber and patching racks</td>
+                <td>Existing Floor 4 rack plus interconnections</td>
+                <td>Inter-building, Floor 4-to-Floor 7, and Floor 4 extension connectivity.</td>
               </tr>
             </tbody>
           </table>
         </div>
-
-        <p>
-          *The FortiGate family is recorded as 600-series; the exact model, interface inventory,
-          HA mode, and FortiOS release are not confirmed. The 600F link is a platform reference,
-          not evidence that a 600F was selected.
-        </p>
         <h3>Detailed Material Reference</h3>
-        <p>
-          The retained material list instead specifies <strong>16 C9200L access switches and six C9300
-          distribution switches</strong>. It does not map those devices to the diagram's stacks,
-          and it omits the C9500 pair and FortiGate pair. The available record does not establish
-          whether this is a different revision or a narrower procurement scope. These quantities
-          must not be added together or presented as one confirmed installed inventory. I retain
-          both views here to expose that limitation; an approved BOM and device-to-location mapping
-          would be required to resolve it.
-        </p>
-
+        <p>The material reference below captures the equipment and media involved in the expansion. Exact optic and interface selections belong in the implementation port schedule; generic device artwork is not a module specification.</p>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>Area</th>
-                <th>Specific Item</th>
-                <th>Quantity</th>
-                <th>Design Use</th>
-                <th>Reference</th>
+                <th>Component</th>
+                <th>Role in This Expansion</th>
+                <th>Design Consideration</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>Access switching</td>
-                <td>C9200L-48P-4G PoE+ access switches with fixed 4x1G SFP uplinks, planned redundant power, Network Essentials (C9200L-NW-E-48), and DNA Essentials (C9200L-DNA-E-48).</td>
-                <td>16 switches</td>
-                <td>Floor access layer for endpoint connectivity, PoE endpoints, phones, APs, cameras, and access-control systems.</td>
-                <td><a href="https://www.cisco.com/c/en/us/products/collateral/switches/catalyst-9200-series-switches/nb-06-cat9200-ser-data-sheet-cte-en.html" target="_blank" rel="noopener">Cisco C9200L</a></td>
+                <td>C9300 StackWise</td>
+                <td>Data stacking for the five-switch Floor 2 block</td>
+                <td>StackWise and StackPower are separate technologies. Data stacking remained in use without shared stack power.</td>
               </tr>
               <tr>
-                <td>Access Ethernet handoff</td>
-                <td>GLC-TE 10/100/1000BASE-T SFP transceivers.</td>
-                <td>6 transceivers</td>
-                <td>Copper Ethernet SFP handoffs where a 1G RJ-45 presentation is required.</td>
-                <td><a href="https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/gigabit-ethernet-gbic-sfp-modules/datasheet-c78-366584.html" target="_blank" rel="noopener">Cisco 1G SFPs</a></td>
+                <td>C9500 distribution pair</td>
+                <td>Redundant campus distribution on Floor 4</td>
+                <td>The inter-switch link, dual-active detection, and downstream uplinks serve different functions.</td>
               </tr>
               <tr>
-                <td>Distribution switching</td>
-                <td>C9300-24UX, 24-port Multigigabit Cisco UPOE (10G/5G/2.5G/1G/100M), StackWise and StackPower cables, redundant power supplies, Network Advantage, and DNA Advantage.</td>
-                <td>6 switches</td>
-                <td>Distribution role in the material list; placement relative to the diagram's C9500 core/distribution pair is not documented.</td>
-                <td><a href="https://www.cisco.com/c/en/us/products/collateral/switches/catalyst-9300-series-switches/nb-06-cat9300-ser-data-sheet-cte-en.html" target="_blank" rel="noopener">Cisco C9300</a></td>
+                <td>OM3 fiber</td>
+                <td>Campus interconnections shown in the source plan</td>
+                <td>Match optics to fiber type, measured distance, loss budget, and supported interfaces.</td>
               </tr>
               <tr>
-                <td>Distribution 1G uplinks</td>
-                <td>C9300-NM-4G 4x1G uplink modules.</td>
-                <td>6 modules</td>
-                <td>1G SFP uplink capacity for distribution uplinks and fiber handoffs.</td>
-                <td><a href="https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/hardware/install/b_c9300_hig/Installing-a-network-module.html" target="_blank" rel="noopener">C9300 network modules</a></td>
+                <td>10G campus links</td>
+                <td>The original design calls for 10G toward the Floor 7 C9300 groups</td>
+                <td>Both endpoints must have compatible 10G interfaces and optics.</td>
               </tr>
               <tr>
-                <td>1G inter-building optics</td>
-                <td>GLC-LH-SMD 1 Gbps 1000BASE-LX/LH, 1310 nm SFP transceivers; up to 10 km on supported single-mode fiber.</td>
-                <td>4 transceivers</td>
-                <td>Material notes label this path Building Orion to Building Atlas. Its mapping to Buildings 1 and 2, fiber type, and length are not established.</td>
-                <td><a href="https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/gigabit-ethernet-gbic-sfp-modules/datasheet-c78-366584.html" target="_blank" rel="noopener">GLC-LH-SMD</a></td>
-              </tr>
-              <tr>
-                <td>Future capacity</td>
-                <td>C9300-NM-8X 8x10G uplink modules and SFP-10G-LR 10GBASE-LR SFP+ optics.</td>
-                <td>2 modules / 4 optics</td>
-                <td>Proposed C9300 10G upgrade using single-mode fiber; not a drop-in upgrade for the documented OM3 runs or the C9200L-48P-4G fixed uplinks.</td>
-                <td><a href="https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/hardware/install/b_c9300_hig/Installing-a-network-module.html" target="_blank" rel="noopener">C9300-NM-8X</a> / <a href="https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/transceiver-modules/data_sheet_c78-455693.html" target="_blank" rel="noopener">SFP-10G-LR</a></td>
+                <td>Retained C9200L access</td>
+                <td>Reuse of existing switching</td>
+                <td>The source artwork labels 4x1G uplinks. Such an interface remains 1G even when its peer is a C9500.</td>
               </tr>
             </tbody>
           </table>
@@ -269,116 +216,81 @@
 
       <section class="article-card" id="port-plan">
         <h2>Switch Port and Uplink Plan</h2>
-        <p>
-          Port roles should distinguish endpoint access, stack links, uplinks, and firewall handoffs.
-          The table below follows the original diagram, including its unverified C9300 access
-          quantities. It is a role map, not a completed interface or cable schedule.
-        </p>
-
+        <p>The port plan follows the traffic boundary: ISP transport first, firewall policy next, and trusted campus switching after that. Fiber racks are passive patching points, not forwarding devices.</p>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>Device Role</th>
-                <th>Port Role</th>
-                <th>Port Type</th>
-                <th>Design Use</th>
-                <th>Reference</th>
+                <th>Connection</th>
+                <th>Port / Link Role</th>
+                <th>Operational Detail</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>Floor 5 D1/D2/D3 access zones</td>
-                <td>Access ports</td>
-                <td>Cisco C9300 access switch copper ports</td>
-                <td>User endpoints, IP phones, APs, cameras, badge readers, and local endpoint access.</td>
-                <td><a href="https://www.cisco.com/c/en/us/products/collateral/switches/catalyst-9300-series-switches/nb-06-cat9300-ser-data-sheet-cte-en.html" target="_blank" rel="noopener">Cisco C9300</a></td>
+                <td>ISP services to SG300</td>
+                <td>WAN handoffs</td>
+                <td>Keep each service in its intended WAN VLAN and document its firewall interface mapping.</td>
               </tr>
               <tr>
-                <td>Floor 5 D1/D2/D3 access zones</td>
-                <td>Stack ports</td>
-                <td>StackWise groups</td>
-                <td>The diagram shows 8 switches per zone in two 4-switch stacks; the material list does not validate this allocation.</td>
-                <td><a href="https://www.cisco.com/c/en/us/products/switches/catalyst-9300-series-switches/datasheet-listing.html" target="_blank" rel="noopener">C9300 StackWise</a></td>
+                <td>SG300 to FortiGate HA</td>
+                <td>Firewall WAN connectivity</td>
+                <td>The original plan shows the ISP aggregation switch ahead of the firewalls.</td>
               </tr>
               <tr>
-                <td>Building 2 C9500 core</td>
-                <td>Floor 5 fiber-rack uplinks</td>
-                <td>OM3 multimode fiber</td>
-                <td>A single OM3 fiber run from the Floor 1 OM3 fiber rack toward the Floor 5 OM3 fiber rack, feeding D1/D2/D3.</td>
-                <td><a href="https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/transceiver-modules/data_sheet_c78-455693.html" target="_blank" rel="noopener">Cisco optics</a></td>
+                <td>FortiGate to Orion C9300 stack</td>
+                <td>Trusted LAN handoff</td>
+                <td>Connects the security edge to campus switching. The diagram shows physical connections; the LACP proposal is discussed separately under future improvements.</td>
               </tr>
               <tr>
-                <td>Building 2 Floor 1 extension</td>
-                <td>Extension uplink</td>
-                <td>OM3 multimode fiber</td>
-                <td>Connects the Floor 1 C9300 four-switch StackWise extension to the Floor 1 core area.</td>
-                <td><a href="https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/transceiver-modules/data_sheet_c78-455693.html" target="_blank" rel="noopener">Cisco optics</a></td>
+                <td>Orion Floor 2 to Atlas Floor 4</td>
+                <td>OM3 inter-building connectivity</td>
+                <td>Trace both endpoints through the technical rooms and patching infrastructure.</td>
               </tr>
               <tr>
-                <td>Building 1 C9300 StackWise</td>
-                <td>ISP and FortiGate handoff</td>
-                <td>Separate WAN and LAN-side Ethernet handoffs</td>
-                <td>Provides separate Layer 2 handoffs for ISP services and the firewall. Any campus-facing transit on the same stack must remain isolated from the WAN VLANs.</td>
-                <td><a href="https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/software/release/17-17/configuration_guide/vlan/b_1717_vlan_9300_cg/configuring_vlan_trunks.html" target="_blank" rel="noopener">VLAN trunks</a> / <a href="https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/software/release/16-12/configuration_guide/lyr2/b_1612_lyr2_9300_cg/configuring_etherchannels.html" target="_blank" rel="noopener">LACP</a></td>
+                <td>Atlas C9500 pair to Floor 7</td>
+                <td>OM3 uplinks for D1, D2 and D3</td>
+                <td>The plan shows paired connections for each group and calls for 10G campus uplinks.</td>
               </tr>
               <tr>
-                <td>Building 1 OM3 Fiber Rack</td>
-                <td>Inter-building handoff</td>
-                <td>Fiber patching</td>
-                <td>Connects Building 1 toward Building 2 Floor 1 core/distribution.</td>
-                <td><a href="https://www.cisco.com/c/en/us/support/interfaces-modules/transceiver-modules/products-device-support-tables-list.html" target="_blank" rel="noopener">Optics compatibility</a></td>
+                <td>Atlas C9500 pair to retained C9200L</td>
+                <td>Downstream access connectivity</td>
+                <td>Negotiate a supported speed at both endpoints; do not label a 1G-only C9200L port as 10G.</td>
+              </tr>
+              <tr>
+                <td>Atlas Floor 4 to Floor 4 extension</td>
+                <td>Local extension over fiber</td>
+                <td>Separate from the Orion Floor 2 stack and from the Floor 7 access groups.</td>
               </tr>
             </tbody>
           </table>
         </div>
-
         <h3>Specific Uplink and Optic Notes</h3>
-        <p>
-          The following quantities repeat the material list for reference. Optic counts alone do not
-          establish the number of active links, spare units, or diverse paths. A final port schedule
-          must identify both endpoints, speed, VLAN role, fiber pair, and patch-panel positions.
-        </p>
-
+        <p>The 10G annotation in the source applies to the new campus uplink design; it should not be read as upgrading every connected device to 10G. The C9200L artwork is specifically labeled with 1G uplinks. I distinguish those links here so the port plan does not overstate their capacity.</p>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>Use Case</th>
-                <th>Component</th>
-                <th>Quantity</th>
-                <th>Technical Note</th>
-                <th>Reference</th>
+                <th>Item</th>
+                <th>Planning Rule</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>1G fiber link between anonymized buildings</td>
-                <td>GLC-LH-SMD</td>
-                <td>4</td>
-                <td>1000BASE-LX/LH, 1310 nm. The 10 km rating applies to single-mode fiber; multimode operation has different reach and patching requirements. Confirm the actual fiber plant.</td>
-                <td><a href="https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/gigabit-ethernet-gbic-sfp-modules/datasheet-c78-366584.html" target="_blank" rel="noopener">Cisco 1G SFPs</a></td>
+                <td>OM3 at 10G</td>
+                <td>Use a supported multimode optic, such as 10GBASE-SR, within its reach and loss limits. This identifies an appropriate optic class, not an unrecorded installed part number.</td>
               </tr>
               <tr>
-                <td>Distribution 1G uplink module</td>
-                <td>C9300-NM-4G</td>
-                <td>6 in the material list</td>
-                <td>4x1G uplink module for C9300-based distribution switching.</td>
-                <td><a href="https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/hardware/install/b_c9300_hig/Installing-a-network-module.html" target="_blank" rel="noopener">C9300 modules</a></td>
+                <td>Retained 1G access links</td>
+                <td>Use compatible 1G interfaces and optics on both sides. Faster distribution hardware does not change the access port limit.</td>
               </tr>
               <tr>
-                <td>Access copper SFP handoff</td>
-                <td>GLC-TE</td>
-                <td>6</td>
-                <td>10/100/1000BASE-T SFP for copper Ethernet presentation.</td>
-                <td><a href="https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/gigabit-ethernet-gbic-sfp-modules/datasheet-c78-366584.html" target="_blank" rel="noopener">Cisco 1G SFPs</a></td>
+                <td>Fiber pairs</td>
+                <td>Record cable and strand IDs, patch-panel positions, termination points, and the actual route. Two links can share a physical failure domain.</td>
               </tr>
               <tr>
-                <td>Future 10G distribution uplinks</td>
-                <td>C9300-NM-8X + SFP-10G-LR</td>
-                <td>2 modules / 4 optics</td>
-                <td>Proposed C9300 10G upgrade. LR optics require single-mode fiber; neither the installation nor a matching fiber path is confirmed.</td>
-                <td><a href="https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/hardware/install/b_c9300_hig/Installing-a-network-module.html" target="_blank" rel="noopener">C9300-NM-8X</a> / <a href="https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/transceiver-modules/data_sheet_c78-455693.html" target="_blank" rel="noopener">10G SFP+</a></td>
+                <td>Inter-switch links</td>
+                <td>Document StackWise Virtual links and dual-active detection separately from access and firewall uplinks.</td>
               </tr>
             </tbody>
           </table>
@@ -390,12 +302,12 @@
         <div class="concept-grid mental-model-grid">
           <div class="concept-mini-card">
             <h3>Capacity</h3>
-            <p>Support current users while leaving room for future seats, wireless, cameras, and access systems.</p>
+            <p>Expand access capacity while retaining useful existing equipment and allowing for future endpoints.</p>
             <code>capacity planning</code>
           </div>
           <div class="concept-mini-card">
             <h3>Resiliency</h3>
-            <p>Limit device and link failures through HA and appropriate uplinks; document shared fiber and power dependencies.</p>
+            <p>Use the new distribution pair and redundant uplinks to limit outages, while accounting for shared fiber routes and power constraints.</p>
             <code>known failure domains</code>
           </div>
           <div class="concept-mini-card">
@@ -413,40 +325,36 @@
 
       <section class="article-card" id="options">
         <h2>Connectivity Options</h2>
-        <p>
-          The design decision centered on the separation between ISP handoffs, firewall policy,
-          campus distribution, and the inter-building fiber path. Each choice affects both the
-          failure domain and the work required to operate the network.
-        </p>
-        <p>
-          The options below describe those trade-offs. The single fiber run is a physical constraint,
-          separate from the choice of WAN aggregation topology.
-        </p>
-
+        <p>The design decision was driven by the need to expand an existing network without replacing every layer. Reusing the firewall edge, the Floor 4 rack, and downstream access equipment kept the scope focused on distribution and connectivity.</p>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>Option</th>
-                <th>Strength</th>
+                <th>Decision</th>
+                <th>Benefit</th>
                 <th>Trade-off</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>Shared WAN aggregation and campus transit switching</td>
-                <td>Simple physical design and fewer intermediate devices.</td>
-                <td>Shares a switching failure domain and requires strict VLAN and routing separation to prevent firewall bypass.</td>
+                <td>Retain the existing FortiGate edge</td>
+                <td>Preserves the established security boundary while expanding the campus behind it.</td>
+                <td>Existing upstream switching and its failure domains remain part of the service path.</td>
               </tr>
               <tr>
-                <td>Dedicated WAN aggregation stack upstream of the firewall</td>
-                <td>Separates ISP transport from trusted campus switching and simplifies tracing the firewall handoff.</td>
-                <td>Adds hardware and management overhead; it still needs resilient links and power.</td>
+                <td>Introduce a C9500 distribution pair</td>
+                <td>Provides a stronger distribution layer and redundant attachment points for access uplinks.</td>
+                <td>Surviving capacity, inter-switch connectivity, and failover behavior require deliberate design.</td>
               </tr>
               <tr>
-                <td>Single OM3 run from Floor 1 to Floor 5 access rack</td>
-                <td>Clear and easy to document when the path is known and controlled.</td>
-                <td>A cable or shared-route failure can disconnect all three Floor 5 zones. Additional strands on the same route do not remove that risk.</td>
+                <td>Reuse the Floor 4 fiber rack and C9200L access equipment</td>
+                <td>Integrates the expansion with usable infrastructure.</td>
+                <td>Patching must be verified, and retained interface speeds still constrain individual links.</td>
+              </tr>
+              <tr>
+                <td>Use C9300 StackWise without StackPower on Floor 2</td>
+                <td>Provides one logical data stack with five members.</td>
+                <td>Budget prevented StackPower deployment, according to the explanation I received. Power must therefore be assessed per switch rather than treated as a shared pool.</td>
               </tr>
             </tbody>
           </table>
@@ -455,161 +363,103 @@
 
       <section class="article-card" id="architecture">
         <h2>Proposed Architecture</h2>
-        <p>
-          The physical drawing shows connectivity, but it is not a forwarding or security-policy map.
-          For the intended Internet boundary, the logical path must be:
-          <strong>ISP handoff &rarr; isolated WAN VLAN on the Building 1 stack &rarr; FortiGate WAN
-          interface &rarr; firewall routing and policy &rarr; trusted LAN transit &rarr; C9500
-          core/distribution &rarr; access switches</strong>. Campus-originated Internet traffic
-          follows the reverse direction through the firewall. SD-WAN selects among WAN members;
-          its zone is a logical construct on the FortiGate, not a separate transit device.
-        </p>
-        <p>
-          If the Building 1 C9300 stack carries both ISP VLANs and the trusted campus transit, those
-          segments must remain separate. No SVI, route, or Layer 2 bridge may provide a direct
-          WAN-to-campus bypass. The OM3 rack is a passive patching point, not a security boundary.
-          The article does not include the VLAN, gateway, routing, or firewall configuration needed
-          to verify enforcement. That verification must include return paths and failover behavior.
-          Inter-VLAN traffic routed locally on the C9500 pair does not automatically cross the
-          FortiGate; any segment requiring stateful inspection needs a forwarding path through it.
-        </p>
-        <p>
-          On the campus side, the C9500 pair connects through the Floor 1 patching rack to the Floor 5
-          rack and the local Floor 1 extension. The diagram groups Floor 5 into D1, D2, and D3, each
-          with two four-switch C9300 stacks, plus one four-switch C9300 stack on Floor 1. These are
-          the diagram's allocations, not a reconciliation of the separate C9200L/C9300 material list.
-          The single documented Floor 1-to-Floor 5 OM3 run is shared by all three access zones.
-        </p>
+        <p>The service path starts with the existing ISP handoffs on Orion Floor 2: <strong>ISP services &rarr; SG300 WAN aggregation &rarr; FortiGate 600-series HA &rarr; five-switch C9300 stack &rarr; OM3 inter-building connection &rarr; Atlas Floor 4 C9500 distribution &rarr; campus access</strong>. This places the C9300 stack behind the firewalls, not ahead of them. SD-WAN is a logical function on the FortiGate, not a separate physical device.</p>
+        <p>At Atlas Floor 4, the new C9500 pair took over distribution and connected through the existing fiber rack to the Floor 7 access groups and the Floor 4 extension. Floor 7 contains 12 C9300 switches across D1, D2, and D3. The original drawing uses representative switch icons; the inventory records the actual total so those symbols are not mistaken for a device count.</p>
+        <p>The C9500 interconnection uses a different architecture from the C9300 rear-panel StackWise stack. <strong>StackWise Virtual</strong> presents the two C9500 chassis as one logical switch with an active and standby control plane; both chassis can forward traffic. If the active chassis fails, the standby takes over the control-plane role. This is more than copying a configuration: availability also depends on the SVL, dual-active detection, surviving uplinks, and remaining capacity. <a href="https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9500/software/release/17-18/configuration_guide/ha/b_1718_ha_9500_cg/configuring_cisco_stackwise_virtual.html" target="_blank" rel="noopener">Cisco's StackWise Virtual guide</a> explains these roles.</p>
+        <p>Internet traffic follows the firewall path. No WAN VLAN or alternative route should bridge around the FortiGate into trusted campus switching. Traffic routed locally between campus VLANs does not automatically cross the firewall; segments requiring stateful inspection need a forwarding path through it. The security boundary therefore depends on gateway placement and routing as well as the physical topology.</p>
       </section>
 
       <section class="article-card" id="media-plan">
         <h2>Transceiver and Media Plan</h2>
-        <p>
-          Fiber type, measured path length, loss budget, patching, and platform support determine optic
-          selection. The diagram's OM3 paths are not automatically compatible with every optic in
-          the material list: GLC-LH-SMD has a 10 km single-mode rating and separate multimode
-          requirements, while SFP-10G-LR requires single-mode fiber. For a proposed 10G OM3 link,
-          a supported multimode optic such as 10GBASE-SR would need validation at both endpoints.
-          This is a design consideration, not a claim that SR optics or 10G links were installed.
-        </p>
-
+        <p>OM3 multimode fiber was used for the interconnections shown in the design. The fiber work was contracted out, and we had to verify how the links were routed and terminated. The existing Atlas Floor 4 rack was the central patching point for Floor 7 and the local extension.</p>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>Use Case</th>
-                <th>Module / Optic</th>
-                <th>Media</th>
-                <th>Notes</th>
+                <th>Path</th>
+                <th>Media / Intent</th>
+                <th>What Had to Be Checked</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>Building 1 to Building 2 handoff</td>
-                <td>Distance-dependent fiber optic</td>
-                <td>OM3 in the diagram; field verification required</td>
-                <td>Validate distance and facilities path before choosing final optic type.</td>
+                <td>Orion Floor 2 to Atlas Floor 4</td>
+                <td>OM3 inter-building connection through technical rooms</td>
+                <td>Actual cable route, endpoint mapping, patching, distance, and optical loss.</td>
               </tr>
               <tr>
-                <td>Building 2 Floor 1 to Floor 5 OM3 fiber rack</td>
-                <td>Multimode optic matched to validated link speed</td>
-                <td>OM3 multimode fiber</td>
-                <td>A single OM3 fiber run feeds the Floor 5 OM3 fiber rack before handoff to the access zones.</td>
+                <td>Atlas Floor 4 to Floor 7</td>
+                <td>OM3 connections to D1, D2 and D3; 10G in the design</td>
+                <td>Correct group-to-distribution mapping and whether redundant links share a cable, riser, or conduit.</td>
               </tr>
               <tr>
-                <td>Floor 1 extension</td>
-                <td>Multimode optic matched to validated link speed</td>
-                <td>OM3 multimode fiber</td>
-                <td>Connects the Floor 1 core area to the 4-switch C9300 StackWise extension.</td>
+                <td>Atlas Floor 4 extension</td>
+                <td>Fiber connection through the extension rack</td>
+                <td>Extension endpoints and the handoff back to Floor 4 distribution.</td>
               </tr>
               <tr>
-                <td>C9300 uplinks in the material list</td>
-                <td>C9300 uplink modules as required</td>
-                <td>Fiber or copper, depending on the endpoint</td>
-                <td>C9300-NM-4G provides 1G uplinks; the proposed NM-8X upgrade is separate. C9200L-48P-4G access switches have fixed 1G uplinks.</td>
-              </tr>
-              <tr>
-                <td>FortiGate to C9300 handoff</td>
-                <td>Supported Ethernet interfaces and media</td>
-                <td>Fiber or copper based on interface availability</td>
-                <td>Keep firewall inside/outside roles clearly documented for operations.</td>
+                <td>C9500 to retained access switching</td>
+                <td>Media and speed matched to the access interface</td>
+                <td>Supported optics and common link speed; 1G-only access uplinks remain 1G.</td>
               </tr>
             </tbody>
           </table>
         </div>
+        <p>OM3 does not imply unlimited reach. Optic selection must match the measured path and both platforms. In particular, 10GBASE-LR single-mode optics are not a drop-in replacement for multimode optics on an OM3 run. Labeling and contractor handoff records should make the physical path traceable without relying on the colors in the drawing.</p>
       </section>
 
       <section class="article-card" id="resiliency">
         <h2>Resiliency Decisions</h2>
-        <p>
-          Device redundancy does not establish end-to-end physical redundancy. The single OM3 run
-          between Floors 1 and 5 introduces a <strong>physical single point of failure</strong>
-          for all three Floor 5 zones. Formal risk acceptance and a recovery target are not documented.
-          A more resilient implementation would use independently routed fiber paths; parallel
-          links sharing the same cable, riser, or patching dependency cannot provide that protection.
-        </p>
+        <p>The distribution upgrade provided two C9500 chassis and redundant connection points, with paired fiber connections for the Floor 7 groups. Equipment redundancy, link redundancy, and physical route diversity need to be assessed separately. The contractor's cable routing and termination work determines whether a single physical incident can affect both connections.</p>
         <ul class="decision-list">
-          <li><strong>Firewall HA:</strong> A pair can protect against a unit failure, but does not remove shared switching, power, or fiber dependencies. HA heartbeat, monitored interfaces, session handling, and failover must be validated for the actual model, mode, and FortiOS release.</li>
-          <li><strong>StackWise Virtual:</strong> The C9500 pair operates as one logical switch. A Multi-Chassis EtherChannel (MEC) distributes a port-channel's members across both chassis; it is not the StackWise Virtual Link (SVL). The SVL and dual-active detection design need separate validation.</li>
-          <li><strong>Stack failure domains:</strong> StackWise simplifies management but retains shared software and configuration risks. The diagram's two stacks per Floor 5 zone limit the scope of a stack outage only if their uplinks are independent; the shared fiber run still affects both.</li>
-          <li><strong>Power and paths:</strong> Redundant supplies and multiple links help only within their actual failure domains. Independent power feeds, patching, and inter-building route diversity are not established by the drawing.</li>
-          <li><strong>Operational validation:</strong> Label both ends of each link and test member-link loss, switch failure, firewall failover, and loss of the shared fiber path. Record reachability, session impact, remaining capacity, and recovery behavior against agreed acceptance criteria.</li>
+          <li><strong>Distribution failure:</strong> StackWise Virtual supports control-plane switchover, while surviving links carry traffic through the remaining chassis. Size those links and the surviving switch for the required failure-state load; switchover alone does not guarantee sufficient bandwidth.</li>
+          <li><strong>Uplink redundancy:</strong> A port-channel spanning both C9500 chassis is a Multi-Chassis EtherChannel (MEC). Paired physical links are not automatically a MEC: their aggregation and peer configuration must match. Keep the SVL and dual-active detection function distinct from downstream port-channels.</li>
+          <li><strong>Fiber failure domains:</strong> Two strands or cables on the same route can fail together. A shared conduit, riser, patching point, or technical-room dependency remains a physical single point of failure for the connections using it. Contractor route verification is what establishes the extent of physical diversity.</li>
+          <li><strong>Floor 2 power constraint:</strong> The five C9300s used StackWise for data, but not StackPower. I was told this was a budget decision. That does not disable data stacking, but it removes shared stack-power capability; PSU and feed redundancy must be evaluated per member.</li>
+          <li><strong>Existing WAN dependencies:</strong> The FortiGate HA pair remains behind the existing SG300 handoff. Firewall HA does not remove the failure domain of that upstream switch or any shared provider path.</li>
+          <li><strong>Operations:</strong> Test link loss, distribution-chassis failure, and firewall failover separately. Check reachability, session impact, convergence, interface utilization, and the recovery procedure. Labels and accurate endpoint records shorten fault isolation.</li>
         </ul>
       </section>
 
       <section class="article-card" id="security">
         <h2>Security and Layer 2 Controls</h2>
-        <p>
-          The original design called for 802.1X, VLAN segmentation, ACLs, storm control, PortFast, and
-          BPDU Guard. These controls address different risks: VLANs separate broadcast domains;
-          ACLs enforce selected traffic restrictions; firewall policy provides stateful inspection
-          where traffic crosses the FortiGate. The record does not establish their deployed
-          configuration. From an operational perspective, gateway placement, allowed VLANs, and
-          policy ownership must be explicit so troubleshooting does not confuse segmentation
-          with firewall enforcement.
-        </p>
+        <p>The expansion retained the existing FortiGate security edge. WAN services terminate on the upstream aggregation layer, and the trusted campus stack sits downstream of the firewalls. Maintaining that separation during the cutover is essential: access growth must not introduce an unintended bypass around the existing policy boundary.</p>
+        <p>The access design also considered 802.1X, VLAN segmentation, ACLs, storm control, PortFast, and BPDU Guard. These controls have different jobs; a VLAN boundary alone is not stateful inspection.</p>
         <ul class="decision-list">
-          <li>802.1X for authenticated access.</li>
-          <li>VLAN segmentation for user, voice, management, cameras, and access systems.</li>
-          <li>Storm control with thresholds appropriate to the endpoint and traffic profile.</li>
-          <li>PortFast on endpoint-facing ports, not as a substitute for loop prevention.</li>
-          <li>BPDU Guard to protect the spanning-tree edge.</li>
-          <li>ACLs for controlled inter-segment access.</li>
+          <li>802.1X for authenticated endpoint access.</li>
+          <li>Separate VLANs for users, voice, management, cameras, and access-control systems.</li>
+          <li>ACLs at the relevant routing boundary for controlled inter-segment access.</li>
+          <li>Storm-control thresholds suited to the expected traffic profile.</li>
+          <li>PortFast and BPDU Guard on appropriate endpoint-facing ports.</li>
+          <li>Document gateway and firewall-policy ownership so troubleshooting follows the actual forwarding path.</li>
         </ul>
       </section>
 
       <section class="article-card" id="growth">
         <h2>Growth Planning</h2>
-        <p>
-          The design considered additional users, wireless access, cameras, access-control systems,
-          and cabling. Capacity planning should account for free ports, PoE budget, fiber pairs,
-          uplink utilization, and the capacity remaining after a failure. No measured demand or
-          growth target is recorded here, so sufficient headroom cannot be claimed. The proposed
-          C9300 module upgrade provides a potential distribution growth path; it does not upgrade
-          the C9200L-48P-4G's fixed 1G uplinks. That distinction matters when assessing oversubscription
-          and deciding which layer needs investment.
-        </p>
+        <p>This expansion combined new distribution capacity with reused access equipment and fiber infrastructure. The practical growth plan was to add access where needed while preserving the existing security edge and extending from the Floor 4 rack. The trade-off is that retained access interfaces keep their original limits; a faster distribution layer does not make every downstream link faster.</p>
+        <p>For the next expansion, I would review free ports, PoE budgets, uplink utilization, spare fiber pairs, and capacity after a chassis or link failure. I would also include the budget for power resilience explicitly. The Floor 2 StackPower decision is a useful reminder that data-plane redundancy and power resilience are separate design choices.</p>
       </section>
 
       <section class="article-card key-takeaways" id="lessons">
         <h2>Lessons Learned</h2>
         <ul class="decision-list">
-          <li>A useful design aligns the topology, BOM, port schedule, and security policy; conflicts between them must remain visible until resolved.</li>
-          <li>Fiber paths, rack locations, and power planning are part of network resiliency.</li>
-          <li>Access-layer security should be designed from the beginning, not added later.</li>
-          <li>Simpler operations and smaller failure domains can conflict. Document the trade-off and test the failure behavior.</li>
-          <li>Anonymizing old work is a good way to document experience without exposing customer data.</li>
+          <li>An expansion starts with the infrastructure already in service: firewall placement, access equipment, fiber racks, and operational dependencies.</li>
+          <li>A diagram should state device totals explicitly. Representative switch icons must not be read as a procurement count.</li>
+          <li>Contracted fiber work still needs engineering verification of routes, terminations, and failure domains.</li>
+          <li>StackWise, StackWise Virtual, and StackPower solve different problems; none should be used as shorthand for complete redundancy.</li>
+          <li>Reuse can simplify a project, but inherited interface limits and single points of failure remain part of the design.</li>
         </ul>
       </section>
 
       <section class="article-card" id="design-improvement">
         <h2>Design Improvement I Would Apply Today</h2>
         <p>
-          Looking at this design with more experience, I would separate ISP transport from trusted
-          campus switching: <strong>ISP handoffs &rarr; dedicated WAN stack &rarr; FortiGate HA
+          Looking at this design with more experience, I would replace the existing SG300 WAN
+          handoff with a dedicated redundant WAN aggregation stack, preserving the same security order: <strong>ISP handoffs &rarr; dedicated WAN stack &rarr; FortiGate HA
           &rarr; campus core/distribution</strong>. The WAN stack would carry isolated ISP VLANs to
-          the firewall, with no direct path into the LAN. This adds equipment, but makes the
-          security boundary and troubleshooting sequence easier to follow.
+          the firewall, with no direct path into the LAN. This addresses the upstream switch failure domain while keeping
+          WAN transport separate from trusted campus switching.
         </p>
         <p>
           I would separate each firewall's WAN-side and LAN-side LACP aggregates. WAN bundles would
@@ -622,7 +472,7 @@
         </p>
         <p>
           I would size the bundles from required throughput, available interfaces, and capacity after
-          a member or chassis failure. The record does not justify a specific member count.
+          a member or chassis failure. The member count should follow those requirements.
           LACP negotiates the bundle; traffic distribution follows the forwarding hash. A single flow
           does not normally use the sum of all member speeds.
           On the C9500 StackWise Virtual pair, a bundle spanning both chassis is a MEC. On a C9300
@@ -637,6 +487,11 @@
           unit and the LAN-side handoffs require separate switch-side bundles. See
           <a href="https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide/900885/ha-active-passive-cluster-setup" target="_blank" rel="noopener">Fortinet's HA active/passive cluster setup guide</a>
           for the HA setup procedure.
+        </p>
+        <p>
+          I would also make physical route diversity and per-switch power resilience explicit
+          acceptance items. The expansion already had redundant connection intent; the next step
+          is to ensure that cable routes, power feeds, and failure-state capacity support it.
         </p>
         <div class="cli-block">
           <div class="cli-header"><span>Example</span><span>WAN-side port-channel toward one FortiGate</span></div>
