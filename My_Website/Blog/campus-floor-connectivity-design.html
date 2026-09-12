@@ -437,6 +437,106 @@
         </ul>
       </section>
 
+      <section class="article-card" id="firewall-examples">
+        <h2>FortiGate Configuration Examples: SD-WAN, SLA, and Policy</h2>
+        <p>These shortened excerpts come from a historical FortiGate 300D backup running FortiOS 6.2.3. They illustrate operational configuration patterns; they are not the as-built configuration of the 600-series firewalls in the campus diagram or evidence that the proposed redesign was implemented. The backup contains several VDOMs, so the examples below retain their separate contexts.</p>
+        <p>Interface and object names, rule IDs, probe targets, and addresses have been replaced with generic labels and documentation values. Credentials, encrypted secrets, certificates, serial numbers, and customer identifiers are excluded. Referenced interfaces and address objects are not defined here; these are excerpts, not a complete deployment configuration.</p>
+
+        <h3>SD-WAN Members and Explicit Traffic Steering</h3>
+        <p>In one VDOM, two enabled WAN members carried the SD-WAN configuration; a third disabled member is omitted here. The excerpt preserves the measured-volume balancing mode, member cost, volume ratio, and one source/destination-specific rule. That rule selects member 1; it does not demonstrate an SLA-based alternate path. The omitted second rule selects member 2 for a different destination.</p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Sanitized excerpt</span><span>FortiOS 6.2.3 - WAN members and steering</span></div>
+          <pre><code>config system virtual-wan-link
+    set status enable
+    set load-balance-mode measured-volume-based
+    config members
+        edit 1
+            set interface "WAN_A"
+            set gateway 192.0.2.1
+            set cost 5
+        next
+        edit 2
+            set interface "WAN_B"
+            set gateway 198.51.100.1
+            set volume-ratio 99
+        next
+    end
+    config health-check
+        edit "WAN_REACHABILITY"
+            set server "203.0.113.10"
+            set members 1 2
+        next
+    end
+    config service
+        edit 10
+            set name "CLIENT_A_VIA_WAN_A"
+            set member 1
+            set dst "CLIENT_A_REMOTE"
+            set src "CLIENT_A_USERS" "CLIENT_A_SERVERS"
+        next
+    end
+end</code></pre>
+        </div>
+        <p>The example addresses are not live gateways or probe targets. The volume ratio is a configured balancing weight, not a measured traffic split or a bandwidth requirement. Explicit steering and link monitoring must be reviewed together with routing and failure behavior.</p>
+
+        <h3>Performance SLA in a Separate VDOM</h3>
+        <p>A different VDOM has one configured WAN member and the HTTP probe shown below. Its configured SLA thresholds are 250 ms latency, 50 ms jitter, and 5% packet loss, with a 1,000 ms probe interval and 10 successful responses for recovery. These are historical settings, not measured performance or universal targets. A single WAN member cannot provide provider failover, and an SLA definition alone does not prove that a steering rule uses it.</p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Sanitized excerpt</span><span>Separate VDOM - performance health check</span></div>
+          <pre><code>config system virtual-wan-link
+    config health-check
+        edit "HTTP_SERVICE_SLA"
+            set server "probe.example.com"
+            set protocol http
+            set interval 1000
+            set recoverytime 10
+            config sla
+                edit 1
+                    set latency-threshold 250
+                    set jitter-threshold 50
+                    set packetloss-threshold 5
+                next
+            end
+        next
+    end
+end</code></pre>
+        </div>
+
+        <h3>Firewall Policy: Authorization Is Separate from Path Selection</h3>
+        <p>This policy comes from the same VDOM as the two enabled WAN members. It permits specified source and destination objects toward the SD-WAN interface, applies source NAT, and logs accepted traffic. SD-WAN selects the egress path; the firewall policy authorizes the session. Neither replaces the other.</p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Sanitized excerpt</span><span>Selected policy fields - named inspection profiles omitted</span></div>
+          <pre><code>config firewall policy
+    edit 100
+        set name "SERVICE_OUTBOUND"
+        set srcintf "INTERNAL_A" "INTERNAL_B"
+        set dstintf "virtual-wan-link"
+        set srcaddr "AUTHORIZED_USERS"
+        set dstaddr "REMOTE_SERVICE"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set inspection-mode proxy
+        set logtraffic all
+        set nat enable
+    next
+end</code></pre>
+        </div>
+        <p>The original rule uses <code>ALL</code> services. That is broader than a service-specific allow list, even with restricted address objects. A refinement would validate application dependencies and restrict allowed services through the change process. This excerpt does not establish web filtering or application-control enforcement; those require the relevant policy settings and profile definitions.</p>
+
+        <h3>Operational Verification</h3>
+        <p>Run these read-only commands in the relevant VDOM on the historical FortiOS release. Compare configured members and rules with live health and route selection; the backup alone contains no runtime evidence of successful failover.</p>
+        <div class="cli-block">
+          <div class="cli-header"><span>Verification commands</span><span>FortiOS 6.2 - run in the appropriate VDOM</span></div>
+          <pre><code>show system virtual-wan-link
+show firewall policy
+get router info routing-table all
+diagnose sys virtual-wan-link health-check
+diagnose sys virtual-wan-link service</code></pre>
+        </div>
+        <p>The historical syntax is documented in Fortinet's <a href="https://docs.fortinet.com/document/fortigate/6.2.3/cli-reference/88620/system-virtual-wan-link" target="_blank" rel="noopener">FortiOS 6.2.3 CLI reference</a> and <a href="https://docs.fortinet.com/document/fortigate/6.2.17/cookbook/818746/sd-wan-related-diagnose-commands" target="_blank" rel="noopener">6.2 SD-WAN diagnostic guide</a>. Validate syntax against the target release before adapting these examples.</p>
+      </section>
+
       <section class="article-card" id="growth">
         <h2>Growth Planning</h2>
         <p>This expansion combined new distribution capacity with reused access equipment and fiber infrastructure. The practical growth plan was to add access where needed while preserving the existing security edge and extending from the Floor 4 rack. The trade-off is that retained access interfaces keep their original limits; a faster distribution layer does not make every downstream link faster.</p>
