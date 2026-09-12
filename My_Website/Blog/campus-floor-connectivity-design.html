@@ -439,16 +439,20 @@
 
       <section class="article-card" id="firewall-examples">
         <h2>FortiGate Configuration Examples: SD-WAN, SLA, and Policy</h2>
-        <p>These shortened excerpts come from a historical FortiGate 300D backup running FortiOS 6.2.3. They illustrate operational configuration patterns; they are not the as-built configuration of the 600-series firewalls in the campus diagram or evidence that the proposed redesign was implemented. The backup contains several VDOMs, so the examples below retain their separate contexts.</p>
-        <p>Interface and object names, rule IDs, probe targets, and addresses have been replaced with generic labels and documentation values. Credentials, encrypted secrets, certificates, serial numbers, and customer identifiers are excluded. Referenced interfaces and address objects are not defined here; these are excerpts, not a complete deployment configuration.</p>
+        <p>These anonymized examples adapt patterns from a historical FortiGate 300D backup to FortiOS 7.4.x syntax. They are illustrative migration examples, not a captured 7.4.x configuration or confirmation that this release runs on the original 300D. The backup contains several VDOMs, so the examples retain their separate contexts. They do not establish that the proposed campus redesign was implemented.</p>
+        <p>Interface and object names, rule IDs, probe targets, and addresses have been replaced with generic labels and documentation values. Credentials, encrypted secrets, certificates, serial numbers, and customer identifiers are excluded. Referenced interfaces and address objects are not defined here; these are adapted excerpts, not a complete deployment configuration.</p>
 
         <h3>SD-WAN Members and Explicit Traffic Steering</h3>
         <p>In one VDOM, two enabled WAN members carried the SD-WAN configuration; a third disabled member is omitted here. The excerpt preserves the measured-volume balancing mode, member cost, volume ratio, and one source/destination-specific rule. That rule selects member 1; it does not demonstrate an SLA-based alternate path. The omitted second rule selects member 2 for a different destination.</p>
         <div class="cli-block">
-          <div class="cli-header"><span>Sanitized excerpt</span><span>FortiOS 6.2.3 - WAN members and steering</span></div>
-          <pre><code>config system virtual-wan-link
+          <div class="cli-header"><span>Sanitized adaptation</span><span>FortiOS 7.4.x - WAN members and steering</span></div>
+          <pre><code>config system sdwan
     set status enable
     set load-balance-mode measured-volume-based
+    config zone
+        edit "virtual-wan-link"
+        next
+    end
     config members
         edit 1
             set interface "WAN_A"
@@ -470,7 +474,8 @@
     config service
         edit 10
             set name "CLIENT_A_VIA_WAN_A"
-            set member 1
+            set mode manual
+            set priority-members 1
             set dst "CLIENT_A_REMOTE"
             set src "CLIENT_A_USERS" "CLIENT_A_SERVERS"
         next
@@ -482,8 +487,8 @@ end</code></pre>
         <h3>Performance SLA in a Separate VDOM</h3>
         <p>A different VDOM has one configured WAN member and the HTTP probe shown below. Its configured SLA thresholds are 250 ms latency, 50 ms jitter, and 5% packet loss, with a 1,000 ms probe interval and 10 successful responses for recovery. These are historical settings, not measured performance or universal targets. A single WAN member cannot provide provider failover, and an SLA definition alone does not prove that a steering rule uses it.</p>
         <div class="cli-block">
-          <div class="cli-header"><span>Sanitized excerpt</span><span>Separate VDOM - performance health check</span></div>
-          <pre><code>config system virtual-wan-link
+          <div class="cli-header"><span>Sanitized adaptation</span><span>Separate VDOM - performance health check</span></div>
+          <pre><code>config system sdwan
     config health-check
         edit "HTTP_SERVICE_SLA"
             set server "probe.example.com"
@@ -503,9 +508,9 @@ end</code></pre>
         </div>
 
         <h3>Firewall Policy: Authorization Is Separate from Path Selection</h3>
-        <p>This policy comes from the same VDOM as the two enabled WAN members. It permits specified source and destination objects toward the SD-WAN interface, applies source NAT, and logs accepted traffic. SD-WAN selects the egress path; the firewall policy authorizes the session. Neither replaces the other.</p>
+        <p>This adapted policy originates from the same VDOM as the two enabled WAN members. It permits specified source and destination objects toward the SD-WAN zone, applies source NAT, and logs accepted traffic. SD-WAN selects the egress path; the firewall policy authorizes the session. Neither replaces the other.</p>
         <div class="cli-block">
-          <div class="cli-header"><span>Sanitized excerpt</span><span>Selected policy fields - named inspection profiles omitted</span></div>
+          <div class="cli-header"><span>Sanitized adaptation</span><span>Selected policy fields - named inspection profiles omitted</span></div>
           <pre><code>config firewall policy
     edit 100
         set name "SERVICE_OUTBOUND"
@@ -532,27 +537,28 @@ end</code></pre>
     edit "VDOM_A"
         show
         show system settings
-        show system virtual-wan-link
+        show system sdwan
         show firewall address
         show firewall policy
         show router static
-        show full-configuration system virtual-wan-link
+        show full-configuration system sdwan
     next
 end</code></pre>
         </div>
         <p>Within the selected VDOM, <code>show</code> displays configuration with default settings generally omitted. <code>show full-configuration</code> includes defaults; the scoped command above limits that output to SD-WAN. Repeat the review in the VDOM containing the SLA example rather than combining settings from different domains. These are command examples, not captured live output. Sanitize configuration output before sharing it, including encrypted credential fields.</p>
 
         <h3>Operational Verification</h3>
-        <p>Run these read-only commands in the relevant VDOM on the historical FortiOS release. Compare configured members and rules with live health and route selection; the backup alone contains no runtime evidence of successful failover.</p>
+        <p>Run these read-only commands in the relevant VDOM on the target FortiOS 7.4.x release. Compare configured members and rules with live health and route selection; the backup alone contains no runtime evidence of successful failover.</p>
         <div class="cli-block">
-          <div class="cli-header"><span>Verification commands</span><span>FortiOS 6.2 - run in the appropriate VDOM</span></div>
-          <pre><code>show system virtual-wan-link
+          <div class="cli-header"><span>Verification commands</span><span>FortiOS 7.4.x - run in the appropriate VDOM</span></div>
+          <pre><code>show system sdwan
 show firewall policy
 get router info routing-table all
-diagnose sys virtual-wan-link health-check
-diagnose sys virtual-wan-link service</code></pre>
+diagnose sys sdwan health-check
+diagnose sys sdwan service4</code></pre>
         </div>
-        <p>The historical syntax is documented in Fortinet's <a href="https://docs.fortinet.com/document/fortigate/6.2.3/cli-reference/88620/system-virtual-wan-link" target="_blank" rel="noopener">FortiOS 6.2.3 CLI reference</a> and <a href="https://docs.fortinet.com/document/fortigate/6.2.17/cookbook/818746/sd-wan-related-diagnose-commands" target="_blank" rel="noopener">6.2 SD-WAN diagnostic guide</a>. Validate syntax against the target release before adapting these examples.</p>
+        <p>In this adaptation, <code>config system sdwan</code> replaces the older configuration namespace, the manual rule uses <code>priority-members</code>, and <code>virtual-wan-link</code> remains the SD-WAN zone referenced by the firewall policy. See Fortinet's <a href="https://docs.fortinet.com/document/fortigate/7.4.10/administration-guide/256518/configuring-sd-wan-in-the-cli" target="_blank" rel="noopener">7.4 SD-WAN configuration guide</a> and <a href="https://docs.fortinet.com/document/fortigate/7.4.9/cli-reference/235530229/diagnose-sys" target="_blank" rel="noopener">diagnostic command reference</a>.</p>
+        <p><strong>Release selection:</strong> 7.4.x identifies the example syntax, not a recommended patch level. Before deployment, select a supported maintenance release for the exact hardware using the release notes, <a href="https://fortiguard.fortinet.com/psirt" target="_blank" rel="noopener">Fortinet PSIRT advisories</a>, and the <a href="https://docs.fortinet.com/upgrade-tool" target="_blank" rel="noopener">upgrade path tool</a>. No release is guaranteed to be free of vulnerabilities; validate the adapted configuration and failover behavior on the selected build.</p>
       </section>
 
       <section class="article-card" id="growth">
